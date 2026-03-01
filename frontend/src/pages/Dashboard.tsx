@@ -29,7 +29,7 @@ function Dashboard() {
 
   const [logs, setLogs] = useState<HealthLog[]>([]);
   const [loading, setLoading] = useState(true);
-  const [, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     weight: "",
@@ -290,9 +290,15 @@ if (riskWarnings.length > 0) {
 };
   if (loading) return <div className="text-center mt-10">Loading...</div>;
 
-  return (
-    <div className="space-y-10" ref={reportRef}>
-      <h1 className="text-3xl font-semibold">Health Dashboard</h1>
+ return (
+  <div className="space-y-10" ref={reportRef}>
+    <h1 className="text-3xl font-semibold">Health Dashboard</h1>
+
+    {error && (
+      <div className="bg-red-100 text-red-700 p-4 rounded border border-red-300">
+        {error}
+      </div>
+    )}
 
       {/* Calendar-based Entry Form */}
       <div className="bg-white p-6 rounded-lg shadow">
