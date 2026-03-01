@@ -1,12 +1,25 @@
 import { Navigate } from "react-router-dom";
+import type { ReactNode } from "react";
 import { useAuth } from "../context/AuthContext";
 
-export default function ProtectedRoute({ children }: any) {
-  const { user } = useAuth();
+interface Props {
+  children: ReactNode;
+}
 
-  if (user === null) {
+export default function ProtectedRoute({ children }: Props) {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-gray-600">Checking authentication...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  return children;
+  return <>{children}</>;
 }
