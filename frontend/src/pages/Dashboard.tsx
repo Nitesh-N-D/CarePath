@@ -29,7 +29,7 @@ function Dashboard() {
 
   const [logs, setLogs] = useState<HealthLog[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [, setError] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     weight: "",
