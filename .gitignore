@@ -1,0 +1,13 @@
+# Node
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Build output
+dist/
+
+# Logs
+npm-debug.log*
