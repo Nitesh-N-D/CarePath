@@ -3,9 +3,9 @@ const cors = require("cors");
 require("dotenv").config();
 const authRoutes = require("./routes/authRoutes");
 
-app.use("/api/auth", authRoutes);
-const diseaseRoutes = require("./routes/diseaseRoutes");
+const healthRoutes = require("./routes/healthRoutes");
 
+const diseaseRoutes = require("./routes/diseaseRoutes");
 const app = express();
 
 app.use(cors({
@@ -15,6 +15,11 @@ app.use(cors({
   ]
 }));
 app.use(express.json());
+app.use("/api/auth", authRoutes);
+
+
+app.use("/api/health", healthRoutes);
+
 
 app.use("/api/diseases", diseaseRoutes);
 
