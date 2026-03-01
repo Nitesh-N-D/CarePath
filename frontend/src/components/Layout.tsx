@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 
 interface Props {
   children: ReactNode;
@@ -8,22 +8,16 @@ interface Props {
 
 function Layout({ children }: Props) {
   const navigate = useNavigate();
-  const [token, setToken] = useState<string | null>(null);
-
-  // Check token on mount
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    setToken(storedToken);
-  }, []);
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
+    logout();
     navigate("/");
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
+      
       {/* Navbar */}
       <nav className="bg-blue-700 text-white px-6 py-4 shadow-md">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
@@ -39,7 +33,7 @@ function Layout({ children }: Props) {
               AI-Powered Health Platform
             </span>
 
-            {!token ? (
+            {!user ? (
               <>
                 <Link to="/login" className="hover:underline">
                   Login
