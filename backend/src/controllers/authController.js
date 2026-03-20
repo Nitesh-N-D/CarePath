@@ -7,6 +7,7 @@ const { verifyGoogleAccessToken } = require("../services/googleService");
 const asyncHandler = require("../utils/asyncHandler");
 const { signToken, sanitizeUser } = require("../utils/auth");
 const { createHttpError } = require("../utils/httpError");
+const { hasRoleColumn, getRoleSelectSql } = require("../utils/userSchema");
 const {
   ensureEmail,
   ensurePassword,
@@ -48,12 +49,25 @@ async function ensureDoctorProfile(userId) {
   );
 }
 
+async function attachDerivedRole(user) {
+  if (user?.role) {
+    return user;
+  }
+
+  const doctorResult = await pool.query("SELECT id FROM doctors WHERE user_id = $1 LIMIT 1", [user.id]);
+  return {
+    ...user,
+    role: doctorResult.rows.length ? "doctor" : "user",
+  };
+}
+
 const register = asyncHandler(async (req, res) => {
   const name = ensureRequiredString(req.body.name, "Name", 2);
   const email = ensureEmail(req.body.email);
   const password = ensurePassword(req.body.password);
   const role = ["user", "doctor", "admin"].includes(req.body.role) ? req.body.role : "user";
   const passwordColumn = await getPasswordColumn();
+  const roleEnabled = await hasRoleColumn();
 
   const existingUser = await pool.query("SELECT id FROM users WHERE email = $1 LIMIT 1", [email]);
   if (existingUser.rows.length) {
@@ -61,16 +75,25 @@ const register = asyncHandler(async (req, res) => {
   }
 
   const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-  const result = await pool.query(
-    `
-      INSERT INTO users (name, email, ${passwordColumn}, role)
-      VALUES ($1, $2, $3, $4)
-      RETURNING id, name, email, role, created_at
-    `,
-    [name, email, hashedPassword, role]
-  );
+  const result = roleEnabled
+    ? await pool.query(
+        `
+          INSERT INTO users (name, email, ${passwordColumn}, role)
+          VALUES ($1, $2, $3, $4)
+          RETURNING id, name, email, role, created_at
+        `,
+        [name, email, hashedPassword, role]
+      )
+    : await pool.query(
+        `
+          INSERT INTO users (name, email, ${passwordColumn})
+          VALUES ($1, $2, $3)
+          RETURNING id, name, email, created_at
+        `,
+        [name, email, hashedPassword]
+      );
 
-  const user = result.rows[0];
+  const user = { ...result.rows[0], role: result.rows[0].role || role || "user" };
   if (role === "doctor") {
     await ensureDoctorProfile(user.id);
   }
@@ -81,9 +104,18 @@ const login = asyncHandler(async (req, res) => {
   const email = ensureEmail(req.body.email);
   const password = ensureRequiredString(req.body.password, "Password");
   const passwordColumn = await getPasswordColumn();
+  const roleSelectSql = await getRoleSelectSql("users");
 
-  const result = await pool.query("SELECT * FROM users WHERE email = $1 LIMIT 1", [email]);
-  const user = result.rows[0];
+  const result = await pool.query(
+    `
+      SELECT users.*, ${roleSelectSql}
+      FROM users
+      WHERE email = $1
+      LIMIT 1
+    `,
+    [email]
+  );
+  let user = result.rows[0];
   const storedPassword = user?.[passwordColumn];
 
   if (!user || !storedPassword) {
@@ -95,6 +127,7 @@ const login = asyncHandler(async (req, res) => {
     throw createHttpError(401, "Invalid email or password.");
   }
 
+  user = await attachDerivedRole(user);
   res.status(200).json({ token: signToken(user), user: sanitizeUser(user) });
 });
 
@@ -102,6 +135,7 @@ const googleLogin = asyncHandler(async (req, res) => {
   const accessToken = ensureRequiredString(req.body.accessToken, "Google access token");
   const profile = await verifyGoogleAccessToken(accessToken);
   const passwordColumn = await getPasswordColumn();
+  const roleEnabled = await hasRoleColumn();
 
   let result = await pool.query("SELECT * FROM users WHERE email = $1 LIMIT 1", [profile.email]);
   let user = result.rows[0];
@@ -111,14 +145,23 @@ const googleLogin = asyncHandler(async (req, res) => {
     // still require a password-like value don't fail with a 500 on insert.
     const generatedPassword = await bcrypt.hash(crypto.randomUUID(), SALT_ROUNDS);
     try {
-      result = await pool.query(
-        `
-          INSERT INTO users (name, email, ${passwordColumn}, role)
-          VALUES ($1, $2, $3, $4)
-          RETURNING id, name, email, role, created_at
-        `,
-        [profile.name, profile.email, generatedPassword, "user"]
-      );
+      result = roleEnabled
+        ? await pool.query(
+            `
+              INSERT INTO users (name, email, ${passwordColumn}, role)
+              VALUES ($1, $2, $3, $4)
+              RETURNING id, name, email, role, created_at
+            `,
+            [profile.name, profile.email, generatedPassword, "user"]
+          )
+        : await pool.query(
+            `
+              INSERT INTO users (name, email, ${passwordColumn})
+              VALUES ($1, $2, $3)
+              RETURNING id, name, email, created_at
+            `,
+            [profile.name, profile.email, generatedPassword]
+          );
       user = result.rows[0];
     } catch (error) {
       if (error?.code === "23505") {
@@ -133,9 +176,7 @@ const googleLogin = asyncHandler(async (req, res) => {
     }
   }
 
-  if (!user?.role) {
-    user = { ...user, role: "user" };
-  }
+  user = await attachDerivedRole(user);
 
   res.status(200).json({ token: signToken(user), user: sanitizeUser(user) });
 });

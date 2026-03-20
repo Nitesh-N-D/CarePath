@@ -5,7 +5,7 @@ function signToken(user) {
     {
       id: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role || "user",
       name: user.name,
     },
     process.env.JWT_SECRET,
@@ -18,7 +18,7 @@ function sanitizeUser(user) {
     id: user.id,
     name: user.name,
     email: user.email,
-    role: user.role,
+    role: user.role || "user",
     createdAt: user.created_at,
   };
 }
