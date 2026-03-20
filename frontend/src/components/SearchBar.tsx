@@ -1,75 +1,33 @@
-import { useState, useEffect } from "react";
-import API from "../services/api";
-import type { Disease } from "../types/disease";
-import { Link } from "react-router-dom";
+import { useState } from "react";
 
-interface Props {
-  setDiseases: React.Dispatch<React.SetStateAction<Disease[]>>;
+import Button from "./ui/Button";
+
+interface SearchBarProps {
+  defaultValue?: string;
+  onSearch: (value: string) => void;
 }
 
-function SearchBar({ setDiseases }: Props) {
-  const [query, setQuery] = useState<string>("");
-  const [suggestions, setSuggestions] = useState<
-    { name: string; slug: string }[]
-  >([]);
-
-  // Debounce
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (query.length >= 2) {
-        fetchAutocomplete(query);
-      } else {
-        setSuggestions([]);
-      }
-    }, 400);
-
-    return () => clearTimeout(timeout);
-  }, [query]);
-
-  const fetchAutocomplete = async (value: string) => {
-    const res = await API.get(`/diseases/autocomplete?q=${value}`);
-    setSuggestions(res.data);
-  };
-
-  const handleSearch = async () => {
-    const res = await API.get(`/diseases/search?q=${query}`);
-    setDiseases(res.data.results);
-    setSuggestions([]);
-  };
+function SearchBar({ defaultValue = "", onSearch }: SearchBarProps) {
+  const [value, setValue] = useState(defaultValue);
 
   return (
-    <div className="relative max-w-xl">
-      <div className="flex">
-        <input
-          type="text"
-          placeholder="Search disease..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="flex-1 border border-gray-300 p-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-        <button
-          onClick={handleSearch}
-          className="bg-blue-600 text-white px-4 rounded-r-md"
-        >
-          Search
-        </button>
-      </div>
-
-      {suggestions.length > 0 && (
-        <ul className="absolute bg-white border w-full mt-1 rounded-md shadow-lg z-10">
-          {suggestions.map((item) => (
-            <li
-              key={item.slug}
-              className="p-2 hover:bg-blue-100 cursor-pointer"
-            >
-              <Link to={`/disease/${item.slug}`}>
-                {item.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <form
+      className="flex flex-col gap-3 sm:flex-row"
+      onSubmit={(event) => {
+        event.preventDefault();
+        onSearch(value);
+      }}
+    >
+      <input
+        value={value}
+        onChange={(event) => setValue(event.target.value)}
+        placeholder="Search diseases, symptoms, or body systems"
+        className="min-w-0 flex-1 rounded-2xl border border-white/80 bg-white/95 px-4 py-3 text-slate-900 placeholder:text-slate-400 shadow-[0_8px_24px_rgba(15,23,42,0.05)] focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-100"
+      />
+      <Button type="submit" variant="default" className="rounded-2xl px-5 py-3 font-semibold">
+        Search
+      </Button>
+    </form>
   );
 }
 

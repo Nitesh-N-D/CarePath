@@ -1,25 +1,39 @@
-import { Navigate } from "react-router-dom";
 import type { ReactNode } from "react";
-import { useAuth } from "../context/AuthContext";
+import { Navigate, useLocation } from "react-router-dom";
 
-interface Props {
+import { useAuth, type UserRole } from "../context/AuthContext";
+import GlassCard from "./ui/GlassCard";
+
+interface ProtectedRouteProps {
   children: ReactNode;
+  allowedRoles?: UserRole[];
 }
 
-export default function ProtectedRoute({ children }: Props) {
-  const { user, loading } = useAuth();
+function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
+  const { loading, user } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-gray-600">Checking authentication...</p>
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <GlassCard className="flex items-center gap-3 px-6 py-4 text-sm text-slate-700">
+          <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-sky-500" />
+          Validating your secure CarePath session...
+        </GlassCard>
       </div>
     );
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    const fallback = user.role === "admin" ? "/admin" : user.role === "doctor" ? "/doctor" : "/dashboard";
+    return <Navigate to={fallback} replace />;
   }
 
   return <>{children}</>;
 }
+
+export default ProtectedRoute;

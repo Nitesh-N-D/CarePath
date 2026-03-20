@@ -1,91 +1,228 @@
+/* eslint-disable react-refresh/only-export-components */
 import {
   createContext,
   useContext,
-  useState,
   useEffect,
+  useState,
   type ReactNode,
 } from "react";
+
 import API from "../services/api";
 
-interface User {
+export type UserRole = "user" | "doctor" | "admin";
+
+export interface AuthUser {
   id: string;
   name: string;
   email: string;
-  role?: string; // future role-based support
+  role: UserRole;
+  createdAt?: string;
 }
 
-interface AuthContextType {
-  user: User | null;
+interface AuthResponse {
+  token: string;
+  user: AuthUser;
+}
+
+interface RegisterPayload {
+  name: string;
+  email: string;
+  password: string;
+  role?: UserRole;
+}
+
+interface AuthContextValue {
+  user: AuthUser | null;
+  token: string | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<AuthUser>;
+  register: (payload: RegisterPayload) => Promise<AuthUser>;
+  loginWithGoogle: () => Promise<AuthUser>;
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+const STORAGE_TOKEN = "carepath_token";
+const STORAGE_USER = "carepath_user";
 
-  // ---------------------------------------
-  // Restore user from localStorage on load
-  // ---------------------------------------
-  useEffect(() => {
-    const storedUser = localStorage.getItem("carepath_user");
-    const storedToken = localStorage.getItem("carepath_token");
+function normalizeUser(user: Partial<AuthUser> | null | undefined): AuthUser | null {
+  if (!user?.id || !user?.email || !user?.name) {
+    return null;
+  }
 
-    if (storedUser && storedToken) {
-      setUser(JSON.parse(storedUser));
-      API.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role || "user",
+    createdAt: user.createdAt,
+  };
+}
+
+declare global {
+  interface Window {
+    google?: {
+      accounts?: {
+        oauth2?: {
+          initTokenClient: (config: {
+            client_id: string;
+            scope: string;
+            callback: (response: { access_token?: string; error?: string }) => void;
+          }) => {
+            requestAccessToken: () => void;
+          };
+        };
+      };
+    };
+  }
+}
+
+function persistSession(payload: AuthResponse) {
+  localStorage.setItem(STORAGE_TOKEN, payload.token);
+  localStorage.setItem(STORAGE_USER, JSON.stringify(normalizeUser(payload.user)));
+}
+
+function clearSession() {
+  localStorage.removeItem(STORAGE_TOKEN);
+  localStorage.removeItem(STORAGE_USER);
+}
+
+function applyToken(token: string | null) {
+  if (token) {
+    API.defaults.headers.common.Authorization = `Bearer ${token}`;
+    return;
+  }
+
+  delete API.defaults.headers.common.Authorization;
+}
+
+function loadGoogleScript() {
+  return new Promise<void>((resolve, reject) => {
+    if (window.google?.accounts?.oauth2) {
+      resolve();
+      return;
     }
 
-    setLoading(false);
+    const existing = document.querySelector<HTMLScriptElement>(
+      'script[src="https://accounts.google.com/gsi/client"]'
+    );
+
+    if (existing) {
+      existing.addEventListener("load", () => resolve(), { once: true });
+      existing.addEventListener(
+        "error",
+        () => reject(new Error("Failed to load Google SDK.")),
+        { once: true }
+      );
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Failed to load Google SDK."));
+    document.head.appendChild(script);
+  });
+}
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem(STORAGE_TOKEN);
+    const storedUser = localStorage.getItem(STORAGE_USER);
+
+    if (!storedToken || !storedUser) {
+      setLoading(false);
+      return;
+    }
+
+    const bootstrap = async () => {
+      try {
+        applyToken(storedToken);
+        const response = await API.get<{ user: AuthUser }>("/auth/me");
+        setToken(storedToken);
+        const normalizedUser = normalizeUser(response.data.user);
+        setUser(normalizedUser);
+        localStorage.setItem(STORAGE_USER, JSON.stringify(normalizedUser));
+      } catch {
+        clearSession();
+        applyToken(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void bootstrap();
   }, []);
 
-  // ---------------------------------------
-  // Login
-  // ---------------------------------------
+  const finishAuth = (payload: AuthResponse) => {
+    persistSession(payload);
+    applyToken(payload.token);
+    setToken(payload.token);
+    const normalizedUser = normalizeUser(payload.user);
+    setUser(normalizedUser);
+    return normalizedUser as AuthUser;
+  };
+
   const login = async (email: string, password: string) => {
-    const res = await API.post("/auth/login", { email, password });
-
-    const { token, user } = res.data;
-
-    localStorage.setItem("carepath_token", token);
-    localStorage.setItem("carepath_user", JSON.stringify(user));
-
-    API.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-    setUser(user);
+    const response = await API.post<AuthResponse>("/auth/login", { email, password });
+    return finishAuth(response.data);
   };
 
-  // ---------------------------------------
-  // Register
-  // ---------------------------------------
-  const register = async (
-    name: string,
-    email: string,
-    password: string
-  ) => {
-    await API.post("/auth/register", { name, email, password });
-    await login(email, password);
+  const register = async (payload: RegisterPayload) => {
+    const response = await API.post<AuthResponse>("/auth/register", payload);
+    return finishAuth(response.data);
   };
 
-  // ---------------------------------------
-  // Logout
-  // ---------------------------------------
+  const loginWithGoogle = async () => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    if (!clientId) {
+      throw new Error("Google login is not configured.");
+    }
+
+    await loadGoogleScript();
+
+    const accessToken = await new Promise<string>((resolve, reject) => {
+      const client = window.google?.accounts?.oauth2?.initTokenClient({
+        client_id: clientId,
+        scope: "openid email profile",
+        callback: (response) => {
+          if (response.error || !response.access_token) {
+            reject(new Error(response.error || "Google sign-in failed."));
+            return;
+          }
+          resolve(response.access_token);
+        },
+      });
+
+      if (!client) {
+        reject(new Error("Google sign-in is unavailable."));
+        return;
+      }
+
+      client.requestAccessToken();
+    });
+
+    const response = await API.post<AuthResponse>("/auth/google", { accessToken });
+    return finishAuth(response.data);
+  };
+
   const logout = () => {
-    localStorage.removeItem("carepath_token");
-    localStorage.removeItem("carepath_user");
-
-    delete API.defaults.headers.common["Authorization"];
-
+    clearSession();
+    applyToken(null);
+    setToken(null);
     setUser(null);
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, register, logout }}
+      value={{ user, token, loading, login, register, loginWithGoogle, logout }}
     >
       {children}
     </AuthContext.Provider>

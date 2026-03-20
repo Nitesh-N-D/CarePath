@@ -1,72 +1,55 @@
 import type { ReactNode } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
-interface Props {
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
+
+interface LayoutProps {
   children: ReactNode;
 }
 
-function Layout({ children }: Props) {
-  const navigate = useNavigate();
-  const { user, logout } = useAuth();
+const appRoutes = ["/dashboard", "/doctor", "/admin"];
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
+function Layout({ children }: LayoutProps) {
+  const location = useLocation();
+  const isAppRoute = appRoutes.some((route) => location.pathname.startsWith(route));
+
+  useEffect(() => {
+    if (!location.hash) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    const target = document.getElementById(location.hash.slice(1));
+    if (target) {
+      window.setTimeout(() => {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 80);
+    }
+  }, [location.hash, location.pathname]);
+
+  if (isAppRoute) {
+    return (
+      <div className="min-h-screen text-slate-900">
+        <Navbar />
+        <div className="relative mx-auto flex min-h-[calc(100vh-80px)] max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:flex-row lg:gap-8">
+          <Sidebar />
+          <main className="min-w-0 flex-1 pb-10">{children}</main>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      
-      {/* Navbar */}
-      <nav className="bg-blue-700 text-white px-6 py-4 shadow-md">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          
-          {/* Brand */}
-          <Link to="/" className="text-xl font-semibold">
-            CarePath
-          </Link>
-
-          {/* Right Section */}
-          <div className="flex items-center space-x-6 text-sm">
-            <span className="hidden md:block opacity-90">
-              AI-Powered Health Platform
-            </span>
-
-            {!user ? (
-              <>
-                <Link to="/login" className="hover:underline">
-                  Login
-                </Link>
-                <Link to="/register" className="hover:underline">
-                  Register
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link to="/dashboard" className="hover:underline">
-                  Dashboard
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="hover:underline"
-                >
-                  Logout
-                </button>
-              </>
-            )}
-          </div>
+    <div className="min-h-screen text-slate-900">
+      <Navbar />
+      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6">{children}</main>
+      <footer className="border-t border-white/80 bg-white/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 text-sm text-slate-500 sm:px-6 md:flex-row md:items-center md:justify-between">
+          <p>CarePath turns daily health signals into guidance, clarity, and connected care.</p>
+          <p>{new Date().getFullYear()} CarePath. Built for modern medical journeys.</p>
         </div>
-      </nav>
-
-      {/* Main Content */}
-      <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-8">
-        {children}
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-200 text-center py-4 text-sm text-gray-600">
-        © {new Date().getFullYear()} CarePath. Educational use only.
       </footer>
     </div>
   );

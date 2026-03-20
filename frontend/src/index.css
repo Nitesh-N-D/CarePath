@@ -1,3 +1,48 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    font-family: "Plus Jakarta Sans", sans-serif;
+  }
+
+  body {
+    @apply m-0 min-h-screen bg-[#f5f5f4] text-slate-900 antialiased;
+    background-image:
+      radial-gradient(circle at top left, rgba(15, 23, 42, 0.08), transparent 20%),
+      radial-gradient(circle at top right, rgba(34, 211, 238, 0.16), transparent 20%),
+      radial-gradient(circle at 20% 30%, rgba(244, 114, 182, 0.08), transparent 18%),
+      linear-gradient(180deg, #f8fafc 0%, #f3f4f6 42%, #eef2f7 100%);
+    background-attachment: fixed;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  * {
+    @apply border-slate-200;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply rounded-2xl border border-white/90 bg-white/88 backdrop-blur-xl shadow-[0_18px_50px_rgba(15,23,42,0.06)];
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-slate-950 via-cyan-800 to-fuchsia-700 bg-clip-text text-transparent;
+  }
+
+  .premium-orb {
+    @apply absolute rounded-full blur-3xl;
+  }
+
+  .dark-panel {
+    @apply rounded-[32px] border border-slate-700/30 bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-950 text-white shadow-[0_24px_80px_rgba(2,8,23,0.28)];
+  }
+}
