@@ -11,7 +11,6 @@ health records, and smart recommendations into a single scalable system.
 
 -   🌐 Render: https://carepath-xnsd.onrender.com/
 -   ⚡ Vercel: https://care-path-two.vercel.app/
--   📂 GitHub: https://github.com/Nitesh-N-D/CarePath
 
 ------------------------------------------------------------------------
 
@@ -78,10 +77,8 @@ health records, and smart recommendations into a single scalable system.
 
     CarePath/
     │
-    ├── client/         # Frontend (React)
-    ├── server/         # Backend (Node + Express)
-    ├── public/         # Static assets
-    ├── src/            # Components & Pages
+    ├── frontend/         # Frontend (React)
+    ├── backend/         # Backend (Node + Express)
     └── README.md
 
 ------------------------------------------------------------------------
@@ -97,12 +94,12 @@ health records, and smart recommendations into a single scalable system.
 
 #### Frontend
 
-    cd client
+    cd frontend
     npm install
 
 #### Backend
 
-    cd server
+    cd backend
     npm install
 
 ### 3. Run the application
