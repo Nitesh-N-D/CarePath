@@ -31,6 +31,30 @@ app.use(
 
 app.use(express.json({ limit: "1mb" }));
 
+app.get("/", (_req, res) => {
+  res.status(200).json({
+    name: "CarePath API",
+    status: "ok",
+    docsHint: "Use the /api routes for application requests.",
+    healthcheck: "/api/healthcheck",
+  });
+});
+
+app.get("/api", (_req, res) => {
+  res.status(200).json({
+    name: "CarePath API",
+    status: "ok",
+    availableRoutes: [
+      "/api/healthcheck",
+      "/api/auth",
+      "/api/health",
+      "/api/admin",
+      "/api/doctor",
+      "/api/diseases",
+    ],
+  });
+});
+
 app.get("/api/healthcheck", (_req, res) => {
   res.status(200).json({ status: "ok", service: "carepath-api" });
 });
