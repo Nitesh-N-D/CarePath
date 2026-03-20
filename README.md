@@ -1,6 +1,6 @@
 # CarePath
 
-CarePath is a premium full-stack healthcare SaaS platform built for modern health monitoring, clinical collaboration, and structured medical knowledge delivery.
+CarePath is a full-stack healthcare SaaS platform built for modern health monitoring, clinical collaboration, and structured medical knowledge delivery.
 
 It combines:
 
@@ -434,29 +434,7 @@ Check:
 - Google OAuth origins match your deployed frontend
 - backend CORS includes your Vercel domain
 
-## Screenshots
 
-You can add screenshots here after deployment:
-
-```text
-docs/
-├── home.png
-├── dashboard.png
-├── doctor-panel.png
-└── admin-panel.png
-```
-
-Example section:
-
-```md
-## Screenshots
-
-### Landing Page
-![Landing Page](docs/home.png)
-
-### Dashboard
-![Dashboard](docs/dashboard.png)
-```
 
 ## Future Improvements
 
@@ -473,4 +451,4 @@ This project is for educational, portfolio, and product demonstration purposes.
 
 ## Author
 
-Built by Nitesh N D as a full-stack healthcare SaaS portfolio project.
+Built by Nitesh N D 
