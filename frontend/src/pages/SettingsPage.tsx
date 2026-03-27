@@ -15,7 +15,7 @@ function SettingsPage() {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [profileForm, setProfileForm] = useState({ name: user?.name || "", email: user?.email || "", phone: "" });
+  const [profileForm, setProfileForm] = useState({ name: user?.name || "", email: user?.email || "" });
   const [passwordForm, setPasswordForm] = useState({ currentPassword: "", newPassword: "" });
   const [notifications, setNotifications] = useState(true);
   const [message, setMessage] = useState("");
@@ -25,7 +25,6 @@ function SettingsPage() {
       try {
         const response = await API.get<UserProfile | null>("/health/profile");
         setProfile(response.data);
-        setProfileForm((current) => ({ ...current, phone: response.data?.phone || "" }));
       } catch (requestError) {
         console.error(requestError);
       }
@@ -42,7 +41,6 @@ function SettingsPage() {
       await API.put("/health/profile", {
         age: profile?.age || null,
         gender: profile?.gender || null,
-        phone: profileForm.phone || null,
         weight: profile?.weight || null,
         height_cm: profile?.height_cm || null,
         location: profile?.location || null,
@@ -93,9 +91,6 @@ function SettingsPage() {
       <section className="max-w-3xl">
         <p className="section-heading">Settings</p>
         <h1 className="mt-3 text-4xl font-semibold">Manage your CarePath profile, security, and account preferences.</h1>
-        <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
-          Phone number is managed here in Settings, so account details stay separate from the health dashboard itself.
-        </p>
       </section>
 
       {message ? (
@@ -110,7 +105,6 @@ function SettingsPage() {
           <form onSubmit={saveProfile} className="mt-6 grid gap-4">
             <InputField label="Name" value={profileForm.name} onChange={(event) => setProfileForm((current) => ({ ...current, name: event.target.value }))} />
             <InputField label="Email" value={profileForm.email} onChange={(event) => setProfileForm((current) => ({ ...current, email: event.target.value }))} />
-            <InputField label="Phone" value={profileForm.phone} onChange={(event) => setProfileForm((current) => ({ ...current, phone: event.target.value }))} />
             <GradientButton type="submit">Save profile</GradientButton>
           </form>
         </GlassCard>
