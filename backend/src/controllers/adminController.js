@@ -14,9 +14,12 @@ const getUsers = asyncHandler(async (_req, res) => {
         u.email,
         ${roleSelectSql},
         u.created_at,
-        pa.doctor_id
+        pa.doctor_id,
+        up.location,
+        up.primary_goal
       FROM users u
       LEFT JOIN patient_assignments pa ON pa.user_id = u.id
+      LEFT JOIN user_profiles up ON up.user_id = u.id
       ORDER BY u.created_at DESC
     `
   );
@@ -82,11 +85,13 @@ const assignDoctor = asyncHandler(async (req, res) => {
 });
 
 const getAnalytics = asyncHandler(async (_req, res) => {
-  const [usersCount, healthCount, doctorsCount, assignmentsCount] = await Promise.all([
+  const [usersCount, healthCount, doctorsCount, assignmentsCount, remindersCount, chatCount] = await Promise.all([
     pool.query("SELECT COUNT(*)::int AS count FROM users"),
     pool.query("SELECT COUNT(*)::int AS count FROM health_logs"),
     pool.query("SELECT COUNT(*)::int AS count FROM doctors"),
     pool.query("SELECT COUNT(*)::int AS count FROM patient_assignments"),
+    pool.query("SELECT COUNT(*)::int AS count FROM medication_reminders"),
+    pool.query("SELECT COUNT(*)::int AS count FROM ai_chat_messages"),
   ]);
 
   res.status(200).json({
@@ -94,6 +99,8 @@ const getAnalytics = asyncHandler(async (_req, res) => {
     totalHealthLogs: healthCount.rows[0].count,
     totalDoctors: doctorsCount.rows[0].count,
     totalAssignments: assignmentsCount.rows[0].count,
+    totalReminders: remindersCount.rows[0].count,
+    totalAiMessages: chatCount.rows[0].count,
   });
 });
 

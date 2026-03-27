@@ -37,6 +37,18 @@ const getDiseases = asyncHandler(async (_req, res) => {
   res.status(200).json(result.rows.map(normalizeDisease));
 });
 
+const getDiseaseFilters = asyncHandler(async (_req, res) => {
+  const [bodySystems, categories] = await Promise.all([
+    pool.query("SELECT DISTINCT body_system FROM diseases ORDER BY body_system ASC"),
+    pool.query("SELECT DISTINCT category FROM diseases ORDER BY category ASC"),
+  ]);
+
+  res.status(200).json({
+    bodySystems: bodySystems.rows.map((row) => row.body_system),
+    categories: categories.rows.map((row) => row.category),
+  });
+});
+
 const searchDiseases = asyncHandler(async (req, res) => {
   const q = String(req.query.q || "").trim();
   const page = Math.max(Number(req.query.page || 1), 1);
@@ -105,4 +117,4 @@ const getDiseaseBySlug = asyncHandler(async (req, res) => {
   res.status(200).json(normalizeDisease(result.rows[0]));
 });
 
-module.exports = { getDiseases, searchDiseases, getDiseaseBySlug };
+module.exports = { getDiseases, getDiseaseFilters, searchDiseases, getDiseaseBySlug };
