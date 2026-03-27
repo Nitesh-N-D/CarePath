@@ -245,7 +245,60 @@ const getCurrentUser = asyncHandler(async (req, res) => {
   res.status(200).json({ user: sanitizeUser(req.user) });
 });
 
+const updateAccountProfile = asyncHandler(async (req, res) => {
+  const name = ensureRequiredString(req.body.name, "Name", 2);
+  const email = ensureEmail(req.body.email);
+
+  const existingUser = await pool.query("SELECT id FROM users WHERE email = $1 AND id <> $2 LIMIT 1", [email, req.user.id]);
+  if (existingUser.rows.length) {
+    throw createHttpError(409, "Another account is already using this email.");
+  }
+
+  const result = await pool.query(
+    `
+      UPDATE users
+      SET name = $1, email = $2
+      WHERE id = $3
+      RETURNING id, name, email, role, created_at
+    `,
+    [name, email, req.user.id]
+  );
+
+  res.status(200).json({ user: sanitizeUser(result.rows[0]) });
+});
+
+const changePassword = asyncHandler(async (req, res) => {
+  const currentPassword = ensureRequiredString(req.body.currentPassword, "Current password");
+  const newPassword = ensurePassword(req.body.newPassword);
+  const passwordColumn = await getPasswordColumn();
+
+  const result = await pool.query(`SELECT id, ${passwordColumn} FROM users WHERE id = $1 LIMIT 1`, [req.user.id]);
+  const user = result.rows[0];
+
+  if (!user?.[passwordColumn]) {
+    throw createHttpError(400, "Password change is unavailable for this account.");
+  }
+
+  const matches = await bcrypt.compare(currentPassword, user[passwordColumn]);
+  if (!matches) {
+    throw createHttpError(400, "Your current password is incorrect.");
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+  await pool.query(`UPDATE users SET ${passwordColumn} = $1 WHERE id = $2`, [hashedPassword, req.user.id]);
+
+  res.status(200).json({ message: "Password updated successfully." });
+});
+
+const deleteAccount = asyncHandler(async (req, res) => {
+  await pool.query("DELETE FROM users WHERE id = $1", [req.user.id]);
+  res.status(200).json({ message: "Account deleted successfully." });
+});
+
 module.exports = {
+  changePassword,
+  deleteAccount,
+  updateAccountProfile,
   register,
   login,
   googleLogin,

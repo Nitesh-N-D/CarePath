@@ -3,17 +3,13 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
 
 interface LayoutProps {
   children: ReactNode;
 }
 
-const appRoutes = ["/dashboard", "/doctor", "/admin"];
-
 function Layout({ children }: LayoutProps) {
   const location = useLocation();
-  const isAppRoute = appRoutes.some((route) => location.pathname.startsWith(route));
 
   useEffect(() => {
     if (!location.hash) {
@@ -29,26 +25,21 @@ function Layout({ children }: LayoutProps) {
     }
   }, [location.hash, location.pathname]);
 
-  if (isAppRoute) {
-    return (
-      <div className="page-shell">
-        <Navbar />
-        <div className="relative mx-auto flex min-h-[calc(100vh-80px)] max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:flex-row lg:gap-8">
-          <Sidebar />
-          <main className="min-w-0 flex-1 pb-10">{children}</main>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="page-shell">
+    <div className="page-shell flex min-h-screen flex-col">
       <Navbar />
-      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6">{children}</main>
-      <footer className="glass-panel mt-8 border-t">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 text-sm text-[var(--color-text-soft)] sm:px-6 md:flex-row md:items-center md:justify-between">
-          <p>CarePath is designed to make personal health records, guidance, and disease knowledge feel calmer and easier to trust.</p>
-          <p>{new Date().getFullYear()} CarePath. Thoughtfully designed for everyday health decisions.</p>
+      <main className="mx-auto flex w-full max-w-7xl flex-grow flex-col px-4 py-8 sm:px-6">{children}</main>
+      <footer className="border-t border-[var(--color-border)] bg-[rgba(255,255,255,0.48)]">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-8 text-sm text-[var(--color-text-soft)] sm:px-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <div className="font-semibold text-[var(--color-text)]">CarePath</div>
+            <div className="mt-1 max-w-xl">A modern healthcare SaaS experience for tracking, understanding, and acting on your health with more clarity.</div>
+          </div>
+          <div className="flex gap-6">
+            <a href="/#features" className="hover:text-[var(--color-text)]">Features</a>
+            <a href="/#doctors" className="hover:text-[var(--color-text)]">Doctors</a>
+            <a href="/#cta" className="hover:text-[var(--color-text)]">Get Started</a>
+          </div>
         </div>
       </footer>
     </div>

@@ -13,6 +13,7 @@ export interface UserProfile {
   user_id: string;
   age: number | null;
   gender: string | null;
+  phone?: string | null;
   weight: number | null;
   height_cm: number | null;
   location: string | null;

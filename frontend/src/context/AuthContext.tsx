@@ -39,6 +39,7 @@ interface AuthContextValue {
   register: (payload: RegisterPayload) => Promise<AuthUser>;
   loginWithGoogle: () => Promise<AuthUser>;
   logout: () => void;
+  refreshUser: () => Promise<AuthUser | null>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -161,6 +162,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     void bootstrap();
   }, []);
 
+  const refreshUser = async () => {
+    if (!token && !localStorage.getItem(STORAGE_TOKEN)) {
+      return null;
+    }
+
+    const response = await API.get<{ user: AuthUser }>("/auth/me");
+    const normalizedUser = normalizeUser(response.data.user);
+    setUser(normalizedUser);
+    localStorage.setItem(STORAGE_USER, JSON.stringify(normalizedUser));
+    return normalizedUser;
+  };
+
   const finishAuth = (payload: AuthResponse) => {
     persistSession(payload);
     applyToken(payload.token);
@@ -222,7 +235,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, loading, login, register, loginWithGoogle, logout }}
+      value={{ user, token, loading, login, register, loginWithGoogle, logout, refreshUser }}
     >
       {children}
     </AuthContext.Provider>

@@ -64,7 +64,7 @@ function normalizeProfileRow(row) {
 async function fetchProfile(userId) {
   const result = await pool.query(
     `
-      SELECT user_id, age, gender, weight, height_cm, location, primary_goal, chronic_conditions, allergies, medications, updated_at
+      SELECT user_id, age, gender, phone, weight, height_cm, location, primary_goal, chronic_conditions, allergies, medications, updated_at
       FROM user_profiles
       WHERE user_id = $1
       LIMIT 1
@@ -208,6 +208,7 @@ const upsertProfile = asyncHandler(async (req, res) => {
   const payload = {
     age: req.body.age === "" ? null : ensureNumber(req.body.age, "Age", { min: 1, max: 120 }),
     gender: req.body.gender ? ensureRequiredString(req.body.gender, "Gender", 2) : null,
+    phone: req.body.phone ? ensureRequiredString(req.body.phone, "Phone", 7) : null,
     weight: req.body.weight === "" || req.body.weight == null ? null : ensureNumber(req.body.weight, "Weight", { min: 20, max: 400 }),
     heightCm:
       req.body.height_cm === "" || req.body.height_cm == null
@@ -226,6 +227,7 @@ const upsertProfile = asyncHandler(async (req, res) => {
         user_id,
         age,
         gender,
+        phone,
         weight,
         height_cm,
         location,
@@ -235,10 +237,11 @@ const upsertProfile = asyncHandler(async (req, res) => {
         medications,
         updated_at
       )
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,NOW())
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,NOW())
       ON CONFLICT (user_id) DO UPDATE SET
         age = EXCLUDED.age,
         gender = EXCLUDED.gender,
+        phone = EXCLUDED.phone,
         weight = EXCLUDED.weight,
         height_cm = EXCLUDED.height_cm,
         location = EXCLUDED.location,
@@ -247,12 +250,13 @@ const upsertProfile = asyncHandler(async (req, res) => {
         allergies = EXCLUDED.allergies,
         medications = EXCLUDED.medications,
         updated_at = NOW()
-      RETURNING user_id, age, gender, weight, height_cm, location, primary_goal, chronic_conditions, allergies, medications, updated_at
+      RETURNING user_id, age, gender, phone, weight, height_cm, location, primary_goal, chronic_conditions, allergies, medications, updated_at
     `,
     [
       req.user.id,
       payload.age,
       payload.gender,
+      payload.phone,
       payload.weight,
       payload.heightCm,
       payload.location,

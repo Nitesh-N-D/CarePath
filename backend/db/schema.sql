@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
   age INTEGER CHECK (age BETWEEN 1 AND 120),
   gender TEXT,
+  phone TEXT,
   weight NUMERIC(6,2),
   height_cm NUMERIC(5,2),
   location TEXT,
