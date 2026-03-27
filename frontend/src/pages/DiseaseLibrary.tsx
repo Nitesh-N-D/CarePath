@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import DiseaseCard from "../components/DiseaseCard";
 import SearchBar from "../components/SearchBar";
@@ -60,7 +61,17 @@ function DiseaseLibrary() {
 
   return (
     <div className="space-y-8">
-      <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+      <div>
+        <Link
+          to="/#disease-library"
+          className="inline-flex items-center gap-2 rounded-xl border border-borderLight bg-card/90 px-4 py-2.5 text-sm font-medium text-textPrimary shadow-sm transition-all duration-300 hover:scale-[1.02] dark:border-borderDark dark:bg-cardDark/90 dark:text-textDark"
+        >
+          <span aria-hidden="true">←</span>
+          Back to landing page
+        </Link>
+      </div>
+
+      <section className="grid gap-5 xl:grid-cols-[1.3fr_0.7fr]">
         <div className="max-w-4xl">
           <p className="section-heading">Disease Encyclopedia</p>
           <h1 className="mt-3 text-4xl font-semibold">Search structured condition profiles with symptoms, causes, treatment, and prevention.</h1>
@@ -84,7 +95,7 @@ function DiseaseLibrary() {
         </div>
       </section>
 
-      <GlassCard className="sticky top-24 z-10 p-6">
+      <GlassCard className="p-6">
         <SearchBar
           defaultValue={query}
           onSearch={(value) => {

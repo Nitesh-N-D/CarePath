@@ -55,9 +55,14 @@ function DiseaseDetail() {
 
   return (
     <div className="space-y-6">
-      <Button to="/#knowledge" variant="outline" className="rounded-2xl px-4 py-2.5">
-        Back to disease library
-      </Button>
+      <div className="flex flex-wrap gap-3">
+        <Button to="/diseases" variant="outline" className="rounded-2xl px-4 py-2.5">
+          Back to disease library
+        </Button>
+        <Button to="/#disease-library" variant="ghost" className="rounded-2xl px-4 py-2.5">
+          Back to landing page
+        </Button>
+      </div>
 
       <GlassCard className="p-6 sm:p-8">
         <p className="text-sm uppercase tracking-[0.24em] text-sky-700">{disease.body_system}</p>

@@ -1,12 +1,14 @@
+import axios from "axios";
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Button from "../components/ui/Button";
 import DiseaseCard from "../components/DiseaseCard";
 import GradientButton from "../components/ui/GradientButton";
 import GlassCard from "../components/ui/GlassCard";
 import { useAuth } from "../context/AuthContext";
-import type { Disease } from "../types/disease";
+import API from "../services/api";
+import type { Disease, SearchResponse } from "../types/disease";
 
 const featureCards = [
   { title: "Disease Library", copy: "Search structured medical references with symptoms, causes, treatment, and prevention in a cleaner format.", icon: "DL" },
@@ -31,56 +33,9 @@ const timeline = [
   { title: "Take action", copy: "Follow reminders and move directly into suggested doctor options." },
 ];
 
-const diseasePreview: Disease[] = [
-  {
-    id: "preview-hypertension",
-    name: "Hypertension",
-    slug: "hypertension",
-    body_system: "Cardiovascular",
-    category: "Chronic",
-    symptoms: ["Headache", "Dizziness", "Blurred vision"],
-    causes: "Often linked to genetics, sodium intake, stress, inactivity, and long-term cardiovascular strain.",
-    diagnosis: "",
-    treatment: "",
-    prevention: "",
-    emergency_signs: [],
-    sources: [],
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "preview-diabetes",
-    name: "Type 2 Diabetes",
-    slug: "type-2-diabetes",
-    body_system: "Endocrine",
-    category: "Chronic",
-    symptoms: ["Fatigue", "Frequent urination", "Increased thirst"],
-    causes: "Insulin resistance shaped by genetics, body weight, activity level, sleep, and dietary pattern.",
-    diagnosis: "",
-    treatment: "",
-    prevention: "",
-    emergency_signs: [],
-    sources: [],
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "preview-asthma",
-    name: "Asthma",
-    slug: "asthma",
-    body_system: "Respiratory",
-    category: "Chronic",
-    symptoms: ["Wheezing", "Chest tightness", "Shortness of breath"],
-    causes: "Triggered by airway inflammation, allergens, pollution, exercise, or infection.",
-    diagnosis: "",
-    treatment: "",
-    prevention: "",
-    emergency_signs: [],
-    sources: [],
-    created_at: new Date().toISOString(),
-  },
-];
-
 function Home() {
   const { user } = useAuth();
+  const [diseasePreview, setDiseasePreview] = useState<Disease[]>([]);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const smoothX = useSpring(mouseX, { stiffness: 160, damping: 18 });
@@ -102,6 +57,23 @@ function Home() {
     hidden: { opacity: 0, y: 24 },
     visible: (delay = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.55, delay } }),
   };
+
+  useEffect(() => {
+    const fetchDiseasePreview = async () => {
+      try {
+        const response = await API.get<SearchResponse>("/diseases/search", { params: { limit: 3 } });
+        setDiseasePreview(response.data.results);
+      } catch (requestError) {
+        if (axios.isAxiosError(requestError)) {
+          console.error(requestError.response?.data?.message || requestError.message);
+        } else {
+          console.error(requestError);
+        }
+      }
+    };
+
+    void fetchDiseasePreview();
+  }, []);
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-24 px-4 pb-8 sm:px-6">
@@ -261,6 +233,14 @@ function Home() {
               <DiseaseCard disease={disease} />
             </motion.div>
           ))}
+          {!diseasePreview.length ? (
+            <GlassCard className="p-6 md:col-span-2 xl:col-span-3">
+              <div className="text-lg font-semibold text-slate-900">Disease library preview unavailable</div>
+              <div className="mt-2 text-sm text-slate-600">
+                The full encyclopedia is still available. Use the button above to open the complete disease library.
+              </div>
+            </GlassCard>
+          ) : null}
         </div>
       </section>
 

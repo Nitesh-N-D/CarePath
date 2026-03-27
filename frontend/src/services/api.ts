@@ -5,11 +5,24 @@ function normalizeApiBaseUrl(url: string) {
   return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
 }
 
-const fallbackBaseUrl = normalizeApiBaseUrl(
-  typeof window !== "undefined" && window.location.hostname !== "localhost"
-    ? "https://carepath-xnsd.onrender.com/api"
-    : "http://localhost:5000/api"
-);
+function resolveFallbackBaseUrl() {
+  if (typeof window === "undefined") {
+    return normalizeApiBaseUrl("http://localhost:5000/api");
+  }
+
+  const isLocalHost =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1" ||
+    window.location.hostname === "::1";
+
+  if (isLocalHost || import.meta.env.DEV) {
+    return normalizeApiBaseUrl("http://localhost:5000/api");
+  }
+
+  return normalizeApiBaseUrl("https://carepath-xnsd.onrender.com/api");
+}
+
+const fallbackBaseUrl = resolveFallbackBaseUrl();
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL
