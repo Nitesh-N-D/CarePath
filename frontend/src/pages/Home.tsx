@@ -54,7 +54,7 @@ function Home() {
   };
 
   return (
-    <div className="space-y-24 pb-8">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-24 px-4 pb-8 sm:px-6">
       <section id="hero" className="relative overflow-hidden pt-8">
         <motion.div style={{ y: glowY }} className="absolute left-1/2 top-8 h-80 w-80 -translate-x-1/2 rounded-full bg-cyan-400/20 blur-3xl" />
         <motion.div style={{ y: glowY }} className="absolute right-0 top-24 h-72 w-72 rounded-full bg-emerald-500/15 blur-3xl" />
@@ -69,7 +69,7 @@ function Home() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <GradientButton to={dashboardPath}>Get Started</GradientButton>
-              <Button to="/assistant" variant="outline">View Demo</Button>
+              <Button to="/#ai-showcase" variant="outline">View Demo</Button>
             </div>
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
               {[
@@ -188,7 +188,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="grid items-center gap-10 lg:grid-cols-[0.92fr_1.08fr]">
+      <section id="insights" className="grid items-center gap-10 lg:grid-cols-[0.92fr_1.08fr]">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={reveal}>
           <div className="eyebrow">See your health evolve</div>
           <h2 className="mt-4 text-4xl font-semibold text-slate-900">Charts that feel as thoughtful as the decisions they support.</h2>
@@ -223,7 +223,7 @@ function Home() {
         </motion.div>
       </section>
 
-      <section className="grid items-center gap-10 lg:grid-cols-[1.02fr_0.98fr]">
+      <section id="ai-showcase" className="grid items-center gap-10 lg:grid-cols-[1.02fr_0.98fr]">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={reveal}>
           <div className="eyebrow">AI guidance</div>
           <h2 className="mt-4 text-4xl font-semibold text-slate-900">A real assistant interface, not a generic chatbot box.</h2>
@@ -273,7 +273,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="space-y-8">
+      <section id="workflow" className="space-y-8">
         <div className="max-w-3xl">
           <div className="eyebrow">Workflow</div>
           <h2 className="mt-4 text-4xl font-semibold text-slate-900">A clearer flow from data capture to action.</h2>
