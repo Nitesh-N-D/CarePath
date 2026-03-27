@@ -31,7 +31,7 @@ function Layout({ children }: LayoutProps) {
 
   if (isAppRoute) {
     return (
-      <div className="min-h-screen text-slate-900">
+      <div className="page-shell">
         <Navbar />
         <div className="relative mx-auto flex min-h-[calc(100vh-80px)] max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:flex-row lg:gap-8">
           <Sidebar />
@@ -42,13 +42,13 @@ function Layout({ children }: LayoutProps) {
   }
 
   return (
-    <div className="min-h-screen text-slate-900">
+    <div className="page-shell">
       <Navbar />
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6">{children}</main>
-      <footer className="border-t border-white/80 bg-white/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 text-sm text-slate-500 sm:px-6 md:flex-row md:items-center md:justify-between">
-          <p>CarePath turns daily health signals into guidance, clarity, and connected care.</p>
-          <p>{new Date().getFullYear()} CarePath. Built for modern medical journeys.</p>
+      <footer className="glass-panel mt-8 border-t">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 text-sm text-[var(--color-text-soft)] sm:px-6 md:flex-row md:items-center md:justify-between">
+          <p>CarePath is designed to make personal health records, guidance, and disease knowledge feel calmer and easier to trust.</p>
+          <p>{new Date().getFullYear()} CarePath. Thoughtfully designed for everyday health decisions.</p>
         </div>
       </footer>
     </div>

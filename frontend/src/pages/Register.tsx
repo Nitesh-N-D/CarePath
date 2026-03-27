@@ -63,10 +63,10 @@ function Register() {
     <div className="mx-auto flex min-h-[78vh] max-w-xl items-center">
       <GlassCard className="w-full overflow-hidden p-6 sm:p-8">
         <div className="mb-8 text-center">
-          <Badge tone="accent">Create workspace</Badge>
-          <h1 className="mt-4 text-4xl font-semibold text-slate-900">Start with CarePath</h1>
+          <Badge tone="accent">Join CarePath</Badge>
+          <h1 className="mt-4 text-5xl font-semibold text-slate-900">Create your CarePath account</h1>
           <p className="mt-3 text-slate-600">
-            Create a refined health workspace for patients, doctors, or care operators.
+            Start a more organized way to follow your health, review conditions, and stay connected with care guidance.
           </p>
         </div>
 
@@ -101,15 +101,15 @@ function Register() {
             minLength={8}
           />
           <label className="relative block">
-            <span className="pointer-events-none absolute left-4 top-2 text-xs uppercase tracking-[0.18em] text-slate-400">
+            <span className="pointer-events-none absolute left-4 top-2 text-xs uppercase tracking-[0.18em] text-[var(--color-text-soft)]">
               Workspace role
             </span>
             <select
               value={form.role}
               onChange={(event) => setForm((current) => ({ ...current, role: event.target.value as UserRole }))}
-              className="h-full w-full rounded-2xl border border-slate-200 bg-white/95 px-4 pb-3 pt-6 text-slate-900 outline-none transition duration-300 focus:border-cyan-300 focus:shadow-[0_0_0_4px_rgba(165,243,252,0.24)]"
+              className="field-shell h-full w-full rounded-2xl px-4 pb-3 pt-6 outline-none transition duration-300 focus:border-[rgba(49,88,79,0.4)] focus:shadow-[0_0_0_4px_rgba(49,88,79,0.12)]"
             >
-              <option value="user">Patient / User</option>
+              <option value="user">Patient</option>
               <option value="doctor">Doctor</option>
               <option value="admin">Admin</option>
             </select>

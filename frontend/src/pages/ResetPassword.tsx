@@ -48,7 +48,7 @@ function ResetPassword() {
     return (
       <GlassCard className="mx-auto mt-24 max-w-md p-8 text-center text-slate-600">
         Invalid reset link. Request a new one from the{" "}
-        <Link to="/forgot-password" className="text-sky-700 hover:text-sky-800">
+        <Link to="/forgot-password" className="text-[var(--color-accent)] hover:opacity-80">
           forgot password page
         </Link>
         .
@@ -59,8 +59,8 @@ function ResetPassword() {
   return (
     <div className="mx-auto flex min-h-[78vh] max-w-md items-center">
       <GlassCard className="w-full p-6 sm:p-8">
-        <p className="text-sm uppercase tracking-[0.22em] text-sky-700">New password</p>
-        <h1 className="mt-3 text-3xl font-semibold text-slate-900">Set a fresh password</h1>
+        <p className="eyebrow">New password</p>
+        <h1 className="mt-3 text-4xl font-semibold text-slate-900">Set a fresh CarePath password</h1>
         {message ? <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">{message}</div> : null}
         {error ? <div className="mt-6"><ErrorState title="Password reset failed" message={error} /></div> : null}
         <form onSubmit={submit} className="mt-6 space-y-4">

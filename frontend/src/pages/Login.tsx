@@ -64,10 +64,10 @@ function Login() {
     <div className="mx-auto flex min-h-[78vh] max-w-md items-center">
       <GlassCard className="w-full overflow-hidden p-6 sm:p-8">
         <div className="mb-8 text-center">
-          <Badge tone="accent">Secure access</Badge>
-          <h1 className="mt-4 text-4xl font-semibold text-slate-900">Welcome back</h1>
+          <Badge tone="accent">Sign in to CarePath</Badge>
+          <h1 className="mt-4 text-5xl font-semibold text-slate-900">Welcome back</h1>
           <p className="mt-3 text-slate-600">
-            Sign in to access your health workspace, reports, trend monitoring, and care team views.
+            Return to your health journal, disease reference, reminder schedule, and personal care history.
           </p>
         </div>
 

@@ -118,8 +118,8 @@ function DoctorDashboard() {
 
       <section className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="section-heading">Doctor workspace</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Assigned patient monitoring with risk summaries and clinical note capture.</h1>
+          <p className="section-heading">CarePath for clinicians</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Review assigned patients, follow their health signals, and keep notes in one place.</h1>
         </div>
         <Button type="button" variant="default" onClick={() => setModalOpen(true)} disabled={!selectedPatient} className="rounded-2xl px-5 py-3">Add note</Button>
       </section>

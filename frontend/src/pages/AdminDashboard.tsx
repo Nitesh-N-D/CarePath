@@ -91,8 +91,8 @@ function AdminDashboard() {
       {toast ? <Toast message={toast} tone={toast.includes("Unable") ? "error" : "success"} /> : null}
 
       <section>
-        <p className="text-sm uppercase tracking-[0.24em] text-sky-700">Admin panel</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Operational visibility across the CarePath workspace.</h1>
+        <p className="section-heading">CarePath administration</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Oversee members, clinician assignments, reminders, and care activity.</h1>
       </section>
 
       {error ? <ErrorState title="Admin panel unavailable" message={error} actionLabel="Retry" onAction={() => void fetchData()} /> : null}

@@ -10,11 +10,11 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 function toneClassName(tone: BadgeTone) {
   switch (tone) {
     case "accent":
-      return "border-cyan-200 bg-cyan-50 text-cyan-900";
+      return "border-[rgba(49,88,79,0.18)] bg-[rgba(223,238,232,0.8)] text-[var(--color-accent)]";
     case "muted":
-      return "border-stone-200 bg-stone-100 text-slate-600";
+      return "border-[rgba(123,97,71,0.14)] bg-[rgba(255,248,240,0.7)] text-[var(--color-text-soft)]";
     default:
-      return "border-slate-200 bg-white text-slate-700";
+      return "border-[rgba(123,97,71,0.14)] bg-[rgba(255,255,255,0.8)] text-[var(--color-text)]";
   }
 }
 

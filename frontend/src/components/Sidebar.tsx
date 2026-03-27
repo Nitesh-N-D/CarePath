@@ -17,11 +17,11 @@ function Sidebar() {
   return (
     <>
       <aside className="hidden w-72 shrink-0 lg:block">
-        <div className="sticky top-24 rounded-3xl border border-white/90 bg-white/86 p-5 shadow-[0_18px_42px_rgba(15,23,42,0.06)] backdrop-blur-xl">
-          <div className="mb-6 border-b border-stone-200 pb-4">
-            <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Workspace</p>
-            <h2 className="mt-2 text-xl font-semibold text-slate-900">CarePath OS</h2>
-            <p className="mt-2 text-sm text-slate-500">Health intelligence, monitoring, and connected clinical workflows.</p>
+        <div className="glass-panel sticky top-24 p-5">
+          <div className="mb-6 border-b border-[var(--color-border)] pb-4">
+            <p className="text-xs uppercase tracking-[0.22em] text-[var(--color-text-soft)]">Navigation</p>
+            <h2 className="mt-2 text-xl font-semibold text-[var(--color-text)]">CarePath</h2>
+            <p className="mt-2 text-sm text-[var(--color-text-soft)]">Move between your health pages, medical references, and care dashboards.</p>
           </div>
 
           <nav className="space-y-2">
@@ -32,8 +32,8 @@ function Sidebar() {
                 className={({ isActive }) =>
                   `block rounded-2xl px-4 py-3 text-sm transition duration-300 ${
                     isActive
-                      ? "bg-gradient-to-r from-stone-100 via-slate-50 to-cyan-50 text-slate-900 shadow-[0_0_0_1px_rgba(148,163,184,0.10)]"
-                      : "text-slate-600 hover:bg-stone-50 hover:text-slate-900"
+                      ? "bg-[linear-gradient(135deg,rgba(223,238,232,0.95),rgba(255,252,247,0.9),rgba(214,176,132,0.16))] text-[var(--color-text)] shadow-[0_0_0_1px_rgba(123,97,71,0.08)]"
+                      : "text-[var(--color-text-soft)] hover:bg-[rgba(49,88,79,0.08)] hover:text-[var(--color-text)]"
                   }`
                 }
               >
@@ -51,7 +51,9 @@ function Sidebar() {
             to={item.to}
             className={({ isActive }) =>
               `whitespace-nowrap rounded-full px-4 py-2 text-sm transition ${
-                isActive ? "bg-slate-900 text-white" : "border border-stone-200 bg-white text-slate-600"
+                isActive
+                  ? "bg-[linear-gradient(135deg,#183c38_0%,#31544d_58%,#8b6a46_100%)] text-white"
+                  : "border border-[var(--color-border)] bg-[rgba(255,255,255,0.66)] text-[var(--color-text-soft)]"
               }`
             }
           >

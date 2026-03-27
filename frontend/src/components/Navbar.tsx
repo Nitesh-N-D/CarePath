@@ -21,15 +21,15 @@ function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/80 bg-white/78 backdrop-blur-2xl">
+    <header className="sticky top-0 z-40 border-b border-[var(--color-border)] bg-[rgba(255,250,244,0.72)] backdrop-blur-2xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
         <Link to="/" className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-700 via-sky-700 to-slate-900 font-semibold text-white shadow-[0_10px_24px_rgba(15,23,42,0.14)]">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#183c38_0%,#31544d_58%,#8b6a46_100%)] font-semibold text-white shadow-[0_10px_24px_rgba(38,31,26,0.16)]">
             CP
           </div>
           <div>
-            <div className="text-lg font-semibold text-slate-900">CarePath</div>
-            <div className="text-xs text-slate-500">AI-powered health intelligence platform</div>
+            <div className="text-lg font-semibold text-[var(--color-text)]">CarePath</div>
+            <div className="text-xs text-[var(--color-text-soft)]">Personal health guidance and disease reference</div>
           </div>
         </Link>
 
@@ -38,7 +38,7 @@ function Navbar() {
             <a
               key={item.label}
               href={item.href}
-              className="rounded-full px-4 py-2 text-sm text-slate-600 transition duration-200 hover:bg-stone-100 hover:text-slate-900"
+              className="rounded-full px-4 py-2 text-sm text-[var(--color-text-soft)] transition duration-200 hover:bg-[rgba(49,88,79,0.08)] hover:text-[var(--color-text)]"
             >
               {item.label}
             </a>
@@ -51,7 +51,7 @@ function Navbar() {
           </Button>
           {user ? (
             <>
-              <div className="flex items-center gap-3 rounded-full border border-stone-200 bg-white/90 px-4 py-2 text-sm text-slate-700 shadow-sm">
+              <div className="flex items-center gap-3 rounded-full border border-[var(--color-border)] bg-[rgba(255,255,255,0.62)] px-4 py-2 text-sm text-[var(--color-text)] shadow-sm">
                 <span>{user.name}</span>
                 <div className="w-8">
                   <Separator />
@@ -95,14 +95,14 @@ function Navbar() {
       </div>
 
       {open ? (
-        <div className="border-t border-stone-200 bg-white/95 px-4 py-4 md:hidden">
+        <div className="border-t border-[var(--color-border)] bg-[rgba(255,250,244,0.92)] px-4 py-4 md:hidden">
           <div className="flex flex-col gap-2">
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="rounded-2xl px-4 py-3 text-sm text-slate-700 transition hover:bg-stone-100"
+                className="rounded-2xl px-4 py-3 text-sm text-[var(--color-text)] transition hover:bg-[rgba(49,88,79,0.08)]"
               >
                 {item.label}
               </a>

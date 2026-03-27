@@ -24,13 +24,13 @@ type ButtonProps = ButtonAsButton | ButtonAsLink;
 function getVariantClassName(variant: Variant) {
   switch (variant) {
     case "secondary":
-      return "border border-stone-200 bg-stone-50 text-slate-800 hover:bg-stone-100";
+      return "border border-[var(--color-border)] bg-[rgba(255,248,240,0.7)] text-[var(--color-text)] hover:bg-[rgba(49,88,79,0.08)]";
     case "outline":
-      return "border border-stone-200 bg-white text-slate-700 hover:bg-stone-50";
+      return "border border-[var(--color-border)] bg-[rgba(255,255,255,0.64)] text-[var(--color-text)] hover:bg-[rgba(49,88,79,0.08)]";
     case "ghost":
-      return "bg-transparent text-slate-700 hover:bg-stone-100";
+      return "bg-transparent text-[var(--color-text-soft)] hover:bg-[rgba(49,88,79,0.08)] hover:text-[var(--color-text)]";
     default:
-      return "border border-slate-200 bg-slate-900 text-white hover:bg-slate-800";
+      return "border border-[rgba(166,124,82,0.24)] bg-[linear-gradient(135deg,#183c38_0%,#2d5249_55%,#8b6a46_100%)] text-white hover:brightness-105";
   }
 }
 

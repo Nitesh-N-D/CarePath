@@ -279,9 +279,9 @@ function Dashboard() {
       {toast ? <Toast message={toast.message} tone={toast.tone} /> : null}
       <section className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <div>
-          <p className="section-heading">Patient workspace</p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Personal health intelligence with premium visibility and actionability.</h1>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">Track daily metrics, get risk-aware AI guidance, manage reminders, and export a clean weekly report without leaving the dashboard.</p>
+          <p className="section-heading">Your CarePath journal</p>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">A more elegant way to follow your health day by day.</h1>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">Record daily readings, read weekly summaries, ask for guidance, manage reminders, and keep your care story together.</p>
         </div>
         <GradientButton onClick={exportPdf} disabled={!data}>Export Weekly PDF</GradientButton>
       </section>

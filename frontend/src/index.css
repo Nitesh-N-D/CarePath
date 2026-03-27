@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -7,20 +7,41 @@
 @layer base {
   :root {
     color-scheme: light;
-    font-family: "Plus Jakarta Sans", sans-serif;
+    --font-sans: "Manrope", sans-serif;
+    --font-display: "Cormorant Garamond", serif;
+    --color-bg: #f5f0e8;
+    --color-surface: rgba(255, 251, 245, 0.82);
+    --color-surface-strong: rgba(255, 255, 255, 0.9);
+    --color-border: rgba(123, 97, 71, 0.16);
+    --color-text: #261f1a;
+    --color-text-soft: #66584b;
+    --color-accent: #1f5c52;
+    --color-accent-soft: #dfeee8;
+    --color-hero: #1f2d2a;
+    font-family: var(--font-sans);
   }
 
   html[data-theme="dark"] {
     color-scheme: dark;
+    --color-bg: #0d1516;
+    --color-surface: rgba(20, 28, 30, 0.78);
+    --color-surface-strong: rgba(27, 36, 38, 0.92);
+    --color-border: rgba(196, 179, 154, 0.14);
+    --color-text: #f4ede3;
+    --color-text-soft: #c6b8a8;
+    --color-accent: #90c2b0;
+    --color-accent-soft: rgba(52, 79, 73, 0.55);
+    --color-hero: #111a1b;
   }
 
   body {
-    @apply m-0 min-h-screen bg-[#f5f5f4] text-slate-900 antialiased;
+    @apply m-0 min-h-screen antialiased;
+    color: var(--color-text);
     background-image:
-      radial-gradient(circle at top left, rgba(15, 23, 42, 0.08), transparent 20%),
-      radial-gradient(circle at top right, rgba(34, 211, 238, 0.16), transparent 20%),
-      radial-gradient(circle at 20% 30%, rgba(244, 114, 182, 0.08), transparent 18%),
-      linear-gradient(180deg, #f8fafc 0%, #f3f4f6 42%, #eef2f7 100%);
+      radial-gradient(circle at top left, rgba(193, 173, 147, 0.26), transparent 24%),
+      radial-gradient(circle at top right, rgba(67, 112, 99, 0.12), transparent 18%),
+      radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.65), transparent 18%),
+      linear-gradient(180deg, #f8f4ee 0%, var(--color-bg) 42%, #efe7dc 100%);
     background-attachment: fixed;
   }
 
@@ -31,15 +52,37 @@
   * {
     @apply border-slate-200;
   }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  p,
+  span,
+  label,
+  input,
+  textarea,
+  select,
+  button,
+  a {
+    font-family: var(--font-sans);
+  }
 }
 
 @layer components {
   .glass-panel {
-    @apply rounded-2xl border border-white/90 bg-white/88 backdrop-blur-xl shadow-[0_18px_50px_rgba(15,23,42,0.06)];
+    background: linear-gradient(180deg, var(--color-surface-strong), var(--color-surface));
+    border: 1px solid var(--color-border);
+    box-shadow: 0 24px 60px rgba(44, 32, 18, 0.09);
+    @apply rounded-[30px] backdrop-blur-xl;
   }
 
   .gradient-text {
-    @apply bg-gradient-to-r from-slate-950 via-cyan-800 to-fuchsia-700 bg-clip-text text-transparent;
+    background-image: linear-gradient(90deg, #1d2926 0%, #31584f 55%, #a67c52 100%);
+    @apply bg-clip-text text-transparent;
   }
 
   .premium-orb {
@@ -47,36 +90,72 @@
   }
 
   .dark-panel {
-    @apply rounded-[32px] border border-slate-700/30 bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-950 text-white shadow-[0_24px_80px_rgba(2,8,23,0.28)];
+    background: linear-gradient(145deg, #17201f 0%, #111917 58%, #233532 100%);
+    border: 1px solid rgba(194, 179, 154, 0.14);
+    color: #f7f0e8;
+    box-shadow: 0 24px 80px rgba(10, 14, 15, 0.32);
+    @apply rounded-[32px];
   }
 
   .section-heading {
-    @apply text-sm font-medium uppercase tracking-[0.24em] text-cyan-800;
+    color: var(--color-accent);
+    @apply text-sm font-semibold uppercase tracking-[0.3em];
+  }
+
+  .page-shell {
+    @apply min-h-screen;
+    color: var(--color-text);
+  }
+
+  .eyebrow {
+    color: var(--color-accent);
+    @apply text-xs font-semibold uppercase tracking-[0.34em];
+  }
+
+  .editorial-title {
+    color: var(--color-text);
+    font-family: var(--font-display);
+    @apply text-5xl font-semibold leading-[0.95] md:text-7xl;
+  }
+
+  .soft-panel {
+    background: rgba(255, 252, 247, 0.72);
+    border: 1px solid var(--color-border);
+    @apply rounded-[26px];
+  }
+
+  .field-shell {
+    background: var(--color-surface-strong);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+  }
+
+  .muted-copy {
+    color: var(--color-text-soft);
   }
 }
 
 html[data-theme="dark"] body {
-  color: #e2e8f0;
+  color: var(--color-text);
   background-image:
-    radial-gradient(circle at top left, rgba(34, 211, 238, 0.12), transparent 18%),
-    radial-gradient(circle at top right, rgba(148, 163, 184, 0.12), transparent 16%),
-    linear-gradient(180deg, #020617 0%, #0f172a 55%, #111827 100%);
+    radial-gradient(circle at top left, rgba(67, 112, 99, 0.18), transparent 20%),
+    radial-gradient(circle at top right, rgba(176, 141, 95, 0.1), transparent 18%),
+    linear-gradient(180deg, #0c1314 0%, var(--color-bg) 55%, #0f1718 100%);
 }
 
 html[data-theme="dark"] header,
 html[data-theme="dark"] footer,
 html[data-theme="dark"] aside > div,
 html[data-theme="dark"] .glass-panel,
-html[data-theme="dark"] [class*="bg-white"],
-html[data-theme="dark"] [class*="from-stone-100"],
-html[data-theme="dark"] [class*="to-cyan-50"] {
-  background-color: rgba(15, 23, 42, 0.75) !important;
-  color: #e2e8f0 !important;
-  border-color: rgba(71, 85, 105, 0.6) !important;
+html[data-theme="dark"] .soft-panel,
+html[data-theme="dark"] .field-shell {
+  background: linear-gradient(180deg, rgba(25, 34, 36, 0.96), rgba(18, 26, 27, 0.92)) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
 }
 
 html[data-theme="dark"] .gradient-text {
-  background-image: linear-gradient(90deg, #f8fafc, #67e8f9, #c4b5fd);
+  background-image: linear-gradient(90deg, #f8f1e8, #9ac8ba, #d6b084);
 }
 
 html[data-theme="dark"] input,
@@ -85,9 +164,9 @@ html[data-theme="dark"] select,
 html[data-theme="dark"] table,
 html[data-theme="dark"] th,
 html[data-theme="dark"] td {
-  background-color: rgba(15, 23, 42, 0.72) !important;
-  color: #e2e8f0 !important;
-  border-color: rgba(71, 85, 105, 0.65) !important;
+  background: rgba(18, 26, 27, 0.92) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
 }
 
 html[data-theme="dark"] p,
@@ -97,7 +176,7 @@ html[data-theme="dark"] div,
 html[data-theme="dark"] h1,
 html[data-theme="dark"] h2,
 html[data-theme="dark"] h3 {
-  border-color: rgba(71, 85, 105, 0.45);
+  border-color: var(--color-border);
 }
 
 html[data-theme="dark"] .text-slate-900,
@@ -107,9 +186,37 @@ html[data-theme="dark"] .text-slate-600,
 html[data-theme="dark"] .text-slate-500,
 html[data-theme="dark"] .text-cyan-800,
 html[data-theme="dark"] .text-sky-700 {
-  color: #e2e8f0 !important;
+  color: var(--color-text) !important;
 }
 
 html[data-theme="dark"] .text-slate-400 {
-  color: #94a3b8 !important;
+  color: var(--color-text-soft) !important;
+}
+
+html[data-theme="dark"] .bg-slate-50,
+html[data-theme="dark"] .bg-stone-50,
+html[data-theme="dark"] .bg-cyan-50,
+html[data-theme="dark"] .bg-emerald-50,
+html[data-theme="dark"] .bg-amber-50,
+html[data-theme="dark"] .bg-rose-50,
+html[data-theme="dark"] .bg-yellow-50,
+html[data-theme="dark"] .bg-white,
+html[data-theme="dark"] .bg-white\/10,
+html[data-theme="dark"] .bg-white\/70,
+html[data-theme="dark"] .bg-white\/80,
+html[data-theme="dark"] .bg-white\/90,
+html[data-theme="dark"] .bg-white\/95 {
+  background: rgba(23, 31, 33, 0.9) !important;
+}
+
+html[data-theme="dark"] .border-slate-200,
+html[data-theme="dark"] .border-stone-200,
+html[data-theme="dark"] .border-white\/80,
+html[data-theme="dark"] .border-white\/90,
+html[data-theme="dark"] .border-cyan-100,
+html[data-theme="dark"] .border-emerald-200,
+html[data-theme="dark"] .border-amber-200,
+html[data-theme="dark"] .border-rose-200,
+html[data-theme="dark"] .border-yellow-200 {
+  border-color: var(--color-border) !important;
 }
