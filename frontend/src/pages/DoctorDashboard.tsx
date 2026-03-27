@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 
 import Button from "../components/ui/Button";
@@ -14,6 +15,11 @@ interface PatientRow {
   name: string;
   email: string;
   created_at: string;
+  age?: number;
+  gender?: string;
+  location?: string;
+  primary_goal?: string;
+  chronic_conditions?: string[];
   latest_log: {
     weight: number;
     height_cm: number;
@@ -23,44 +29,55 @@ interface PatientRow {
     sleep_hours: number;
     created_at: string;
   } | null;
+  risk_assessment: {
+    riskScore: number;
+    prediction: { title: string; summary: string };
+    alerts: { label: string; message: string }[];
+  };
+}
+
+interface ClinicalNote {
+  id: string;
+  patient_user_id: string;
+  note: string;
+  created_at: string;
 }
 
 function DoctorDashboard() {
   const [patients, setPatients] = useState<PatientRow[]>([]);
+  const [notes, setNotes] = useState<ClinicalNote[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [selectedPatientId, setSelectedPatientId] = useState<string>("");
-  const [note, setNote] = useState("");
-  const [notes, setNotes] = useState<Record<string, string[]>>({});
+  const [selectedPatientId, setSelectedPatientId] = useState("");
+  const [noteInput, setNoteInput] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [toast, setToast] = useState("");
 
-  useEffect(() => {
-    void fetchPatients();
-  }, []);
-
-  const fetchPatients = async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await API.get<PatientRow[]>("/doctor/patients");
-      setPatients(response.data);
-      if (response.data[0]) {
-        setSelectedPatientId(response.data[0].id);
-      }
+      const [patientsResponse, notesResponse] = await Promise.all([
+        API.get<PatientRow[]>("/doctor/patients"),
+        API.get<ClinicalNote[]>("/doctor/notes"),
+      ]);
+      setPatients(patientsResponse.data);
+      setNotes(notesResponse.data);
+      setSelectedPatientId((current) => current || patientsResponse.data[0]?.id || "");
       setError("");
     } catch (requestError) {
-      console.error(requestError);
       setError("Unable to load assigned patients right now.");
+      console.error(requestError);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!toast) {
-      return;
-    }
+    void fetchData();
+  }, []);
 
+  useEffect(() => {
+    if (!toast) return;
     const timer = window.setTimeout(() => setToast(""), 2400);
     return () => window.clearTimeout(timer);
   }, [toast]);
@@ -70,41 +87,50 @@ function DoctorDashboard() {
     [patients, selectedPatientId]
   );
 
-  const saveNote = () => {
-    if (!selectedPatient || !note.trim()) {
-      return;
-    }
+  const patientNotes = useMemo(
+    () => notes.filter((note) => note.patient_user_id === selectedPatient?.id),
+    [notes, selectedPatient?.id]
+  );
 
-    setNotes((current) => ({
-      ...current,
-      [selectedPatient.id]: [note.trim(), ...(current[selectedPatient.id] || [])],
-    }));
-    setNote("");
-    setModalOpen(false);
-    setToast("Clinical note added.");
+  const saveNote = async () => {
+    if (!selectedPatient || !noteInput.trim()) return;
+    try {
+      await API.post("/doctor/notes", {
+        patient_user_id: selectedPatient.id,
+        note: noteInput.trim(),
+      });
+      setNoteInput("");
+      setModalOpen(false);
+      setToast("Clinical note added.");
+      await fetchData();
+    } catch (requestError) {
+      setToast(
+        axios.isAxiosError(requestError)
+          ? requestError.response?.data?.message || "Unable to save note."
+          : "Unable to save note."
+      );
+    }
   };
 
   return (
     <div className="space-y-8">
-      {toast ? <Toast message={toast} /> : null}
+      {toast ? <Toast message={toast} tone={toast.includes("Unable") ? "error" : "success"} /> : null}
 
       <section className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-sm uppercase tracking-[0.24em] text-sky-700">Doctor panel</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Patient monitoring with clearer medical workflows.</h1>
+          <p className="section-heading">Doctor workspace</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Assigned patient monitoring with risk summaries and clinical note capture.</h1>
         </div>
-        <Button type="button" variant="default" onClick={() => setModalOpen(true)} disabled={!selectedPatient} className="rounded-2xl px-5 py-3">
-          Add Note
-        </Button>
+        <Button type="button" variant="default" onClick={() => setModalOpen(true)} disabled={!selectedPatient} className="rounded-2xl px-5 py-3">Add note</Button>
       </section>
 
-      {error ? <ErrorState title="Doctor panel unavailable" message={error} actionLabel="Retry" onAction={() => void fetchPatients()} /> : null}
+      {error ? <ErrorState title="Doctor panel unavailable" message={error} actionLabel="Retry" onAction={() => void fetchData()} /> : null}
 
       <section className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
         <GlassCard className="overflow-hidden p-0">
           <div className="border-b border-slate-200 px-6 py-5">
             <h2 className="text-xl font-semibold text-slate-900">Assigned patients</h2>
-            <p className="mt-2 text-sm text-slate-500">Review the latest linked patients and move directly into their current context.</p>
+            <p className="mt-2 text-sm text-slate-500">Review current assignments with their latest predictive risk snapshot.</p>
           </div>
           <div className="divide-y divide-slate-100">
             {loading ? (
@@ -113,20 +139,15 @@ function DoctorDashboard() {
               </div>
             ) : patients.length ? (
               patients.map((patient) => (
-                <Button
-                  key={patient.id}
-                  type="button"
-                  variant="ghost"
-                  onClick={() => setSelectedPatientId(patient.id)}
-                  className={`h-auto w-full justify-start rounded-none px-6 py-4 text-left shadow-none transition duration-300 ${
-                    selectedPatient?.id === patient.id ? "bg-cyan-50 text-slate-900" : "hover:bg-slate-50"
-                  }`}
-                >
-                  <div>
-                    <div className="font-medium text-slate-900">{patient.name}</div>
-                    <div className="mt-1 text-sm text-slate-500">{patient.email}</div>
+                <button key={patient.id} type="button" onClick={() => setSelectedPatientId(patient.id)} className={`w-full px-6 py-4 text-left transition duration-300 ${selectedPatient?.id === patient.id ? "bg-cyan-50" : "hover:bg-slate-50"}`}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="font-medium text-slate-900">{patient.name}</div>
+                      <div className="mt-1 text-sm text-slate-500">{patient.email}</div>
+                    </div>
+                    <div className="rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white">{patient.risk_assessment.riskScore}/100</div>
                   </div>
-                </Button>
+                </button>
               ))
             ) : (
               <div className="px-6 py-8 text-slate-500">No patients have been assigned yet.</div>
@@ -136,44 +157,35 @@ function DoctorDashboard() {
 
         <div className="space-y-6">
           <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {loading
-              ? Array.from({ length: 4 }).map((_, index) => <LoadingSkeleton key={index} className="h-32" />)
-              : selectedPatient?.latest_log
-                ? [
-                    { label: "Weight", value: `${selectedPatient.latest_log.weight} kg`, detail: "Latest entry", accent: "cyan" as const },
-                    { label: "BP", value: `${selectedPatient.latest_log.systolic_bp}/${selectedPatient.latest_log.diastolic_bp}`, detail: "Latest entry", accent: "red" as const },
-                    { label: "Sugar", value: `${selectedPatient.latest_log.sugar_level} mg/dL`, detail: "Latest entry", accent: "indigo" as const },
-                    { label: "Sleep", value: `${selectedPatient.latest_log.sleep_hours} hrs`, detail: "Latest entry", accent: "yellow" as const },
-                  ].map((item) => <StatCard key={item.label} {...item} />)
-                : Array.from({ length: 4 }).map((_, index) => (
-                    <StatCard key={index} label="No data" value="--" detail="Awaiting patient logs" accent="indigo" />
-                  ))}
+            {loading ? Array.from({ length: 4 }).map((_, index) => <LoadingSkeleton key={index} className="h-32" />) : selectedPatient?.latest_log ? [
+              { label: "Weight", value: `${selectedPatient.latest_log.weight} kg`, detail: "Latest entry", accent: "cyan" as const },
+              { label: "BP", value: `${selectedPatient.latest_log.systolic_bp}/${selectedPatient.latest_log.diastolic_bp}`, detail: "Latest entry", accent: "red" as const },
+              { label: "Sugar", value: `${selectedPatient.latest_log.sugar_level} mg/dL`, detail: "Latest entry", accent: "indigo" as const },
+              { label: "Risk Score", value: `${selectedPatient.risk_assessment.riskScore}/100`, detail: selectedPatient.risk_assessment.prediction.title, accent: "yellow" as const },
+            ].map((item) => <StatCard key={item.label} {...item} />) : Array.from({ length: 4 }).map((_, index) => <StatCard key={index} label="No data" value="--" detail="Awaiting patient logs" accent="indigo" />)}
           </section>
 
           <GlassCard className="p-6">
-            <p className="text-sm uppercase tracking-[0.24em] text-sky-700">Patient overview</p>
+            <p className="section-heading">Patient overview</p>
             {selectedPatient ? (
               <div className="mt-4 space-y-4">
                 <div>
                   <h2 className="text-2xl font-semibold text-slate-900">{selectedPatient.name}</h2>
                   <p className="mt-2 text-sm text-slate-500">Member since {new Date(selectedPatient.created_at).toLocaleDateString()}</p>
                 </div>
-                <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-500">Health trend snapshot</span>
-                    <span className="text-sm text-sky-700">Latest signal</span>
-                  </div>
-                  <div className="mt-5 flex h-40 items-end gap-3">
-                    {[52, 64, 48, 76, 58, 88, 66].map((height, index) => (
-                      <div
-                        key={height}
-                        className={`flex-1 rounded-t-2xl bg-gradient-to-t ${
-                          index % 2 === 0 ? "from-sky-500 to-indigo-500" : "from-teal-400 to-sky-500"
-                        }`}
-                        style={{ height: `${height}%` }}
-                      />
-                    ))}
-                  </div>
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-6 text-slate-600">
+                  {selectedPatient.age ? `Age ${selectedPatient.age}` : "Age not provided"} · {selectedPatient.gender || "Gender not provided"} · {selectedPatient.location || "Location not provided"}
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-6 text-slate-600">
+                  Goal: {selectedPatient.primary_goal || "No primary goal recorded."}
+                </div>
+                <div className="space-y-3">
+                  {(selectedPatient.risk_assessment.alerts.length ? selectedPatient.risk_assessment.alerts : [{ label: "No active alerts", message: "No major alerts are currently active for this patient." }]).map((alert) => (
+                    <div key={alert.label} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-700">
+                      <div className="font-semibold text-slate-900">{alert.label}</div>
+                      <div className="mt-1">{alert.message}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ) : (
@@ -184,40 +196,24 @@ function DoctorDashboard() {
           <GlassCard className="p-6">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold text-slate-900">Clinical notes</h2>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setModalOpen(true)}
-                className="rounded-full px-4 py-2 text-sm"
-              >
-                Add note
-              </Button>
+              <Button type="button" variant="outline" onClick={() => setModalOpen(true)} className="rounded-full px-4 py-2 text-sm">Add note</Button>
             </div>
             <div className="mt-5 space-y-3">
-              {(selectedPatient && notes[selectedPatient.id]?.length
-                ? notes[selectedPatient.id]
-                : ["No notes yet for this patient."]).map((entry) => (
-                <div key={entry} className="rounded-2xl border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-600">
-                  {entry}
+              {patientNotes.length ? patientNotes.map((entry) => (
+                <div key={entry.id} className="rounded-2xl border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-600">
+                  <div>{entry.note}</div>
+                  <div className="mt-2 text-xs uppercase tracking-[0.16em] text-slate-400">{new Date(entry.created_at).toLocaleString()}</div>
                 </div>
-              ))}
+              )) : <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-500">No notes yet for this patient.</div>}
             </div>
           </GlassCard>
         </div>
       </section>
 
       <Modal open={modalOpen} title="Add clinical note" onClose={() => setModalOpen(false)}>
-        <textarea
-          value={note}
-          onChange={(event) => setNote(event.target.value)}
-          rows={5}
-          placeholder="Write a clinical observation, recommendation, or follow-up note..."
-          className="w-full rounded-2xl border border-slate-200 bg-white p-4 text-slate-900 outline-none transition duration-300 focus:border-sky-300"
-        />
+        <textarea value={noteInput} onChange={(event) => setNoteInput(event.target.value)} rows={5} placeholder="Write a clinical observation, recommendation, or follow-up note..." className="w-full rounded-2xl border border-slate-200 bg-white p-4 text-slate-900 outline-none transition duration-300 focus:border-sky-300" />
         <div className="mt-4 flex justify-end">
-          <Button type="button" variant="default" onClick={saveNote} className="rounded-2xl px-5 py-3">
-            Save note
-          </Button>
+          <Button type="button" variant="default" onClick={() => void saveNote()} className="rounded-2xl px-5 py-3">Save note</Button>
         </div>
       </Modal>
     </div>

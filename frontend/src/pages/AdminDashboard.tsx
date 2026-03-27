@@ -24,6 +24,8 @@ interface Analytics {
   totalHealthLogs: number;
   totalDoctors: number;
   totalAssignments: number;
+  totalReminders: number;
+  totalAiMessages: number;
 }
 
 function AdminDashboard() {
@@ -107,6 +109,21 @@ function AdminDashboard() {
               ].map((item) => <StatCard key={item.label} {...item} />)
             : null}
       </section>
+
+      {!loading && analytics ? (
+        <section className="grid gap-4 sm:grid-cols-2">
+          <GlassCard className="p-5">
+            <div className="text-sm uppercase tracking-[0.18em] text-slate-500">Automation</div>
+            <div className="mt-3 text-3xl font-semibold text-slate-900">{analytics.totalReminders}</div>
+            <div className="mt-2 text-sm text-slate-600">Medication reminders configured across the platform.</div>
+          </GlassCard>
+          <GlassCard className="p-5">
+            <div className="text-sm uppercase tracking-[0.18em] text-slate-500">AI engagement</div>
+            <div className="mt-3 text-3xl font-semibold text-slate-900">{analytics.totalAiMessages}</div>
+            <div className="mt-2 text-sm text-slate-600">AI chat messages recorded for patient guidance and follow-up.</div>
+          </GlassCard>
+        </section>
+      ) : null}
 
       <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
         <GlassCard className="overflow-hidden p-0">
