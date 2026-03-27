@@ -35,16 +35,75 @@ function AssistantPage() {
     event.preventDefault();
     if (!input.trim()) return;
     const content = input.trim();
-    setMessages((current) => [...current, { role: "user", content }]);
+    const assistantIndex = messages.length + 1;
+    setMessages((current) => [...current, { role: "user", content }, { role: "assistant", content: "" }]);
     setInput("");
     setSending(true);
     setError("");
 
     try {
-      const response = await API.post<{ reply: string }>("/assistant/chat", { message: content });
-      setMessages((current) => [...current, { role: "assistant", content: response.data.reply }]);
+      const response = await fetch(`${API.defaults.baseURL}/ai/chat/stream`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("carepath_token") || ""}`,
+        },
+        body: JSON.stringify({ message: content }),
+      });
+
+      if (!response.ok || !response.body) {
+        throw new Error("Streaming assistant unavailable.");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const chunks = buffer.split("\n\n");
+        buffer = chunks.pop() || "";
+
+        for (const chunk of chunks) {
+          const line = chunk
+            .split("\n")
+            .map((entry) => entry.trim())
+            .find((entry) => entry.startsWith("data:"));
+
+          if (!line) continue;
+          const payload = JSON.parse(line.replace(/^data:\s*/, ""));
+
+          if (payload.type === "token") {
+            setMessages((current) =>
+              current.map((message, index) =>
+                index === assistantIndex
+                  ? { ...message, content: `${message.content || ""}${payload.token}` }
+                  : message
+              )
+            );
+          }
+
+          if (payload.type === "done" && payload.reply) {
+            setMessages((current) =>
+              current.map((message, index) =>
+                index === assistantIndex ? { ...message, content: payload.reply } : message
+              )
+            );
+          }
+        }
+      }
     } catch (requestError) {
-      setError(axios.isAxiosError(requestError) ? requestError.response?.data?.message || "Assistant unavailable." : "Assistant unavailable.");
+      setMessages((current) => current.filter((_, index) => index !== assistantIndex));
+      setError(
+        axios.isAxiosError(requestError)
+          ? requestError.response?.data?.message || "Assistant unavailable."
+          : requestError instanceof Error
+            ? requestError.message
+            : "Assistant unavailable."
+      );
     } finally {
       setSending(false);
     }
@@ -55,7 +114,7 @@ function AssistantPage() {
       <section className="max-w-3xl">
         <p className="section-heading">AI Assistant</p>
         <h1 className="mt-3 text-4xl font-semibold text-slate-900">Ask CarePath about your health patterns and next steps.</h1>
-        <p className="mt-3 text-sm leading-7 text-slate-600">This assistant reads your CarePath profile, risk score, and recent entries before responding, so the conversation feels specific rather than generic.</p>
+        <p className="mt-3 text-sm leading-7 text-slate-600">This assistant now streams responses in real time and reads your CarePath profile, risk score, and recent entries before responding, so the conversation feels specific rather than generic.</p>
       </section>
 
       <GlassCard className="overflow-hidden p-0">
@@ -76,7 +135,7 @@ function AssistantPage() {
                   message.role === "assistant" ? "bg-white text-slate-700 shadow-sm" : "ml-auto bg-slate-900 text-white"
                 }`}
               >
-                {message.content}
+                {message.content || (sending && message.role === "assistant" ? "CarePath is thinking..." : "")}
               </motion.div>
             ))
           ) : (
@@ -84,8 +143,6 @@ function AssistantPage() {
               Start by asking about BMI, blood pressure, medication routines, preventive steps, or whether your recent health log suggests a trend.
             </div>
           )}
-
-          {sending ? <LoadingSkeleton className="h-16 w-3/4" /> : null}
         </div>
 
         <form onSubmit={sendMessage} className="border-t border-[var(--color-border)] px-6 py-5">

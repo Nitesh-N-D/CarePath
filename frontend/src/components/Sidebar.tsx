@@ -12,6 +12,7 @@ const items: SidebarItem[] = [
   { to: "/dashboard", label: "Dashboard", roles: ["user"] },
   { to: "/doctor", label: "Dashboard", roles: ["doctor"] },
   { to: "/admin", label: "Dashboard", roles: ["admin"] },
+  { to: "/diseases", label: "Disease Library", roles: ["user", "doctor", "admin"] },
   { to: "/health", label: "Health", roles: ["user"] },
   { to: "/bmi", label: "BMI Calculator", roles: ["user", "doctor", "admin"] },
   { to: "/assistant", label: "AI Assistant", roles: ["user", "doctor", "admin"] },

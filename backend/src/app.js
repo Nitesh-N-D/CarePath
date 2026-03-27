@@ -4,6 +4,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
 const healthRoutes = require("./routes/healthRoutes");
 const assistantRoutes = require("./routes/assistantRoutes");
+const aiRoutes = require("./routes/aiRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const doctorRoutes = require("./routes/doctorRoutes");
 const diseaseRoutes = require("./routes/diseaseRoutes");
@@ -50,6 +51,7 @@ app.get("/api", (_req, res) => {
       "/api/auth",
       "/api/health",
       "/api/assistant",
+      "/api/ai",
       "/api/admin",
       "/api/doctor",
       "/api/diseases",
@@ -64,6 +66,7 @@ app.get("/api/healthcheck", (_req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/health", healthRoutes);
 app.use("/api/assistant", assistantRoutes);
+app.use("/api/ai", aiRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/doctor", doctorRoutes);
 app.use("/api/diseases", diseaseRoutes);

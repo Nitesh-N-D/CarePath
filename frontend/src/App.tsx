@@ -10,6 +10,7 @@ const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AssistantPage = lazy(() => import("./pages/AssistantPage"));
 const BmiCalculator = lazy(() => import("./pages/BmiCalculator"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
+const DiseaseLibrary = lazy(() => import("./pages/DiseaseLibrary"));
 const DiseaseDetail = lazy(() => import("./pages/DiseaseDetail"));
 const DoctorDashboard = lazy(() => import("./pages/DoctorDashboard"));
 const DoctorsPage = lazy(() => import("./pages/DoctorsPage"));
@@ -51,6 +52,14 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/diseases/:slug" element={<DiseaseDetail />} />
+          <Route
+            path="/diseases"
+            element={
+              <ProtectedRoute allowedRoles={["user", "doctor", "admin"]}>
+                <DiseaseLibrary />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/bmi"
             element={

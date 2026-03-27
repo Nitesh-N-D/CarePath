@@ -9,7 +9,7 @@ This project is built to feel like a real product, not a demo page collection. I
 - Disease encyclopedia with structured symptoms, causes, treatments, prevention, and detail pages
 - User authentication with JWT sessions and Google sign-in support
 - Patient dashboard with BMI, blood pressure, sugar, sleep, risk scoring, charts, weekly insights, and PDF export
-- AI assistant with local Ollama support or API-based LLM fallback
+- AI assistant with local Ollama support or OpenAI-compatible cloud fallback
 - Doctor recommendations based on health context and location
 - Medication reminders with notification feed
 - Doctor dashboard for assigned patient review and clinical notes
@@ -79,6 +79,7 @@ CarePath/
 - Health overview
 - BMI calculator
 - AI assistant
+- Disease library
 - Doctor recommendations
 - Settings
 
@@ -88,6 +89,7 @@ CarePath/
 - Assigned patient workspace
 - BMI calculator
 - AI assistant
+- Disease library
 - Settings
 
 ### Admin
@@ -96,6 +98,7 @@ CarePath/
 - Admin operations dashboard
 - BMI calculator
 - AI assistant
+- Disease library
 - Doctor management
 - Settings
 
@@ -224,7 +227,7 @@ LLM_API_KEY=
 LLM_MODEL=gpt-4o-mini
 ```
 
-Use `AI_PROVIDER=api` if you want an external OpenAI-compatible endpoint instead of Ollama.
+Use `AI_PROVIDER=openai` if you want an external OpenAI-compatible endpoint instead of Ollama.
 
 ## Key Functional Areas
 
@@ -247,7 +250,8 @@ Use `AI_PROVIDER=api` if you want an external OpenAI-compatible endpoint instead
 
 - Stored chat history
 - Context-aware prompting
-- Ollama-compatible by default
+- Ollama and OpenAI provider switching with fallback support
+- Streaming responses for real-time chat UX
 
 ### Recommendations and Reminders
 

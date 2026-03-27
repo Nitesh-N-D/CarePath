@@ -1,4 +1,5 @@
 const { pool } = require("../config/db");
+const { generateAIResponse } = require("./ai/aiProvider");
 
 function buildSystemPrompt({ user, profile, riskAssessment, weeklyReport, diseaseContext }) {
   const profileSummary = profile
@@ -14,23 +15,29 @@ function buildSystemPrompt({ user, profile, riskAssessment, weeklyReport, diseas
         .join(" | ")
     : "No profile on file";
 
-  const riskSummary = riskAssessment?.latest
-    ? `BMI ${riskAssessment.latest.bmi || "n/a"} (${riskAssessment.latest.bmiCategory}), BP ${riskAssessment.latest.bloodPressureCategory}, Sugar ${riskAssessment.latest.sugarCategory}, Risk score ${riskAssessment.riskScore}/100.`
-    : "No risk signals yet because health logs are limited.";
-
-  const diseaseSummary = diseaseContext?.length
-    ? diseaseContext.map((disease) => `${disease.name}: symptoms ${disease.symptoms.slice(0, 4).join(", ")}.`).join(" ")
-    : "No matching disease context found.";
-
-  return [
-    "You are CarePath, a healthcare guidance assistant embedded in a SaaS platform.",
-    "Never diagnose, never claim certainty, and always recommend urgent care for severe symptoms.",
+  const latestRisk = riskAssessment?.latest;
+  const contextPrompt = [
+    "You are CarePath, a medically cautious healthcare guidance assistant embedded in a SaaS platform.",
+    "Do not diagnose, do not claim certainty, and encourage professional care for urgent symptoms.",
+    "Keep advice practical, concise, and safety-oriented.",
     `User: ${user.name}. ${profileSummary}.`,
-    `Risk summary: ${riskSummary}`,
+    "User health data:",
+    `BMI: ${latestRisk?.bmi || "n/a"} (${latestRisk?.bmiCategory || "Unavailable"})`,
+    `Blood pressure: ${latestRisk?.bloodPressureCategory || "Unavailable"}`,
+    `Blood sugar: ${latestRisk?.sugarCategory || "Unavailable"}`,
+    `Risk score: ${riskAssessment?.riskScore || 0}/100`,
     `Weekly report: ${weeklyReport.overview}`,
-    `Relevant disease context: ${diseaseSummary}`,
-    "Answer with practical next steps, preventive advice, and a brief disclaimer.",
-  ].join("\n");
+    `Disease context: ${
+      diseaseContext?.length
+        ? diseaseContext
+            .map((disease) => `${disease.name} with symptoms ${disease.symptoms.slice(0, 4).join(", ")}`)
+            .join("; ")
+        : "No matching disease context."
+    }`,
+    "Give medically safe guidance, practical next steps, and a short disclaimer.",
+  ];
+
+  return contextPrompt.join("\n");
 }
 
 function buildFallbackReply({ message, riskAssessment, weeklyReport, diseaseContext }) {
@@ -39,70 +46,27 @@ function buildFallbackReply({ message, riskAssessment, weeklyReport, diseaseCont
   const lowerMessage = String(message || "").toLowerCase();
 
   if (lowerMessage.includes("blood pressure") || lowerMessage.includes("bp")) {
-    return `Your latest blood pressure status is ${riskAssessment.latest?.bloodPressureCategory || "unavailable"}. ${alerts.find((alert) => alert.label.toLowerCase().includes("blood pressure"))?.message || "Keep monitoring morning and evening readings for a clearer trend."} This guidance is educational and does not replace a clinician.`;
+    return `Your latest blood pressure status is ${riskAssessment.latest?.bloodPressureCategory || "unavailable"}. ${
+      alerts.find((alert) => alert.label.toLowerCase().includes("blood pressure"))?.message ||
+      "Keep monitoring morning and evening readings for a clearer trend."
+    } This guidance is educational and does not replace a clinician.`;
   }
 
   if (lowerMessage.includes("weight") || lowerMessage.includes("bmi")) {
-    return `Your BMI is ${riskAssessment.latest?.bmi || "not available"} in the ${riskAssessment.latest?.bmiCategory || "unavailable"} range. ${weeklyReport.personalizedSuggestions[0]} This is general wellness guidance, not a diagnosis.`;
+    return `Your BMI is ${riskAssessment.latest?.bmi || "not available"} in the ${
+      riskAssessment.latest?.bmiCategory || "unavailable"
+    } range. ${weeklyReport.personalizedSuggestions[0]} This is general wellness guidance, not a diagnosis.`;
   }
 
   if (matchedDisease) {
-    return `${matchedDisease.name} commonly involves ${matchedDisease.symptoms.slice(0, 3).join(", ")}. Prevention usually focuses on ${matchedDisease.prevention}. If symptoms feel severe, persistent, or new, please book medical care promptly.`;
+    return `${matchedDisease.name} commonly involves ${matchedDisease.symptoms.slice(0, 3).join(", ")}. Prevention usually focuses on ${
+      matchedDisease.prevention
+    }. If symptoms feel severe, persistent, or new, please book medical care promptly.`;
   }
 
-  return `${weeklyReport.overview} Priority actions: ${weeklyReport.personalizedSuggestions.slice(0, 2).join(" ")} If you have severe symptoms, chest pain, trouble breathing, or confusion, seek urgent medical care.`;
-}
-
-async function callOllama({ messages }) {
-  const endpoint = process.env.OLLAMA_URL || "http://127.0.0.1:11434/api/chat";
-  const model = process.env.OLLAMA_MODEL || "llama3.1";
-
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model,
-      stream: false,
-      messages,
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Ollama request failed with status ${response.status}`);
-  }
-
-  const payload = await response.json();
-  return payload?.message?.content;
-}
-
-async function callOpenAiCompatible({ messages }) {
-  const baseUrl = process.env.LLM_API_BASE_URL;
-  const apiKey = process.env.LLM_API_KEY;
-  const model = process.env.LLM_MODEL || "gpt-4o-mini";
-
-  if (!baseUrl || !apiKey) {
-    throw new Error("External LLM is not configured.");
-  }
-
-  const response = await fetch(`${baseUrl.replace(/\/+$/, "")}/chat/completions`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model,
-      messages,
-      temperature: 0.4,
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`LLM request failed with status ${response.status}`);
-  }
-
-  const payload = await response.json();
-  return payload?.choices?.[0]?.message?.content;
+  return `${weeklyReport.overview} Priority actions: ${weeklyReport.personalizedSuggestions
+    .slice(0, 2)
+    .join(" ")} If you have severe symptoms, chest pain, trouble breathing, or confusion, seek urgent medical care.`;
 }
 
 async function saveMessage({ userId, role, content, metadata = {} }) {
@@ -130,30 +94,56 @@ async function getRecentChatHistory(userId) {
   return result.rows.reverse();
 }
 
-async function generateAssistantReply({ user, message, profile, riskAssessment, weeklyReport, diseaseContext }) {
+async function buildAssistantMessages({ user, message, profile, riskAssessment, weeklyReport, diseaseContext }) {
   const recentHistory = await getRecentChatHistory(user.id);
   const systemPrompt = buildSystemPrompt({ user, profile, riskAssessment, weeklyReport, diseaseContext });
 
-  const messages = [
+  return [
     { role: "system", content: systemPrompt },
     ...recentHistory.slice(-6).map((entry) => ({ role: entry.role, content: entry.content })),
-    { role: "user", content: message },
+    { role: "user", content: `User question:\n${message}` },
   ];
+}
 
-  let reply = "";
+async function generateAssistantReply({
+  user,
+  message,
+  profile,
+  riskAssessment,
+  weeklyReport,
+  diseaseContext,
+  onToken,
+}) {
+  const messages = await buildAssistantMessages({
+    user,
+    message,
+    profile,
+    riskAssessment,
+    weeklyReport,
+    diseaseContext,
+  });
 
   try {
-    if ((process.env.AI_PROVIDER || "ollama") === "api") {
-      reply = await callOpenAiCompatible({ messages });
-    } else {
-      reply = await callOllama({ messages });
-    }
+    const result = await generateAIResponse({ messages, onToken });
+    return {
+      reply: result.reply,
+      source: result.provider,
+      fallbackUsed: result.fallbackUsed,
+      providerErrors: result.errors,
+    };
   } catch (error) {
-    reply = buildFallbackReply({ message, riskAssessment, weeklyReport, diseaseContext });
-    return { reply, source: "fallback", error: error.message };
+    const reply = buildFallbackReply({ message, riskAssessment, weeklyReport, diseaseContext });
+    if (typeof onToken === "function") {
+      onToken(reply);
+    }
+    return {
+      reply,
+      source: "fallback",
+      fallbackUsed: true,
+      error: error.message,
+      providerErrors: error.details || [],
+    };
   }
-
-  return { reply, source: process.env.AI_PROVIDER || "ollama" };
 }
 
 module.exports = {
