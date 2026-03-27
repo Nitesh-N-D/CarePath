@@ -1,0 +1,68 @@
+[
+  {
+    "name": "Dr. Aisha Menon",
+    "specialization": "Cardiology",
+    "location": "Bengaluru",
+    "conditions": ["hypertension", "coronary artery disease", "stroke"],
+    "experience_years": 14,
+    "rating": 4.8,
+    "available": true,
+    "contact_phone": "+91-80-5555-1001",
+    "hospital": "Apollo Heart Institute"
+  },
+  {
+    "name": "Dr. Rahul Khanna",
+    "specialization": "Endocrinology",
+    "location": "Delhi",
+    "conditions": ["diabetes mellitus", "hypothyroidism", "obesity"],
+    "experience_years": 12,
+    "rating": 4.7,
+    "available": true,
+    "contact_phone": "+91-11-5555-2202",
+    "hospital": "Fortis Endocrine Centre"
+  },
+  {
+    "name": "Dr. Meera Kulkarni",
+    "specialization": "Pulmonology",
+    "location": "Mumbai",
+    "conditions": ["asthma", "pneumonia", "tuberculosis"],
+    "experience_years": 10,
+    "rating": 4.6,
+    "available": true,
+    "contact_phone": "+91-22-5555-3303",
+    "hospital": "Lilavati Respiratory Clinic"
+  },
+  {
+    "name": "Dr. Daniel George",
+    "specialization": "Neurology",
+    "location": "Hyderabad",
+    "conditions": ["migraine", "epilepsy", "multiple sclerosis", "alzheimers disease"],
+    "experience_years": 16,
+    "rating": 4.9,
+    "available": true,
+    "contact_phone": "+91-40-5555-4404",
+    "hospital": "Aster Neuro Sciences"
+  },
+  {
+    "name": "Dr. Kavya Raman",
+    "specialization": "Nephrology",
+    "location": "Chennai",
+    "conditions": ["chronic kidney disease", "hypertension", "diabetes mellitus"],
+    "experience_years": 11,
+    "rating": 4.7,
+    "available": true,
+    "contact_phone": "+91-44-5555-5505",
+    "hospital": "MIOT Kidney Care"
+  },
+  {
+    "name": "Dr. Priya Bansal",
+    "specialization": "Internal Medicine",
+    "location": "Pune",
+    "conditions": ["influenza", "dengue fever", "malaria", "general wellness"],
+    "experience_years": 9,
+    "rating": 4.5,
+    "available": true,
+    "contact_phone": "+91-20-5555-6606",
+    "hospital": "Ruby Hall Clinic"
+  }
+]
