@@ -3,13 +3,23 @@ const asyncHandler = require("../utils/asyncHandler");
 
 function normalizeList(value) {
   if (Array.isArray(value)) {
-    return value;
+    return value.map((item) => String(item).replace(/\s+/g, " ").trim()).filter(Boolean);
   }
 
   if (typeof value === "string") {
+    const trimmed = value.trim();
+
+    if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+      return trimmed
+        .slice(1, -1)
+        .split(/","|",|","|,/)
+        .map((item) => item.replace(/^"+|"+$/g, "").replace(/\\n/g, " ").replace(/\s+/g, " ").trim())
+        .filter(Boolean);
+    }
+
     return value
       .split(/[,.;]\s*/)
-      .map((item) => item.trim())
+      .map((item) => item.replace(/\s+/g, " ").trim())
       .filter(Boolean);
   }
 
