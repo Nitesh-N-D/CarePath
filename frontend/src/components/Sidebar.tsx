@@ -6,6 +6,7 @@ function Sidebar() {
   const { user } = useAuth();
 
   const items = [
+    { to: "/", label: "Home", roles: ["user", "doctor", "admin"] },
     { to: "/dashboard", label: "My Health", roles: ["user", "admin"] },
     { to: "/doctor", label: "Doctor Panel", roles: ["doctor", "admin"] },
     { to: "/admin", label: "Admin Panel", roles: ["admin"] },

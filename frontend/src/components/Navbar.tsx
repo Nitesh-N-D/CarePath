@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import Badge from "./ui/Badge";
 import Button from "./ui/Button";
 import GradientButton from "./ui/GradientButton";
@@ -9,6 +10,7 @@ import Separator from "./ui/Separator";
 
 function Navbar() {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
@@ -44,6 +46,9 @@ function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          <Button type="button" variant="outline" onClick={toggleTheme} className="rounded-full px-3">
+            {theme === "dark" ? "Light" : "Dark"}
+          </Button>
           {user ? (
             <>
               <div className="flex items-center gap-3 rounded-full border border-stone-200 bg-white/90 px-4 py-2 text-sm text-slate-700 shadow-sm">
@@ -104,6 +109,17 @@ function Navbar() {
             ))}
             {user ? (
               <>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => {
+                    toggleTheme();
+                    setOpen(false);
+                  }}
+                  className="justify-start rounded-2xl px-4 py-3 text-sm"
+                >
+                  {theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                </Button>
                 <Button
                   to="/dashboard"
                   variant="ghost"

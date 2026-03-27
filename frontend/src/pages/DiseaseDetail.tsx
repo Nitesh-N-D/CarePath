@@ -43,6 +43,7 @@ function DiseaseDetail() {
 
   const emergencySigns = useMemo(() => toList(disease?.emergency_signs), [disease]);
   const symptoms = useMemo(() => toList(disease?.symptoms), [disease]);
+  const sources = useMemo(() => toList(disease?.sources), [disease]);
 
   if (error) {
     return <ErrorState title="Disease profile unavailable" message={error} />;
@@ -73,6 +74,10 @@ function DiseaseDetail() {
             </span>
           ))}
         </div>
+        <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-5">
+          <div className="text-sm uppercase tracking-[0.18em] text-slate-500">Clinical overview</div>
+          <p className="mt-3 leading-7 text-slate-600">{disease.causes}</p>
+        </div>
       </GlassCard>
 
       <section className="grid gap-6 lg:grid-cols-2">
@@ -101,6 +106,23 @@ function DiseaseDetail() {
           ) : (
             <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-600">
               No emergency signs listed for this condition.
+            </div>
+          )}
+        </div>
+      </GlassCard>
+
+      <GlassCard className="p-6">
+        <h2 className="text-xl font-semibold text-slate-900">References</h2>
+        <div className="mt-4 flex flex-wrap gap-3">
+          {sources.length ? (
+            sources.map((source) => (
+              <span key={source} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600">
+                {source}
+              </span>
+            ))
+          ) : (
+            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-600">
+              Reference sources were not provided for this entry.
             </div>
           )}
         </div>
