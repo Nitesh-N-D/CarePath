@@ -60,15 +60,31 @@ function DiseaseLibrary() {
 
   return (
     <div className="space-y-8">
-      <section className="max-w-4xl">
-        <p className="section-heading">Disease Encyclopedia</p>
-        <h1 className="mt-3 text-4xl font-semibold">Search structured condition profiles with symptoms, causes, treatment, and prevention.</h1>
-        <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
-          The encyclopedia is now a dedicated product area inside CarePath, so users, doctors, and admins can access it directly from the app shell.
-        </p>
+      <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+        <div className="max-w-4xl">
+          <p className="section-heading">Disease Encyclopedia</p>
+          <h1 className="mt-3 text-4xl font-semibold">Search structured condition profiles with symptoms, causes, treatment, and prevention.</h1>
+          <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
+            Explore a cleaner medical reference system inside CarePath with search, filters, and detailed condition pages that are easier to scan and easier to trust.
+          </p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-3 xl:grid-cols-1">
+          <GlassCard className="p-5">
+            <div className="text-sm text-slate-500 dark:text-slate-400">Conditions indexed</div>
+            <div className="mt-2 text-3xl font-semibold">{results.length || "--"}</div>
+          </GlassCard>
+          <GlassCard className="p-5">
+            <div className="text-sm text-slate-500 dark:text-slate-400">Body systems</div>
+            <div className="mt-2 text-3xl font-semibold">{bodySystems.length || "--"}</div>
+          </GlassCard>
+          <GlassCard className="p-5">
+            <div className="text-sm text-slate-500 dark:text-slate-400">Categories</div>
+            <div className="mt-2 text-3xl font-semibold">{categories.length || "--"}</div>
+          </GlassCard>
+        </div>
       </section>
 
-      <GlassCard className="p-6">
+      <GlassCard className="sticky top-24 z-10 p-6">
         <SearchBar
           defaultValue={query}
           onSearch={(value) => {
@@ -116,13 +132,13 @@ function DiseaseLibrary() {
       {error ? <ErrorState title="Disease library unavailable" message={error} actionLabel="Retry" onAction={() => void loadDiseases()} /> : null}
 
       {loading ? (
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
           {Array.from({ length: 6 }).map((_, index) => (
             <LoadingSkeleton key={index} className="h-72" />
           ))}
         </div>
       ) : results.length ? (
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
           {results.map((disease) => (
             <DiseaseCard key={disease.id} disease={disease} />
           ))}

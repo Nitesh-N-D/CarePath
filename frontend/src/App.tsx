@@ -52,7 +52,14 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/diseases/:slug" element={<DiseaseDetail />} />
-          <Route path="/diseases" element={<DiseaseLibrary />} />
+          <Route
+            path="/diseases"
+            element={
+              <ProtectedRoute allowedRoles={["user", "doctor", "admin"]}>
+                <DiseaseLibrary />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/bmi"
             element={

@@ -40,9 +40,6 @@ function Sidebar() {
                 </div>
               </div>
             </div>
-            <div className="mt-4 rounded-xl border border-borderLight bg-background/80 px-4 py-3 text-sm text-slate-600 dark:border-borderDark dark:bg-backgroundDark/70 dark:text-slate-300">
-              Move between your dashboard modules from one consistent left navigation.
-            </div>
           </div>
 
           <nav className="mt-6 space-y-2">
