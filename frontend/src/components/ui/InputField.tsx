@@ -14,17 +14,17 @@ function InputField({ label, className = "", placeholder = " ", ...props }: Inpu
       <input
         placeholder={placeholder}
         type={resolvedType}
-        className={`field-shell peer w-full rounded-2xl px-4 pb-3 pt-6 outline-none transition duration-300 placeholder:text-transparent shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] focus:border-[rgba(49,88,79,0.4)] focus:shadow-[0_0_0_4px_rgba(49,88,79,0.12)] ${isPasswordField ? "pr-14" : ""} ${className}`}
+        className={`field-shell peer w-full rounded-xl px-4 pb-3 pt-6 placeholder:text-transparent ${isPasswordField ? "pr-14" : ""} ${className}`}
         {...props}
       />
-      <span className="pointer-events-none absolute left-4 top-2 text-xs uppercase tracking-[0.18em] text-[var(--color-text-soft)] transition duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-xs peer-focus:tracking-[0.18em] peer-focus:text-[var(--color-accent)]">
+      <span className="pointer-events-none absolute left-4 top-2 text-xs uppercase tracking-[0.18em] text-slate-500 transition duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-xs peer-focus:tracking-[0.18em] peer-focus:text-primary dark:text-slate-400 dark:peer-focus:text-accent">
         {label}
       </span>
       {isPasswordField ? (
         <button
           type="button"
           onClick={() => setPasswordVisible((current) => !current)}
-          className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full text-[var(--color-text-soft)] transition duration-200 hover:bg-[rgba(49,88,79,0.08)] hover:text-[var(--color-text)]"
+          className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full text-slate-500 transition-all duration-300 hover:bg-primary/5 hover:text-textPrimary dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-textDark"
           aria-label={passwordVisible ? "Hide password" : "Show password"}
         >
           {passwordVisible ? (

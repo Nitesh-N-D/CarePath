@@ -19,7 +19,7 @@ type GradientButtonAsLink = SharedProps &
 type GradientButtonProps = GradientButtonAsButton | GradientButtonAsLink;
 
 function baseClassName(className = "") {
-  return `inline-flex items-center justify-center rounded-2xl border px-5 py-3 font-semibold text-white shadow-[0_14px_32px_rgba(38,31,26,0.18)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_42px_rgba(38,31,26,0.22)] disabled:cursor-not-allowed disabled:opacity-60 ${className}`;
+  return `inline-flex items-center justify-center rounded-xl border px-5 py-3 font-semibold text-white shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-60 ${className}`;
 }
 
 function GradientButton(props: GradientButtonProps) {
@@ -28,7 +28,7 @@ function GradientButton(props: GradientButtonProps) {
     return (
       <Link
         to={to}
-        className={`border-[rgba(166,124,82,0.28)] bg-[linear-gradient(135deg,#183c38_0%,#31544d_58%,#8b6a46_100%)] ${baseClassName(
+        className={`border-primary/20 bg-gradient-to-r from-primary to-accent ${baseClassName(
           className
         )}`}
         {...rest}
@@ -41,7 +41,7 @@ function GradientButton(props: GradientButtonProps) {
   const { children, className, ...rest } = props;
   return (
     <button
-      className={`border-[rgba(166,124,82,0.28)] bg-[linear-gradient(135deg,#183c38_0%,#31544d_58%,#8b6a46_100%)] ${baseClassName(
+      className={`border-primary/20 bg-gradient-to-r from-primary to-accent ${baseClassName(
         className
       )}`}
       {...rest}

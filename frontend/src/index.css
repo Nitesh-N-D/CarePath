@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -7,57 +7,72 @@
 @layer base {
   :root {
     color-scheme: light;
-    --font-sans: "Manrope", sans-serif;
-    --font-display: "Cormorant Garamond", serif;
-    --color-bg: #f5f0e8;
-    --color-surface: rgba(255, 251, 245, 0.82);
-    --color-surface-strong: rgba(255, 255, 255, 0.9);
-    --color-border: rgba(123, 97, 71, 0.16);
-    --color-text: #261f1a;
-    --color-text-soft: #66584b;
-    --color-accent: #1f5c52;
-    --color-accent-soft: #dfeee8;
-    --color-hero: #1f2d2a;
-    font-family: var(--font-sans);
+    --color-bg: #f8fafc;
+    --color-bg-elevated: #ffffff;
+    --color-surface: rgba(255, 255, 255, 0.82);
+    --color-surface-strong: #ffffff;
+    --color-border: #e5e7eb;
+    --color-border-strong: rgba(15, 23, 42, 0.08);
+    --color-text: #0f172a;
+    --color-text-soft: #475569;
+    --color-primary: #0f766e;
+    --color-primary-dark: #065f46;
+    --color-accent: #06b6d4;
+    --color-accent-soft: rgba(6, 182, 212, 0.12);
+    --color-sidebar: rgba(255, 255, 255, 0.84);
   }
 
-  html[data-theme="dark"] {
+  html.dark {
     color-scheme: dark;
-    --color-bg: #0d1516;
-    --color-surface: rgba(20, 28, 30, 0.78);
-    --color-surface-strong: rgba(27, 36, 38, 0.92);
-    --color-border: rgba(196, 179, 154, 0.14);
-    --color-text: #f4ede3;
-    --color-text-soft: #c6b8a8;
-    --color-accent: #90c2b0;
-    --color-accent-soft: rgba(52, 79, 73, 0.55);
-    --color-hero: #111a1b;
-  }
-
-  body {
-    @apply m-0 min-h-screen antialiased;
-    color: var(--color-text);
-    background-image:
-      radial-gradient(circle at top left, rgba(193, 173, 147, 0.26), transparent 24%),
-      radial-gradient(circle at top right, rgba(67, 112, 99, 0.12), transparent 18%),
-      radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.65), transparent 18%),
-      linear-gradient(180deg, #f8f4ee 0%, var(--color-bg) 42%, #efe7dc 100%);
-    background-attachment: fixed;
+    --color-bg: #0b1220;
+    --color-bg-elevated: #111827;
+    --color-surface: rgba(17, 24, 39, 0.88);
+    --color-surface-strong: #111827;
+    --color-border: rgba(255, 255, 255, 0.08);
+    --color-border-strong: rgba(255, 255, 255, 0.12);
+    --color-text: #e5e7eb;
+    --color-text-soft: #94a3b8;
+    --color-primary: #14b8a6;
+    --color-primary-dark: #0f766e;
+    --color-accent: #22d3ee;
+    --color-accent-soft: rgba(34, 211, 238, 0.12);
+    --color-sidebar: rgba(11, 18, 32, 0.84);
   }
 
   html {
     scroll-behavior: smooth;
   }
 
+  body {
+    @apply m-0 flex min-h-screen flex-col bg-background text-textPrimary antialiased dark:bg-backgroundDark dark:text-textDark;
+    background-image:
+      radial-gradient(circle at top left, rgba(15, 118, 110, 0.12), transparent 24%),
+      radial-gradient(circle at top right, rgba(6, 182, 212, 0.1), transparent 18%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, transparent 40%);
+    background-attachment: fixed;
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  }
+
+  html.dark body {
+    background-image:
+      radial-gradient(circle at top left, rgba(15, 118, 110, 0.2), transparent 24%),
+      radial-gradient(circle at top right, rgba(6, 182, 212, 0.16), transparent 18%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 45%);
+  }
+
+  #root {
+    @apply flex min-h-screen flex-1 flex-col;
+  }
+
   * {
-    @apply border-slate-200;
+    @apply border-borderLight dark:border-borderDark;
   }
 
   h1,
   h2,
-  h3 {
-    font-family: var(--font-display);
-    letter-spacing: -0.02em;
+  h3,
+  h4 {
+    @apply tracking-tight text-textPrimary dark:text-textDark;
   }
 
   p,
@@ -67,156 +82,122 @@
   textarea,
   select,
   button,
-  a {
-    font-family: var(--font-sans);
+  a,
+  th,
+  td {
+    @apply text-textPrimary dark:text-textDark;
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
   }
 }
 
 @layer components {
   .glass-panel {
-    background: linear-gradient(180deg, var(--color-surface-strong), var(--color-surface));
-    border: 1px solid var(--color-border);
-    box-shadow: 0 24px 60px rgba(44, 32, 18, 0.09);
-    @apply rounded-[30px] backdrop-blur-xl;
-  }
-
-  .gradient-text {
-    background-image: linear-gradient(90deg, #1d2926 0%, #31584f 55%, #a67c52 100%);
-    @apply bg-clip-text text-transparent;
-  }
-
-  .premium-orb {
-    @apply absolute rounded-full blur-3xl;
-  }
-
-  .dark-panel {
-    background: linear-gradient(145deg, #17201f 0%, #111917 58%, #233532 100%);
-    border: 1px solid rgba(194, 179, 154, 0.14);
-    color: #f7f0e8;
-    box-shadow: 0 24px 80px rgba(10, 14, 15, 0.32);
-    @apply rounded-[32px];
-  }
-
-  .section-heading {
-    color: var(--color-accent);
-    @apply text-sm font-semibold uppercase tracking-[0.3em];
-  }
-
-  .page-shell {
-    @apply min-h-screen;
-    color: var(--color-text);
-  }
-
-  .eyebrow {
-    color: var(--color-accent);
-    @apply text-xs font-semibold uppercase tracking-[0.34em];
-  }
-
-  .editorial-title {
-    color: var(--color-text);
-    font-family: var(--font-display);
-    @apply text-5xl font-semibold leading-[0.95] md:text-7xl;
-  }
-
-  .soft-panel {
-    background: rgba(255, 252, 247, 0.72);
-    border: 1px solid var(--color-border);
-    @apply rounded-[26px];
+    @apply rounded-xl border border-borderLight bg-card/90 shadow-soft backdrop-blur-md transition-all duration-300 hover:scale-[1.01] hover:shadow-premium dark:border-borderDark dark:bg-cardDark/90;
   }
 
   .field-shell {
-    background: var(--color-surface-strong);
-    border: 1px solid var(--color-border);
-    color: var(--color-text);
+    @apply rounded-2xl border border-borderLight bg-card px-4 text-textPrimary shadow-sm transition-all duration-300 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 dark:border-borderDark dark:bg-cardDark dark:text-textDark dark:focus:border-accent dark:focus:ring-accent/10;
+  }
+
+  .section-heading {
+    @apply text-xs font-semibold uppercase tracking-[0.28em] text-primary dark:text-accent;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.34em] text-primary dark:text-accent;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary via-teal-500 to-accent bg-clip-text text-transparent;
+  }
+
+  .page-shell {
+    @apply min-h-screen text-textPrimary dark:text-textDark;
+  }
+
+  .app-shell {
+    @apply min-h-screen bg-transparent;
+  }
+
+  .app-sidebar-surface {
+    @apply border-r border-borderLight bg-white/70 backdrop-blur-md dark:border-borderDark dark:bg-black/40;
+  }
+
+  .app-sidebar-link {
+    @apply flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600 transition-all duration-300 hover:scale-[1.02] hover:bg-slate-900/5 hover:text-textPrimary dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-textDark;
+  }
+
+  .app-sidebar-link-active {
+    @apply bg-primary/10 text-primary shadow-soft dark:bg-accent/10 dark:text-accent;
+  }
+
+  .topbar-shell {
+    @apply sticky top-0 z-40 border-b border-borderLight bg-white/70 shadow-sm backdrop-blur-md dark:border-borderDark dark:bg-black/40;
+  }
+
+  .soft-panel {
+    @apply rounded-2xl border border-borderLight bg-card/80 shadow-soft dark:border-borderDark dark:bg-cardDark/80;
   }
 
   .muted-copy {
-    color: var(--color-text-soft);
+    @apply text-slate-600 dark:text-slate-300;
   }
 }
 
-html[data-theme="dark"] body {
-  color: var(--color-text);
-  background-image:
-    radial-gradient(circle at top left, rgba(67, 112, 99, 0.18), transparent 20%),
-    radial-gradient(circle at top right, rgba(176, 141, 95, 0.1), transparent 18%),
-    linear-gradient(180deg, #0c1314 0%, var(--color-bg) 55%, #0f1718 100%);
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
 }
 
-html[data-theme="dark"] header,
-html[data-theme="dark"] footer,
-html[data-theme="dark"] aside > div,
-html[data-theme="dark"] .glass-panel,
-html[data-theme="dark"] .soft-panel,
-html[data-theme="dark"] .field-shell {
-  background: linear-gradient(180deg, rgba(25, 34, 36, 0.96), rgba(18, 26, 27, 0.92)) !important;
-  color: var(--color-text) !important;
-  border-color: var(--color-border) !important;
-}
-
-html[data-theme="dark"] .gradient-text {
-  background-image: linear-gradient(90deg, #f8f1e8, #9ac8ba, #d6b084);
-}
-
-html[data-theme="dark"] input,
-html[data-theme="dark"] textarea,
-html[data-theme="dark"] select,
-html[data-theme="dark"] table,
-html[data-theme="dark"] th,
-html[data-theme="dark"] td {
-  background: rgba(18, 26, 27, 0.92) !important;
-  color: var(--color-text) !important;
-  border-color: var(--color-border) !important;
-}
-
-html[data-theme="dark"] p,
-html[data-theme="dark"] span,
-html[data-theme="dark"] label,
-html[data-theme="dark"] div,
-html[data-theme="dark"] h1,
-html[data-theme="dark"] h2,
-html[data-theme="dark"] h3 {
-  border-color: var(--color-border);
-}
-
-html[data-theme="dark"] .text-slate-900,
-html[data-theme="dark"] .text-slate-800,
-html[data-theme="dark"] .text-slate-700,
-html[data-theme="dark"] .text-slate-600,
-html[data-theme="dark"] .text-slate-500,
-html[data-theme="dark"] .text-cyan-800,
-html[data-theme="dark"] .text-sky-700 {
+.text-slate-900,
+.text-slate-800,
+.text-slate-700,
+.text-black {
   color: var(--color-text) !important;
 }
 
-html[data-theme="dark"] .text-slate-400 {
+.text-slate-600,
+.text-slate-500,
+.text-slate-400,
+.text-sky-700,
+.text-cyan-800 {
   color: var(--color-text-soft) !important;
 }
 
-html[data-theme="dark"] .bg-slate-50,
-html[data-theme="dark"] .bg-stone-50,
-html[data-theme="dark"] .bg-cyan-50,
-html[data-theme="dark"] .bg-emerald-50,
-html[data-theme="dark"] .bg-amber-50,
-html[data-theme="dark"] .bg-rose-50,
-html[data-theme="dark"] .bg-yellow-50,
-html[data-theme="dark"] .bg-white,
-html[data-theme="dark"] .bg-white\/10,
-html[data-theme="dark"] .bg-white\/70,
-html[data-theme="dark"] .bg-white\/80,
-html[data-theme="dark"] .bg-white\/90,
-html[data-theme="dark"] .bg-white\/95 {
-  background: rgba(23, 31, 33, 0.9) !important;
+.bg-white,
+.bg-white\/70,
+.bg-white\/80,
+.bg-white\/90,
+.bg-white\/95,
+.bg-slate-50,
+.bg-stone-50,
+.bg-cyan-50,
+.bg-emerald-50,
+.bg-amber-50,
+.bg-rose-50,
+.bg-yellow-50 {
+  background-color: var(--color-bg-elevated) !important;
 }
 
-html[data-theme="dark"] .border-slate-200,
-html[data-theme="dark"] .border-stone-200,
-html[data-theme="dark"] .border-white\/80,
-html[data-theme="dark"] .border-white\/90,
-html[data-theme="dark"] .border-cyan-100,
-html[data-theme="dark"] .border-emerald-200,
-html[data-theme="dark"] .border-amber-200,
-html[data-theme="dark"] .border-rose-200,
-html[data-theme="dark"] .border-yellow-200 {
+.bg-slate-900,
+.bg-black {
+  background-color: #0f172a !important;
+}
+
+html.dark .bg-slate-900,
+html.dark .bg-black {
+  background-color: #020617 !important;
+}
+
+.border-slate-200,
+.border-stone-200,
+.border-cyan-100,
+.border-emerald-200,
+.border-amber-200,
+.border-rose-200,
+.border-yellow-200,
+.border-slate-100,
+.border-slate-300 {
   border-color: var(--color-border) !important;
 }

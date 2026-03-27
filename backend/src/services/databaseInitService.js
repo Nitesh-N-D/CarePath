@@ -15,6 +15,13 @@ async function runSchema() {
   await pool.query(schema);
 }
 
+async function runCompatibilityMigrations() {
+  await pool.query(`
+    ALTER TABLE user_profiles
+    ADD COLUMN IF NOT EXISTS phone TEXT
+  `);
+}
+
 async function seedDiseases() {
   const diseases = await readJson("data/diseases.json");
 
@@ -101,6 +108,7 @@ async function seedDoctorDirectory() {
 
 async function initializeDatabase() {
   await runSchema();
+  await runCompatibilityMigrations();
   await seedDiseases();
   await seedDoctorDirectory();
 }

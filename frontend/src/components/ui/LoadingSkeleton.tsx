@@ -3,7 +3,7 @@ interface LoadingSkeletonProps {
 }
 
 function LoadingSkeleton({ className = "" }: LoadingSkeletonProps) {
-  return <div className={`animate-pulse rounded-2xl bg-slate-200/80 ${className}`} />;
+  return <div className={`animate-pulse rounded-xl bg-gray-200 dark:bg-gray-700 ${className}`} />;
 }
 
 export default LoadingSkeleton;

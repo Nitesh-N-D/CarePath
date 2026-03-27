@@ -1,9 +1,12 @@
 import type { ReactNode } from "react";
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
+import Button from "./ui/Button";
 
 interface LayoutProps {
   children: ReactNode;
@@ -13,7 +16,9 @@ const APP_PATHS = ["/dashboard", "/health", "/doctor", "/admin", "/assistant", "
 
 function Layout({ children }: LayoutProps) {
   const location = useLocation();
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const isAppSurface = APP_PATHS.some(
     (path) => location.pathname === path || location.pathname.startsWith(`${path}/`)
   );
@@ -32,54 +37,79 @@ function Layout({ children }: LayoutProps) {
     }
   }, [location.hash, location.pathname]);
 
+  if (isAppSurface) {
+    return (
+      <div className="app-shell flex min-h-screen flex-col">
+        <div className="flex min-h-screen flex-1">
+          <Sidebar />
+          <div className="flex min-w-0 flex-1 flex-col">
+            <div className="topbar-shell">
+              <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-[0.24em] text-primary dark:text-accent">
+                    CarePath
+                  </div>
+                  <div className="mt-1 text-lg font-semibold text-textPrimary dark:text-textDark">
+                    {user?.role === "admin" ? "Admin dashboard" : user?.role === "doctor" ? "Clinician dashboard" : "Health dashboard"}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={toggleTheme}
+                    className="rounded-xl border border-borderLight bg-card/90 px-3 py-2 text-sm text-textPrimary shadow-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-md dark:border-borderDark dark:bg-cardDark/90 dark:text-textDark"
+                  >
+                    {theme === "dark" ? "🌞 Light" : "🌙 Dark"}
+                  </button>
+                  <div className="hidden rounded-xl border border-borderLight bg-card/90 px-4 py-2 text-sm text-slate-600 shadow-sm dark:border-borderDark dark:bg-cardDark/90 dark:text-slate-300 sm:block">
+                    {user?.name || "CarePath member"}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => {
+                      logout();
+                      navigate("/");
+                    }}
+                    className="rounded-xl"
+                  >
+                    Logout
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <main className="mx-auto flex w-full max-w-7xl flex-grow flex-col px-4 py-8 sm:px-6">{children}</main>
+          </div>
+        </div>
+        <footer className="border-t border-borderLight bg-card/60 dark:border-borderDark dark:bg-cardDark/50">
+          <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4 py-6 text-sm text-slate-500 sm:px-6 md:flex-row md:items-center md:justify-between dark:text-slate-400">
+            <div>CarePath keeps tracking, AI guidance, and follow-up in one connected workspace.</div>
+            <div className="flex gap-5">
+              <a href="/settings" className="hover:text-textPrimary dark:hover:text-textDark">Settings</a>
+              <a href="/assistant" className="hover:text-textPrimary dark:hover:text-textDark">AI Assistant</a>
+            </div>
+          </div>
+        </footer>
+      </div>
+    );
+  }
+
   return (
     <div className="page-shell flex min-h-screen flex-col">
       <Navbar />
-      <main
-        className={
-          isAppSurface
-            ? "mx-auto flex w-full max-w-7xl flex-grow flex-col px-4 py-8 sm:px-6"
-            : "flex w-full flex-grow flex-col py-8"
-        }
-      >
-        {children}
-      </main>
-      <footer className="border-t border-[var(--color-border)] bg-[rgba(255,255,255,0.48)]">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-8 text-sm text-[var(--color-text-soft)] sm:px-6 md:flex-row md:items-center md:justify-between">
+      <main className="flex w-full flex-grow flex-col py-8">{children}</main>
+      <footer className="border-t border-borderLight bg-card/60 dark:border-borderDark dark:bg-cardDark/50">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-8 text-sm text-slate-500 sm:px-6 md:flex-row md:items-center md:justify-between dark:text-slate-400">
           <div>
-            <div className="font-semibold text-[var(--color-text)]">CarePath</div>
+            <div className="font-semibold text-textPrimary dark:text-textDark">CarePath</div>
             <div className="mt-1 max-w-xl">
-              {isAppSurface
-                ? `Signed in${user ? ` as ${user.name}` : ""}. Your care workspace stays connected across tracking, AI guidance, and follow-up.`
-                : "A modern healthcare SaaS experience for tracking, understanding, and acting on your health with more clarity."}
+              A modern healthcare SaaS experience for tracking, understanding, and acting on your health with more clarity.
             </div>
           </div>
           <div className="flex gap-6">
-            {isAppSurface ? (
-              <>
-                <a href={user?.role === "admin" ? "/admin" : user?.role === "doctor" ? "/doctor" : "/dashboard"} className="hover:text-[var(--color-text)]">
-                  Dashboard
-                </a>
-                <a href="/assistant" className="hover:text-[var(--color-text)]">
-                  AI Assistant
-                </a>
-                <a href="/settings" className="hover:text-[var(--color-text)]">
-                  Settings
-                </a>
-              </>
-            ) : (
-              <>
-                <a href="/#features" className="hover:text-[var(--color-text)]">
-                  Features
-                </a>
-                <a href="/#doctors" className="hover:text-[var(--color-text)]">
-                  Doctors
-                </a>
-                <a href="/#cta" className="hover:text-[var(--color-text)]">
-                  Get Started
-                </a>
-              </>
-            )}
+            <a href="/#features" className="hover:text-textPrimary dark:hover:text-textDark">Features</a>
+            <a href="/#doctors" className="hover:text-textPrimary dark:hover:text-textDark">Doctors</a>
+            <a href="/register" className="hover:text-textPrimary dark:hover:text-textDark">Get Started</a>
           </div>
         </div>
       </footer>

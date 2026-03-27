@@ -1,35 +1,38 @@
 # CarePath
 
-CarePath is a production-oriented healthcare SaaS platform for disease education, personal health tracking, AI-guided support, clinical collaboration, and admin operations.
+CarePath is a production-oriented healthcare SaaS application for personal health tracking, AI-guided support, disease understanding, doctor discovery, clinician collaboration, and role-based operations.
 
-The current build includes:
+This project is built to feel like a real product, not a demo page collection. It includes a premium landing page, a role-aware authenticated dashboard shell, patient health workflows, clinician tools, and admin controls.
 
-- Structured disease encyclopedia with search and filters
-- JWT auth, Google sign-in, forgot/reset password flows
-- Persistent user profile storage for age, gender, weight, height, location, medications, and conditions
-- Health tracking for BP, sugar, BMI, sleep, and weekly trend analytics
+## Product Highlights
+
+- Disease encyclopedia with structured symptoms, causes, treatments, prevention, and detail pages
+- User authentication with JWT sessions and Google sign-in support
+- Patient dashboard with BMI, blood pressure, sugar, sleep, risk scoring, charts, weekly insights, and PDF export
 - AI assistant with local Ollama support or API-based LLM fallback
-- Weekly health report generation and PDF export
-- Doctor recommendation engine
-- Medication reminders with scheduler-backed notifications
-- Doctor dashboard with patient risk visibility and clinical notes
-- Admin dashboard for user oversight, assignments, reminder totals, and AI usage totals
-- Responsive premium dashboard UI with dark mode toggle
+- Doctor recommendations based on health context and location
+- Medication reminders with notification feed
+- Doctor dashboard for assigned patient review and clinical notes
+- Admin dashboard for platform analytics, assignments, and operations
+- Dedicated settings page for account details, password management, theme, and preferences
+- Light and dark theme support with a centralized design system
+- Premium landing page with motion, section navigation, and SaaS-style product storytelling
 
 ## Stack
 
-Frontend:
+### Frontend
 
 - React 19
 - TypeScript
 - Vite
 - Tailwind CSS
 - React Router
+- Framer Motion
 - Recharts
 - Axios
 - jsPDF
 
-Backend:
+### Backend
 
 - Node.js
 - Express
@@ -39,7 +42,7 @@ Backend:
 - bcrypt
 - Nodemailer
 
-## Folder Structure
+## Project Structure
 
 ```text
 CarePath/
@@ -63,46 +66,85 @@ CarePath/
 |   |   |-- pages/
 |   |   |-- services/
 |   |   `-- types/
-|   `-- .env.example
+|   |-- .env.example
+|   `-- tailwind.config.js
 `-- README.md
 ```
 
-## Key Product Modules
+## Role-Based Experience
 
-### Disease Encyclopedia
+### Patient
 
-- Static disease dataset seeded into PostgreSQL on startup
-- Structured records with symptoms, causes, diagnosis, treatment, prevention, emergency signs, and sources
-- Search by query plus body-system and category filters
-- Detail pages with clean cards and references
+- Left sidebar dashboard navigation
+- Health overview
+- BMI calculator
+- AI assistant
+- Doctor recommendations
+- Settings
 
-### Patient Workspace
+### Doctor
 
-- Persistent profile and health logs
-- BMI auto-calculation and category labeling
-- Risk alerts for blood pressure, glucose, BMI, and sleep
-- Weekly insights engine and exportable PDF report
-- Reminder management and in-app notification feed
+- Left sidebar dashboard navigation
+- Assigned patient workspace
+- BMI calculator
+- AI assistant
+- Settings
 
-### AI Assistant
+### Admin
 
-- `/api/assistant/chat` route
-- Health-context prompt built from profile, risk score, weekly report, and disease context
-- Configurable local Ollama support via `AI_PROVIDER=ollama`
-- Configurable OpenAI-compatible endpoint support via `AI_PROVIDER=api`
-- Stored chat history per user
+- Left sidebar dashboard navigation
+- Admin operations dashboard
+- BMI calculator
+- AI assistant
+- Doctor management
+- Settings
 
-### Doctor Workspace
+## Environment Setup
 
-- Assigned patient list
-- Latest health snapshot and risk score visibility
-- Clinical note persistence
+### Backend `.env`
 
-### Admin Workspace
+Copy:
 
-- User oversight
-- Doctor assignment workflow
-- Total users, doctors, assignments, health logs, reminders, and AI message analytics
+```powershell
+cd backend
+Copy-Item .env.example .env
+```
+
+Expected core variables:
+
+```env
+PORT=5000
+NODE_ENV=development
+DATABASE_URL=postgresql://username:password@localhost:5432/carepath
+JWT_SECRET=replace_with_a_long_random_secret
+JWT_EXPIRES_IN=7d
+APP_URL=http://localhost:5173
+CORS_ORIGINS=http://localhost:5173
+
+AI_PROVIDER=ollama
+OLLAMA_URL=http://127.0.0.1:11434/api/chat
+OLLAMA_MODEL=llama3.1
+
+LLM_API_BASE_URL=
+LLM_API_KEY=
+LLM_MODEL=gpt-4o-mini
+```
+
+### Frontend `.env`
+
+Copy:
+
+```powershell
+cd frontend
+Copy-Item .env.example .env
+```
+
+Expected core variables:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000/api
+VITE_GOOGLE_CLIENT_ID=
+```
 
 ## Local Development
 
@@ -115,51 +157,43 @@ cd ../frontend
 npm install
 ```
 
-### 2. Configure environment files
+### 2. Start PostgreSQL
 
-Backend:
+Make sure your `DATABASE_URL` points to a running PostgreSQL database.
 
-```powershell
-Copy-Item .env.example .env
-```
-
-Frontend:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-### 3. Start PostgreSQL
-
-Point `DATABASE_URL` in `backend/.env` at a reachable PostgreSQL database.
-
-### 4. Start the backend
+### 3. Run the backend
 
 ```powershell
 cd backend
 npm run dev
 ```
 
-The backend boot process now:
+On startup, the backend now:
 
-- runs the database schema
-- seeds diseases
+- runs the schema
+- applies compatibility migrations
+- seeds disease data
 - seeds doctor recommendations
-- starts the medication reminder scheduler
+- starts the reminder scheduler
 
-### 5. Start the frontend
+Important:
+
+- If you previously ran CarePath before the `phone` field was added, restart the backend once after pulling latest changes.
+- The backend now adds the missing `phone` column automatically with `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`.
+
+### 4. Run the frontend
 
 ```powershell
 cd frontend
 npm run dev
 ```
 
-Default local URLs:
+### 5. Open locally
 
 - Frontend: `http://localhost:5173`
 - Backend API: `http://localhost:5000/api`
 
-## Production Deployment
+## Production Notes
 
 ### Frontend
 
@@ -190,31 +224,65 @@ LLM_API_KEY=
 LLM_MODEL=gpt-4o-mini
 ```
 
-Use `AI_PROVIDER=api` when pointing at an external OpenAI-compatible model endpoint.
+Use `AI_PROVIDER=api` if you want an external OpenAI-compatible endpoint instead of Ollama.
+
+## Key Functional Areas
+
+### Disease Encyclopedia
+
+- PostgreSQL-backed seeded dataset
+- Search and filters
+- Detail pages
+
+### Health Tracking
+
+- Profile persistence
+- BMI auto-calculation
+- BP, sugar, and sleep logging
+- Risk scoring
+- Weekly report generation
+- PDF export
+
+### AI Assistant
+
+- Stored chat history
+- Context-aware prompting
+- Ollama-compatible by default
+
+### Recommendations and Reminders
+
+- Doctor recommendation engine
+- Medication reminders
+- Notification feed
+
+### Admin and Clinical Operations
+
+- Clinician notes
+- Admin assignment workflows
+- Usage analytics
 
 ## Scripts
 
-Frontend:
+### Frontend
 
 ```powershell
 npm run lint
 npm run build
 ```
 
-Backend:
+### Backend
 
 ```powershell
 npm run dev
 npm run start
 ```
 
-## Recommended Commit Sequence
+## UX Notes
 
-1. `feat(db): add profile, reminders, assistant, doctor directory, and clinical note schema`
-2. `feat(api): add dashboard analytics, assistant chat, recommendations, reminders, and seeded startup`
-3. `feat(ui): rebuild patient dashboard with AI, reports, reminders, and premium analytics`
-4. `feat(clinician): upgrade doctor and admin workspaces with live operational data`
-5. `chore(seo-docs): add metadata, sitemap, robots, env examples, and deployment docs`
+- The public landing page is marketing-only.
+- Authenticated users move through a left-sidebar dashboard shell.
+- Phone number is edited only in Settings.
+- Footer `Get Started` now routes directly to signup instead of a dead anchor path.
 
 ## Verification
 
@@ -222,9 +290,22 @@ Verified in this workspace:
 
 - `frontend`: `npm run lint`
 - `frontend`: `npm run build`
-- `backend`: app import and route boot sanity check via `node`
 
-## Notes
+## Suggested Portfolio Screens
 
-- The frontend is Vite-based rather than full Next.js. The product requirements were implemented in the existing architecture so the platform is shippable without a risky framework migration in the same pass.
-- Screenshots were not generated from the CLI session. Capture the home page, patient dashboard, doctor dashboard, and admin dashboard after running locally for portfolio presentation.
+- Landing page hero
+- Patient dashboard
+- Doctor dashboard
+- Admin dashboard
+- Settings page
+
+## Commit History So Far
+
+1. `7195895` `feat(db): add healthcare intelligence schema and seed data`
+2. `e46217e` `feat(api): add assistant, analytics, reminders, and care workflows`
+3. `6b17832` `feat(ui): rebuild patient experience with insights, AI, and dark mode`
+4. `c40b092` `feat(ops): upgrade doctor and admin workspaces`
+5. `4cbe42b` `chore(seo-docs): add deployment docs and search metadata`
+6. `10dd1d9` `feat(ai): add provider-aware assistant service`
+7. `19c2ad3` `feat(theme): refine CarePath brand and global dark mode`
+8. `ef2b39e` `feat(shell): separate marketing landing and role navigation`

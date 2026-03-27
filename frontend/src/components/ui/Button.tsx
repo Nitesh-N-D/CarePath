@@ -24,18 +24,18 @@ type ButtonProps = ButtonAsButton | ButtonAsLink;
 function getVariantClassName(variant: Variant) {
   switch (variant) {
     case "secondary":
-      return "border border-[var(--color-border)] bg-[rgba(255,248,240,0.7)] text-[var(--color-text)] hover:bg-[rgba(49,88,79,0.08)]";
+      return "border border-borderLight bg-card text-textPrimary shadow-md hover:scale-[1.02] hover:shadow-xl dark:border-borderDark dark:bg-cardDark dark:text-textDark dark:hover:bg-white/5";
     case "outline":
-      return "border border-[var(--color-border)] bg-[rgba(255,255,255,0.64)] text-[var(--color-text)] hover:bg-[rgba(49,88,79,0.08)]";
+      return "border border-borderLight bg-transparent text-textPrimary hover:scale-[1.02] hover:bg-primary/5 hover:shadow-md dark:border-borderDark dark:text-textDark dark:hover:bg-white/5";
     case "ghost":
-      return "bg-transparent text-[var(--color-text-soft)] hover:bg-[rgba(49,88,79,0.08)] hover:text-[var(--color-text)]";
+      return "bg-transparent text-slate-600 hover:scale-[1.02] hover:bg-primary/5 hover:text-textPrimary dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-textDark";
     default:
-      return "border border-[rgba(166,124,82,0.24)] bg-[linear-gradient(135deg,#183c38_0%,#2d5249_55%,#8b6a46_100%)] text-white hover:brightness-105";
+      return "border border-primary/20 bg-gradient-to-r from-primary to-accent text-white shadow-md hover:scale-[1.02] hover:shadow-xl";
   }
 }
 
 function baseClassName(variant: Variant, className = "") {
-  return `inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-medium shadow-sm transition duration-200 disabled:cursor-not-allowed disabled:opacity-60 ${getVariantClassName(variant)} ${className}`;
+  return `inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 ${getVariantClassName(variant)} ${className}`;
 }
 
 function Button(props: ButtonProps) {

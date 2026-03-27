@@ -2,58 +2,75 @@ import { NavLink } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
 
+type SidebarItem = {
+  to: string;
+  label: string;
+  roles: Array<"user" | "doctor" | "admin">;
+};
+
+const items: SidebarItem[] = [
+  { to: "/dashboard", label: "Dashboard", roles: ["user"] },
+  { to: "/doctor", label: "Dashboard", roles: ["doctor"] },
+  { to: "/admin", label: "Dashboard", roles: ["admin"] },
+  { to: "/health", label: "Health", roles: ["user"] },
+  { to: "/bmi", label: "BMI Calculator", roles: ["user", "doctor", "admin"] },
+  { to: "/assistant", label: "AI Assistant", roles: ["user", "doctor", "admin"] },
+  { to: "/doctors", label: "Doctors", roles: ["user", "admin"] },
+  { to: "/settings", label: "Settings", roles: ["user", "doctor", "admin"] },
+];
+
 function Sidebar() {
   const { user } = useAuth();
-
-  const items = [
-    { to: "/", label: "Home", roles: ["user", "doctor", "admin"] },
-    { to: "/dashboard", label: "My Health", roles: ["user", "admin"] },
-    { to: "/doctor", label: "Doctor Panel", roles: ["doctor", "admin"] },
-    { to: "/admin", label: "Admin Panel", roles: ["admin"] },
-  ];
-
   const visibleItems = items.filter((item) => (user ? item.roles.includes(user.role) : false));
 
   return (
     <>
-      <aside className="hidden w-72 shrink-0 lg:block">
-        <div className="glass-panel sticky top-24 p-5">
-          <div className="mb-6 border-b border-[var(--color-border)] pb-4">
-            <p className="text-xs uppercase tracking-[0.22em] text-[var(--color-text-soft)]">Navigation</p>
-            <h2 className="mt-2 text-xl font-semibold text-[var(--color-text)]">CarePath</h2>
-            <p className="mt-2 text-sm text-[var(--color-text-soft)]">Move between your health pages, medical references, and care dashboards.</p>
+      <aside className="hidden w-80 shrink-0 xl:block">
+        <div className="app-sidebar-surface sticky top-0 flex min-h-screen flex-col px-6 py-6">
+          <div className="rounded-2xl border border-borderLight bg-card/80 p-5 shadow-soft dark:border-borderDark dark:bg-cardDark/80">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent text-sm font-semibold text-white shadow-md">
+                CP
+              </div>
+              <div>
+                <div className="text-base font-semibold text-textPrimary dark:text-textDark">CarePath</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">
+                  {user?.role === "admin" ? "Admin workspace" : user?.role === "doctor" ? "Clinician workspace" : "Patient workspace"}
+                </div>
+              </div>
+            </div>
+            <div className="mt-4 rounded-xl border border-borderLight bg-background/80 px-4 py-3 text-sm text-slate-600 dark:border-borderDark dark:bg-backgroundDark/70 dark:text-slate-300">
+              Move between your dashboard modules from one consistent left navigation.
+            </div>
           </div>
 
-          <nav className="space-y-2">
+          <nav className="mt-6 space-y-2">
             {visibleItems.map((item) => (
               <NavLink
-                key={item.to}
+                key={`${item.to}-${item.label}`}
                 to={item.to}
                 className={({ isActive }) =>
-                  `block rounded-2xl px-4 py-3 text-sm transition duration-300 ${
-                    isActive
-                      ? "bg-[linear-gradient(135deg,rgba(223,238,232,0.95),rgba(255,252,247,0.9),rgba(214,176,132,0.16))] text-[var(--color-text)] shadow-[0_0_0_1px_rgba(123,97,71,0.08)]"
-                      : "text-[var(--color-text-soft)] hover:bg-[rgba(49,88,79,0.08)] hover:text-[var(--color-text)]"
-                  }`
+                  `app-sidebar-link ${isActive ? "app-sidebar-link-active" : ""}`
                 }
               >
-                {item.label}
+                <span className="h-2.5 w-2.5 rounded-full bg-current/70" />
+                <span>{item.label}</span>
               </NavLink>
             ))}
           </nav>
         </div>
       </aside>
 
-      <div className="mb-4 flex gap-2 overflow-x-auto lg:hidden">
+      <div className="mb-6 flex gap-2 overflow-x-auto xl:hidden">
         {visibleItems.map((item) => (
           <NavLink
-            key={item.to}
+            key={`mobile-${item.to}-${item.label}`}
             to={item.to}
             className={({ isActive }) =>
-              `whitespace-nowrap rounded-full px-4 py-2 text-sm transition ${
+              `whitespace-nowrap rounded-xl border px-4 py-2.5 text-sm font-medium transition-all duration-300 ${
                 isActive
-                  ? "bg-[linear-gradient(135deg,#183c38_0%,#31544d_58%,#8b6a46_100%)] text-white"
-                  : "border border-[var(--color-border)] bg-[rgba(255,255,255,0.66)] text-[var(--color-text-soft)]"
+                  ? "border-primary/20 bg-primary/10 text-primary dark:border-accent/30 dark:bg-accent/10 dark:text-accent"
+                  : "border-borderLight bg-card/90 text-slate-600 hover:scale-[1.02] dark:border-borderDark dark:bg-cardDark/90 dark:text-slate-300"
               }`
             }
           >

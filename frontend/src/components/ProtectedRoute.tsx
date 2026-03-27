@@ -16,8 +16,8 @@ function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <GlassCard className="flex items-center gap-3 px-6 py-4 text-sm text-slate-700">
-          <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-sky-500" />
+        <GlassCard className="flex items-center gap-3 px-6 py-4 text-sm">
+          <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-accent" />
           Validating your secure CarePath session...
         </GlassCard>
       </div>
