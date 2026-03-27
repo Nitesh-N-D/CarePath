@@ -1,89 +1,24 @@
 # CarePath
 
-CarePath is a full-stack healthcare SaaS platform built for modern health monitoring, clinical collaboration, and structured medical knowledge delivery.
+CarePath is a production-oriented healthcare SaaS platform for disease education, personal health tracking, AI-guided support, clinical collaboration, and admin operations.
 
-It combines:
+The current build includes:
 
-- Personal health tracking
-- Disease knowledge search
-- Doctor and admin workflows
-- JWT authentication
-- Google sign-in
-- Password reset
-- PDF report generation
-- Premium SaaS-style UI
+- Structured disease encyclopedia with search and filters
+- JWT auth, Google sign-in, forgot/reset password flows
+- Persistent user profile storage for age, gender, weight, height, location, medications, and conditions
+- Health tracking for BP, sugar, BMI, sleep, and weekly trend analytics
+- AI assistant with local Ollama support or API-based LLM fallback
+- Weekly health report generation and PDF export
+- Doctor recommendation engine
+- Medication reminders with scheduler-backed notifications
+- Doctor dashboard with patient risk visibility and clinical notes
+- Admin dashboard for user oversight, assignments, reminder totals, and AI usage totals
+- Responsive premium dashboard UI with dark mode toggle
 
-## Live Demo
+## Stack
 
-- Frontend: `https://care-path-two.vercel.app`
-- Backend: `https://carepath-xnsd.onrender.com`
-- API healthcheck: `https://carepath-xnsd.onrender.com/api/healthcheck`
-
-## Highlights
-
-- Premium React + TypeScript frontend with Tailwind CSS
-- Responsive product UI for mobile, tablet, laptop, and desktop
-- Role-based dashboards for `user`, `doctor`, and `admin`
-- Glassmorphism + premium medical UI styling
-- Health analytics with Recharts
-- PDF export for health reports
-- Google OAuth login
-- Password reset email flow
-- PostgreSQL database with Neon-compatible connection
-- Express API with JWT auth, route protection, and validation
-- Deployment-ready setup for Vercel + Render + Neon
-
-## Product Modules
-
-### 1. Personal Health Monitoring
-
-Users can log and review:
-
-- Weight
-- Height
-- Blood pressure
-- Sugar level
-- Sleep hours
-
-The dashboard includes:
-
-- KPI cards
-- Trend charts
-- Weekly summaries
-- Risk alerts
-- PDF report export
-
-### 2. Disease Knowledge
-
-The platform includes a structured disease library with:
-
-- Overview
-- Causes
-- Symptoms
-- Diagnosis
-- Treatment
-- Prevention
-- Emergency signs
-
-### 3. Doctor Workspace
-
-Doctors can:
-
-- View assigned patients
-- Review patient summaries
-- Add clinical notes
-
-### 4. Admin Workspace
-
-Admins can:
-
-- View users
-- Review analytics
-- Assign doctors to patients
-
-## Tech Stack
-
-### Frontend
+Frontend:
 
 - React 19
 - TypeScript
@@ -93,9 +28,8 @@ Admins can:
 - Recharts
 - Axios
 - jsPDF
-- jspdf-autotable
 
-### Backend
+Backend:
 
 - Node.js
 - Express
@@ -105,350 +39,192 @@ Admins can:
 - bcrypt
 - Nodemailer
 
-### Infrastructure
-
-- Frontend hosting: Vercel
-- Backend hosting: Render
-- Database: Neon PostgreSQL
-- Google OAuth: Google Cloud Console
-
-## Repository Structure
+## Folder Structure
 
 ```text
 CarePath/
-├── backend/
-│   ├── src/
-│   │   ├── config/
-│   │   ├── controllers/
-│   │   ├── middleware/
-│   │   ├── routes/
-│   │   ├── services/
-│   │   └── utils/
-│   ├── db/
-│   │   └── schema.sql
-│   ├── server.js
-│   └── .env.example
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── context/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   └── types/
-│   ├── vite.config.ts
-│   └── .env.example
-└── README.md
+|-- backend/
+|   |-- data/
+|   |-- db/
+|   |-- src/
+|   |   |-- config/
+|   |   |-- controllers/
+|   |   |-- middleware/
+|   |   |-- routes/
+|   |   |-- services/
+|   |   `-- utils/
+|   |-- .env.example
+|   `-- server.js
+|-- frontend/
+|   |-- public/
+|   |-- src/
+|   |   |-- components/
+|   |   |-- context/
+|   |   |-- pages/
+|   |   |-- services/
+|   |   `-- types/
+|   `-- .env.example
+`-- README.md
 ```
 
-## Authentication
+## Key Product Modules
 
-CarePath supports:
+### Disease Encyclopedia
 
-- Email + password signup
-- Email + password login
-- Google sign-in
-- Persistent login using local storage
-- JWT-based session handling
-- Forgot password
-- Reset password
-- Protected routes
-- Role-based route guards
+- Static disease dataset seeded into PostgreSQL on startup
+- Structured records with symptoms, causes, diagnosis, treatment, prevention, emergency signs, and sources
+- Search by query plus body-system and category filters
+- Detail pages with clean cards and references
 
-## Roles
+### Patient Workspace
 
-### User
+- Persistent profile and health logs
+- BMI auto-calculation and category labeling
+- Risk alerts for blood pressure, glucose, BMI, and sleep
+- Weekly insights engine and exportable PDF report
+- Reminder management and in-app notification feed
 
-- Track health logs
-- View dashboard analytics
-- Export PDF reports
+### AI Assistant
 
-### Doctor
+- `/api/assistant/chat` route
+- Health-context prompt built from profile, risk score, weekly report, and disease context
+- Configurable local Ollama support via `AI_PROVIDER=ollama`
+- Configurable OpenAI-compatible endpoint support via `AI_PROVIDER=api`
+- Stored chat history per user
 
-- View assigned patients
-- Review patient health data
-- Add notes
+### Doctor Workspace
 
-### Admin
+- Assigned patient list
+- Latest health snapshot and risk score visibility
+- Clinical note persistence
 
-- View all users
-- Manage doctor assignments
-- Review system analytics
+### Admin Workspace
 
-## API Routes
+- User oversight
+- Doctor assignment workflow
+- Total users, doctors, assignments, health logs, reminders, and AI message analytics
 
-### Auth
+## Local Development
 
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `POST /api/auth/google`
-- `POST /api/auth/forgot-password`
-- `POST /api/auth/reset-password`
-- `GET /api/auth/me`
+### 1. Install dependencies
 
-### Health
-
-- `GET /api/health`
-- `POST /api/health`
-
-### Admin
-
-- `GET /api/admin/users`
-- `GET /api/admin/analytics`
-- `PUT /api/admin/assign-doctor`
-
-### Doctor
-
-- `GET /api/doctor/patients`
-
-### Diseases
-
-- `GET /api/diseases`
-- `GET /api/diseases/search`
-- `GET /api/diseases/:slug`
-
-## Database Schema
-
-Main tables:
-
-- `users`
-- `health_logs`
-- `doctors`
-- `patient_assignments`
-- `password_resets`
-- `diseases`
-
-See the full schema in `backend/db/schema.sql`.
-
-See the full schema in [backend/db/schema.sql](c:/Users/Nitesh/OneDrive/Documents/CarePath/backend/db/schema.sql).
-
-## Local Setup
-
-### 1. Clone the repository
-
-```bash
-git clone <your-repo-url>
-cd CarePath
-```
-
-### 2. Install backend dependencies
-
-```bash
+```powershell
 cd backend
 npm install
-```
-
-### 3. Install frontend dependencies
-
-```bash
 cd ../frontend
 npm install
 ```
 
-### 4. Configure environment variables
+### 2. Configure environment files
 
 Backend:
 
-Copy `backend/.env.example` to `backend/.env`
+```powershell
+Copy-Item .env.example .env
+```
 
 Frontend:
 
-Copy `frontend/.env.example` to `frontend/.env`
+```powershell
+Copy-Item .env.example .env
+```
 
-### 5. Run the backend
+### 3. Start PostgreSQL
 
-```bash
+Point `DATABASE_URL` in `backend/.env` at a reachable PostgreSQL database.
+
+### 4. Start the backend
+
+```powershell
 cd backend
 npm run dev
 ```
 
-### 6. Run the frontend
+The backend boot process now:
 
-```bash
+- runs the database schema
+- seeds diseases
+- seeds doctor recommendations
+- starts the medication reminder scheduler
+
+### 5. Start the frontend
+
+```powershell
 cd frontend
 npm run dev
 ```
 
-Frontend usually runs on:
+Default local URLs:
 
-```text
-http://localhost:5173
-```
-
-Backend usually runs on:
-
-```text
-http://localhost:5000
-```
-
-## Environment Variables
-
-### Backend `.env`
-
-```env
-PORT=5000
-NODE_ENV=development
-DATABASE_URL=postgres://user:password@host:5432/carepath
-JWT_SECRET=replace-with-a-long-random-secret
-JWT_EXPIRES_IN=7d
-APP_URL=https://care-path-two.vercel.app
-CORS_ORIGINS=http://localhost:5173,https://care-path-two.vercel.app
-MAIL_FROM=CarePath <no-reply@carepath.app>
-SMTP_HOST=
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USER=
-SMTP_PASS=
-```
-
-### Frontend `.env`
-
-```env
-VITE_API_BASE_URL=https://carepath-xnsd.onrender.com/api
-VITE_GOOGLE_CLIENT_ID=
-```
-
-## Google OAuth Setup
-
-In Google Cloud Console, use:
-
-### Authorized JavaScript origins
-
-- `https://care-path-two.vercel.app`
-- `http://localhost:5173`
-
-### Authorized redirect URIs
-
-- `https://care-path-two.vercel.app`
-- `http://localhost:5173`
-
-Then set:
-
-```env
-VITE_GOOGLE_CLIENT_ID=your_google_client_id
-```
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:5000/api`
 
 ## Production Deployment
 
-### Frontend on Vercel
+### Frontend
 
 Set:
 
 ```env
-VITE_API_BASE_URL=https://carepath-xnsd.onrender.com/api
+VITE_API_BASE_URL=https://your-api-domain/api
 VITE_GOOGLE_CLIENT_ID=your_google_client_id
 ```
 
-### Backend on Render
+### Backend
 
 Set:
 
 ```env
 PORT=5000
 NODE_ENV=production
-DATABASE_URL=your_neon_database_url
-JWT_SECRET=your_secret
+DATABASE_URL=your_postgres_connection_string
+JWT_SECRET=your_long_random_secret
 JWT_EXPIRES_IN=7d
-APP_URL=https://care-path-two.vercel.app
-CORS_ORIGINS=http://localhost:5173,https://care-path-two.vercel.app
-MAIL_FROM=CarePath <no-reply@carepath.app>
-SMTP_HOST=your_smtp_host
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USER=your_smtp_user
-SMTP_PASS=your_smtp_pass
+APP_URL=https://your-frontend-domain
+CORS_ORIGINS=https://your-frontend-domain,http://localhost:5173
+AI_PROVIDER=ollama
+OLLAMA_URL=http://127.0.0.1:11434/api/chat
+OLLAMA_MODEL=llama3.1
+LLM_API_BASE_URL=
+LLM_API_KEY=
+LLM_MODEL=gpt-4o-mini
 ```
 
-## Build Commands
+Use `AI_PROVIDER=api` when pointing at an external OpenAI-compatible model endpoint.
 
-### Frontend
+## Scripts
 
-```bash
+Frontend:
+
+```powershell
 npm run lint
 npm run build
 ```
 
-### Backend
+Backend:
 
-```bash
+```powershell
+npm run dev
 npm run start
 ```
 
-## Production Notes
+## Recommended Commit Sequence
 
-- Routes are lazy-loaded for better frontend performance
-- PDF dependencies are loaded on demand
-- Vite chunking is configured to reduce initial bundle pressure
-- The frontend auto-normalizes backend URLs to include `/api`
-- The backend supports older user table schemas as a compatibility fallback
+1. `feat(db): add profile, reminders, assistant, doctor directory, and clinical note schema`
+2. `feat(api): add dashboard analytics, assistant chat, recommendations, reminders, and seeded startup`
+3. `feat(ui): rebuild patient dashboard with AI, reports, reminders, and premium analytics`
+4. `feat(clinician): upgrade doctor and admin workspaces with live operational data`
+5. `chore(seo-docs): add metadata, sitemap, robots, env examples, and deployment docs`
 
-## Troubleshooting
+## Verification
 
-### 1. Login returns 404
+Verified in this workspace:
 
-Make sure:
+- `frontend`: `npm run lint`
+- `frontend`: `npm run build`
+- `backend`: app import and route boot sanity check via `node`
 
-```env
-VITE_API_BASE_URL=https://carepath-xnsd.onrender.com/api
-```
+## Notes
 
-If `/api` is missing, auth routes will fail.
-
-### 2. Backend root shows `Route not found: GET /`
-
-After deploying the latest backend, the root URL should show a friendly API status response.
-
-Use:
-
-- `https://carepath-xnsd.onrender.com/`
-- `https://carepath-xnsd.onrender.com/api`
-- `https://carepath-xnsd.onrender.com/api/healthcheck`
-
-### 3. `column "role" does not exist`
-
-Run this SQL on the production database:
-
-```sql
-ALTER TABLE users
-ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'user';
-
-ALTER TABLE users
-ADD CONSTRAINT users_role_check
-CHECK (role IN ('user', 'doctor', 'admin'));
-```
-
-If old doctor users already exist:
-
-```sql
-UPDATE users
-SET role = 'doctor'
-WHERE id IN (
-  SELECT user_id FROM doctors
-);
-```
-
-### 4. Google login is not working
-
-Check:
-
-- `VITE_GOOGLE_CLIENT_ID` is set in Vercel
-- Google OAuth origins match your deployed frontend
-- backend CORS includes your Vercel domain
-
-
-
-## Future Improvements
-
-- AI assistant integration with source-backed responses
-- Pandemic timeline and public health analytics
-- Medication reminders
-- Better doctor note persistence
-- File uploads for profile and reports
-- Audit logs for admin actions
-
-## License
-
-This project is for educational, portfolio, and product demonstration purposes.
-
-## Author
-
-Built by Nitesh N D 
+- The frontend is Vite-based rather than full Next.js. The product requirements were implemented in the existing architecture so the platform is shippable without a risky framework migration in the same pass.
+- Screenshots were not generated from the CLI session. Capture the home page, patient dashboard, doctor dashboard, and admin dashboard after running locally for portfolio presentation.
