@@ -2,9 +2,11 @@ import { motion, useMotionValue, useScroll, useSpring, useTransform } from "fram
 import { useMemo } from "react";
 
 import Button from "../components/ui/Button";
+import DiseaseCard from "../components/DiseaseCard";
 import GradientButton from "../components/ui/GradientButton";
 import GlassCard from "../components/ui/GlassCard";
 import { useAuth } from "../context/AuthContext";
+import type { Disease } from "../types/disease";
 
 const featureCards = [
   { title: "Disease Library", copy: "Search structured medical references with symptoms, causes, treatment, and prevention in a cleaner format.", icon: "DL" },
@@ -27,6 +29,54 @@ const timeline = [
   { title: "Understand your data", copy: "See BMI, charts, alerts, and weekly reporting without manual spreadsheets." },
   { title: "Get AI insights", copy: "Ask questions and receive context-aware guidance grounded in your record." },
   { title: "Take action", copy: "Follow reminders and move directly into suggested doctor options." },
+];
+
+const diseasePreview: Disease[] = [
+  {
+    id: "preview-hypertension",
+    name: "Hypertension",
+    slug: "hypertension",
+    body_system: "Cardiovascular",
+    category: "Chronic",
+    symptoms: ["Headache", "Dizziness", "Blurred vision"],
+    causes: "Often linked to genetics, sodium intake, stress, inactivity, and long-term cardiovascular strain.",
+    diagnosis: "",
+    treatment: "",
+    prevention: "",
+    emergency_signs: [],
+    sources: [],
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "preview-diabetes",
+    name: "Type 2 Diabetes",
+    slug: "type-2-diabetes",
+    body_system: "Endocrine",
+    category: "Chronic",
+    symptoms: ["Fatigue", "Frequent urination", "Increased thirst"],
+    causes: "Insulin resistance shaped by genetics, body weight, activity level, sleep, and dietary pattern.",
+    diagnosis: "",
+    treatment: "",
+    prevention: "",
+    emergency_signs: [],
+    sources: [],
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "preview-asthma",
+    name: "Asthma",
+    slug: "asthma",
+    body_system: "Respiratory",
+    category: "Chronic",
+    symptoms: ["Wheezing", "Chest tightness", "Shortness of breath"],
+    causes: "Triggered by airway inflammation, allergens, pollution, exercise, or infection.",
+    diagnosis: "",
+    treatment: "",
+    prevention: "",
+    emergency_signs: [],
+    sources: [],
+    created_at: new Date().toISOString(),
+  },
 ];
 
 function Home() {
@@ -183,6 +233,32 @@ function Home() {
                 <div className="mt-5 text-2xl font-semibold text-slate-900">{card.title}</div>
                 <div className="mt-3 text-sm leading-7 text-slate-600">{card.copy}</div>
               </GlassCard>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      <section id="disease-library" className="space-y-8">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-3xl">
+            <div className="eyebrow">Disease library</div>
+            <h2 className="mt-4 text-4xl font-semibold text-slate-900">Explore the encyclopedia directly from the landing page.</h2>
+            <p className="mt-4 text-sm leading-7 text-slate-600">
+              Browse structured condition profiles with symptoms, causes, treatment, and prevention before you even sign in.
+            </p>
+          </div>
+          <Button to="/diseases" variant="outline">Open Disease Library</Button>
+        </div>
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {diseasePreview.map((disease, index) => (
+            <motion.div
+              key={disease.id}
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.45, delay: index * 0.06 }}
+            >
+              <DiseaseCard disease={disease} />
             </motion.div>
           ))}
         </div>
