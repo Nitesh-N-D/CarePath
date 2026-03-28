@@ -61,12 +61,12 @@ function DiseaseLibrary() {
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 pb-8 sm:gap-8">
-      <section className="relative overflow-hidden rounded-[2rem] border border-borderLight bg-card/95 px-6 py-7 shadow-[0_30px_80px_rgba(15,23,42,0.08)] dark:border-borderDark dark:bg-cardDark/95 sm:px-8 sm:py-8">
+      <section className="relative overflow-hidden rounded-[2rem] border border-borderLight bg-card/95 px-5 py-6 shadow-[0_30px_80px_rgba(15,23,42,0.08)] dark:border-borderDark dark:bg-cardDark/95 sm:px-8 sm:py-8">
         <div className="absolute inset-x-12 top-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
         <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-4xl">
             <Button to="/#disease-library" variant="secondary" className="mb-5 w-full gap-2 rounded-xl px-4 py-2.5 shadow-sm sm:w-auto">
-              <span aria-hidden="true">←</span>
+              <span aria-hidden="true">&larr;</span>
               Back to landing page
             </Button>
             <p className="section-heading">Disease Encyclopedia</p>
@@ -95,8 +95,8 @@ function DiseaseLibrary() {
         </div>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)] xl:items-start">
-        <GlassCard className="p-6 xl:sticky xl:top-24">
+      <section className="grid gap-6 xl:grid-cols-[300px_minmax(0,1fr)] xl:items-start">
+        <GlassCard className="p-5 sm:p-6 xl:sticky xl:top-24">
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent">Search and filter</p>
             <h2 className="text-xl font-semibold tracking-tight text-textPrimary dark:text-textDark sm:text-2xl">Find a condition quickly</h2>
@@ -151,19 +151,21 @@ function DiseaseLibrary() {
           </div>
         </GlassCard>
 
-        <div className="space-y-5">
+        <div className="min-w-0 space-y-5">
           {error ? <ErrorState title="Disease library unavailable" message={error} actionLabel="Retry" onAction={() => void loadDiseases()} /> : null}
 
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-text-soft)]">Results</p>
-              <h2 className="mt-1 text-2xl font-semibold tracking-tight text-textPrimary dark:text-textDark">
-                {loading ? "Loading conditions..." : `${results.length} condition${results.length === 1 ? "" : "s"} available`}
-              </h2>
+          <div className="rounded-[1.5rem] border border-borderLight bg-card/80 px-5 py-4 dark:border-borderDark dark:bg-cardDark/70">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-text-soft)]">Results</p>
+                <h2 className="mt-1 text-xl font-semibold tracking-tight text-textPrimary dark:text-textDark sm:text-2xl">
+                  {loading ? "Loading conditions..." : `${results.length} condition${results.length === 1 ? "" : "s"} available`}
+                </h2>
+              </div>
+              {!loading && (query || bodySystem || category) ? (
+                <p className="text-sm text-slate-500 dark:text-slate-400">Refine or clear your filters to broaden the results.</p>
+              ) : null}
             </div>
-            {!loading && (query || bodySystem || category) ? (
-              <p className="text-sm text-slate-500 dark:text-slate-400">Refine or clear your filters to broaden the results.</p>
-            ) : null}
           </div>
 
           {loading ? (

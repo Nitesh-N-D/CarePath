@@ -83,7 +83,7 @@ function DiseaseDetail() {
           Back to disease library
         </Button>
         <Button to="/#disease-library" variant="outline" className="w-full gap-2 rounded-xl px-4 py-2.5 sm:w-auto">
-          <span aria-hidden="true">Back</span>
+          <span aria-hidden="true">←</span>
           Back to landing page
         </Button>
       </div>
