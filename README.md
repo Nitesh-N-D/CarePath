@@ -4,6 +4,11 @@ CarePath is a production-style healthcare SaaS application built for modern heal
 
 It combines a premium public landing experience with a role-based authenticated dashboard for patients, doctors, and admins.
 
+## Live Links
+
+- Live app: https://carepath.app
+- Live API: https://carepath-xnsd.onrender.com/api
+
 ## Highlights
 
 - Premium SaaS landing page with public disease library access
@@ -311,7 +316,7 @@ npm run dev
 Recommended for Vercel:
 
 ```env
-VITE_API_BASE_URL=https://your-api-domain/api
+VITE_API_BASE_URL=https://carepath-xnsd.onrender.com/api
 VITE_GOOGLE_CLIENT_ID=your_google_client_id
 ```
 
@@ -325,8 +330,8 @@ NODE_ENV=production
 DATABASE_URL=your_postgres_connection_string
 JWT_SECRET=your_long_random_secret
 JWT_EXPIRES_IN=7d
-APP_URL=https://your-frontend-domain
-CORS_ORIGINS=https://your-frontend-domain,http://localhost:5173
+APP_URL=https://carepath.app
+CORS_ORIGINS=https://carepath.app,http://localhost:5173
 MAIL_FROM=CarePath <no-reply@your-domain.com>
 SMTP_HOST=your_smtp_host
 SMTP_PORT=587
