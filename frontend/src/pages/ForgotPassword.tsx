@@ -34,10 +34,10 @@ function ForgotPassword() {
   };
 
   return (
-    <div className="mx-auto flex min-h-[78vh] max-w-md items-center">
+    <div className="mx-auto flex min-h-[78vh] w-full max-w-md items-center px-1 sm:px-0">
       <GlassCard className="w-full p-6 sm:p-8">
         <p className="eyebrow">Password recovery</p>
-        <h1 className="mt-3 text-4xl font-semibold text-slate-900">Reset your CarePath password</h1>
+        <h1 className="mt-3 text-3xl font-semibold text-slate-900 sm:text-4xl">Reset your CarePath password</h1>
         <p className="mt-3 text-slate-600">We&apos;ll send a secure link if your CarePath account exists.</p>
         {message ? <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">{message}</div> : null}
         {error ? <div className="mt-6"><ErrorState title="Reset email failed" message={error} /></div> : null}

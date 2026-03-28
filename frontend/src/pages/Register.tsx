@@ -60,11 +60,11 @@ function Register() {
   };
 
   return (
-    <div className="mx-auto flex min-h-[78vh] max-w-xl items-center">
+    <div className="mx-auto flex min-h-[78vh] w-full max-w-xl items-center px-1 sm:px-0">
       <GlassCard className="w-full overflow-hidden p-6 sm:p-8">
         <div className="mb-8 text-center">
           <Badge tone="accent">Join CarePath</Badge>
-          <h1 className="mt-4 text-5xl font-semibold text-slate-900">Create your CarePath account</h1>
+          <h1 className="mt-4 text-3xl font-semibold text-slate-900 sm:text-5xl">Create your CarePath account</h1>
           <p className="mt-3 text-slate-600">
             Start a more organized way to follow your health, review conditions, and stay connected with care guidance.
           </p>
@@ -76,12 +76,12 @@ function Register() {
           </div>
         ) : null}
 
-        <form onSubmit={submit} className="grid gap-4 md:grid-cols-2">
+        <form onSubmit={submit} className="grid gap-4 sm:grid-cols-2">
           <InputField
             label="Full name"
             value={form.name}
             onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
-            className="md:col-span-2"
+            className="sm:col-span-2"
             required
           />
           <InputField
@@ -89,7 +89,7 @@ function Register() {
             type="email"
             value={form.email}
             onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
-            className="md:col-span-2"
+            className="sm:col-span-2"
             required
           />
           <InputField
@@ -114,7 +114,7 @@ function Register() {
               <option value="admin">Admin</option>
             </select>
           </label>
-          <GradientButton type="submit" disabled={submitting} className="w-full md:col-span-2">
+          <GradientButton type="submit" disabled={submitting} className="w-full sm:col-span-2">
             {submitting ? "Creating account..." : "Create account"}
           </GradientButton>
         </form>

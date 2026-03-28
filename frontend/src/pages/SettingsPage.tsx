@@ -19,14 +19,16 @@ function SettingsPage() {
   const [passwordForm, setPasswordForm] = useState({ currentPassword: "", newPassword: "" });
   const [notifications, setNotifications] = useState(true);
   const [message, setMessage] = useState("");
+  const [profileLoadError, setProfileLoadError] = useState("");
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await API.get<UserProfile | null>("/health/profile");
         setProfile(response.data);
-      } catch (requestError) {
-        console.error(requestError);
+        setProfileLoadError("");
+      } catch {
+        setProfileLoadError("Unable to load your saved health profile right now.");
       }
     };
 
@@ -76,9 +78,17 @@ function SettingsPage() {
   const deleteAccount = async () => {
     const confirmed = window.confirm("Delete this account permanently?");
     if (!confirmed) return;
-    await API.delete("/auth/account");
-    logout();
-    navigate("/");
+    try {
+      await API.delete("/auth/account");
+      logout();
+      navigate("/");
+    } catch (requestError) {
+      setMessage(
+        axios.isAxiosError(requestError)
+          ? requestError.response?.data?.message || "Unable to delete account right now."
+          : "Unable to delete account right now."
+      );
+    }
   };
 
   const handleLogout = () => {
@@ -96,6 +106,12 @@ function SettingsPage() {
       {message ? (
         <div className="rounded-xl border border-borderLight bg-card/90 px-4 py-3 text-sm shadow-sm dark:border-borderDark dark:bg-cardDark/90">
           {message}
+        </div>
+      ) : null}
+
+      {profileLoadError ? (
+        <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-100">
+          {profileLoadError}
         </div>
       ) : null}
 

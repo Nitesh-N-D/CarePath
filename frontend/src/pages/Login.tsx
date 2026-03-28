@@ -61,11 +61,11 @@ function Login() {
   };
 
   return (
-    <div className="mx-auto flex min-h-[78vh] max-w-md items-center">
+    <div className="mx-auto flex min-h-[78vh] w-full max-w-md items-center px-1 sm:px-0">
       <GlassCard className="w-full overflow-hidden p-6 sm:p-8">
         <div className="mb-8 text-center">
           <Badge tone="accent">Sign in to CarePath</Badge>
-          <h1 className="mt-4 text-5xl font-semibold text-slate-900">Welcome back</h1>
+          <h1 className="mt-4 text-3xl font-semibold text-slate-900 sm:text-5xl">Welcome back</h1>
           <p className="mt-3 text-slate-600">
             Return to your health journal, disease reference, reminder schedule, and personal care history.
           </p>
@@ -111,7 +111,7 @@ function Login() {
           Continue with Google
         </Button>
 
-        <div className="mt-6 flex items-center justify-between text-sm text-slate-500">
+        <div className="mt-6 flex flex-col gap-3 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
           <Link to="/forgot-password" className="hover:text-slate-900">
             Forgot password?
           </Link>

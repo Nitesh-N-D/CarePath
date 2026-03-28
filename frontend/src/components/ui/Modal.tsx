@@ -16,15 +16,15 @@ function Modal({ open, title, children, onClose }: ModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/20 p-4 backdrop-blur-md">
-      <GlassCard className="w-full max-w-xl p-6">
-        <div className="flex items-center justify-between gap-4">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/30 p-3 backdrop-blur-md sm:items-center sm:p-4">
+      <GlassCard className="max-h-[90vh] w-full max-w-xl overflow-y-auto p-5 sm:p-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h3 className="text-xl font-semibold text-slate-900">{title}</h3>
           <Button
             type="button"
             variant="outline"
             onClick={onClose}
-            className="rounded-full px-4 py-2"
+            className="w-full rounded-full px-4 py-2 sm:w-auto"
           >
             Close
           </Button>

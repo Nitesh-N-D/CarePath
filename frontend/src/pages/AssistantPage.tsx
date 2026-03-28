@@ -2,6 +2,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
+import ErrorState from "../components/ui/ErrorState";
 import GlassCard from "../components/ui/GlassCard";
 import GradientButton from "../components/ui/GradientButton";
 import LoadingSkeleton from "../components/ui/LoadingSkeleton";
@@ -116,6 +117,15 @@ function AssistantPage() {
         <h1 className="mt-3 text-3xl font-semibold text-slate-900 sm:text-4xl">Ask CarePath about your health patterns and next steps.</h1>
         <p className="mt-3 text-sm leading-7 text-slate-600">This assistant now streams responses in real time and reads your CarePath profile, risk score, and recent entries before responding, so the conversation feels specific rather than generic.</p>
       </section>
+
+      {error && !messages.length && !sending ? (
+        <ErrorState
+          title="Assistant unavailable"
+          message={error}
+          actionLabel="Retry"
+          onAction={() => window.location.reload()}
+        />
+      ) : null}
 
       <GlassCard className="overflow-hidden p-0">
         <div className="border-b border-[var(--color-border)] px-4 py-5 sm:px-6">

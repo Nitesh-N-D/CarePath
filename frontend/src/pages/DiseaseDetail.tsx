@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Button from "../components/ui/Button";
@@ -37,18 +37,30 @@ function DiseaseDetail() {
   const [disease, setDisease] = useState<Disease | null>(null);
   const [error, setError] = useState("");
 
+  const fetchDisease = useCallback(async () => {
+    try {
+      const response = await API.get<Disease>(`/diseases/${slug}`);
+      setDisease(response.data);
+      setError("");
+    } catch (requestError) {
+      console.error(requestError);
+      setError("Unable to load this disease profile.");
+    }
+  }, [slug]);
+
   useEffect(() => {
-    const fetchDisease = async () => {
+    const loadDisease = async () => {
       try {
         const response = await API.get<Disease>(`/diseases/${slug}`);
         setDisease(response.data);
+        setError("");
       } catch (requestError) {
         console.error(requestError);
         setError("Unable to load this disease profile.");
       }
     };
 
-    void fetchDisease();
+    void loadDisease();
   }, [slug]);
 
   const emergencySigns = useMemo(() => toList(disease?.emergency_signs), [disease]);
@@ -56,7 +68,7 @@ function DiseaseDetail() {
   const sources = useMemo(() => toList(disease?.sources), [disease]);
 
   if (error) {
-    return <ErrorState title="Disease profile unavailable" message={error} />;
+    return <ErrorState title="Disease profile unavailable" message={error} actionLabel="Retry" onAction={() => void fetchDisease()} />;
   }
 
   if (!disease) {

@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import axios from "axios";
+import { useCallback, useEffect, useState } from "react";
 
+import ErrorState from "../components/ui/ErrorState";
 import GlassCard from "../components/ui/GlassCard";
 import LoadingSkeleton from "../components/ui/LoadingSkeleton";
 import API from "../services/api";
@@ -8,21 +10,28 @@ import type { DoctorRecommendation } from "../types/health";
 function DoctorsPage() {
   const [doctors, setDoctors] = useState<DoctorRecommendation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const fetchDoctors = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await API.get<DoctorRecommendation[]>("/health/doctor-recommendations");
+      setDoctors(response.data);
+      setError("");
+    } catch (requestError) {
+      setError(
+        axios.isAxiosError(requestError)
+          ? requestError.response?.data?.message || "Unable to load doctor recommendations right now."
+          : "Unable to load doctor recommendations right now."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const response = await API.get<DoctorRecommendation[]>("/health/doctor-recommendations");
-        setDoctors(response.data);
-      } catch (requestError) {
-        console.error(requestError);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     void fetchDoctors();
-  }, []);
+  }, [fetchDoctors]);
 
   return (
     <div className="space-y-8">
@@ -31,6 +40,8 @@ function DoctorsPage() {
         <h1 className="mt-3 text-3xl font-semibold text-slate-900 sm:text-4xl">Recommended clinicians and specialists connected to your CarePath record.</h1>
         <p className="mt-3 text-sm leading-7 text-slate-600">Find relevant specialists based on your condition history and location so follow-up feels faster and more intentional.</p>
       </section>
+
+      {error ? <ErrorState title="Doctors unavailable" message={error} actionLabel="Retry" onAction={() => void fetchDoctors()} /> : null}
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {loading
