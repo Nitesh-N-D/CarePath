@@ -1,5 +1,9 @@
 # CarePath
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-carepath.app-0F766E?style=for-the-badge)](https://carepath.app)
+[![API](https://img.shields.io/badge/API-onrender-0891B2?style=for-the-badge)](https://carepath-xnsd.onrender.com/api)
+[![License](https://img.shields.io/badge/License-MIT-111827?style=for-the-badge)](./LICENSE)
+
 CarePath is a production-style healthcare SaaS application built for modern health tracking, AI-guided support, disease understanding, doctor discovery, and role-based care operations.
 
 It combines a premium public landing experience with a role-based authenticated dashboard for patients, doctors, and admins.
