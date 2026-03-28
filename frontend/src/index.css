@@ -121,14 +121,29 @@
 
   .app-sidebar-surface {
     @apply border-r border-borderLight bg-white/70 backdrop-blur-md dark:border-borderDark dark:bg-black/40;
+    background-image:
+      radial-gradient(circle at top, rgba(15, 118, 110, 0.09), transparent 32%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 22%);
   }
 
   .app-sidebar-link {
-    @apply flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600 transition-all duration-300 hover:scale-[1.02] hover:bg-slate-900/5 hover:text-textPrimary dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-textDark;
+    @apply relative flex items-center gap-3 overflow-hidden rounded-2xl border border-transparent px-4 py-3.5 text-sm font-medium text-slate-600 transition-all duration-300 hover:translate-x-1 hover:border-borderLight hover:bg-white/70 hover:text-textPrimary hover:shadow-soft dark:text-slate-300 dark:hover:border-borderDark dark:hover:bg-white/5 dark:hover:text-textDark;
   }
 
   .app-sidebar-link-active {
-    @apply bg-primary/10 text-primary shadow-soft dark:bg-accent/10 dark:text-accent;
+    @apply border-primary/10 bg-[linear-gradient(135deg,rgba(15,118,110,0.12),rgba(6,182,212,0.08))] text-primary shadow-[0_18px_40px_rgba(15,118,110,0.14)] dark:border-accent/20 dark:bg-[linear-gradient(135deg,rgba(34,211,238,0.12),rgba(15,118,110,0.12))] dark:text-accent;
+  }
+
+  .app-sidebar-icon {
+    @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-borderLight bg-card/90 text-slate-500 transition-all duration-300 dark:border-borderDark dark:bg-cardDark/90 dark:text-slate-400;
+  }
+
+  .app-sidebar-icon-active {
+    @apply border-primary/15 bg-[linear-gradient(135deg,rgba(15,118,110,0.16),rgba(6,182,212,0.14))] text-primary shadow-[0_12px_30px_rgba(15,118,110,0.16)] dark:border-accent/20 dark:bg-[linear-gradient(135deg,rgba(34,211,238,0.16),rgba(15,118,110,0.14))] dark:text-accent;
+  }
+
+  .app-sidebar-indicator {
+    @apply ml-auto h-2.5 w-2.5 rounded-full bg-primary/70 transition-all duration-300 dark:bg-accent/80;
   }
 
   .topbar-shell {
