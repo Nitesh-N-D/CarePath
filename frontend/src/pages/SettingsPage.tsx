@@ -5,14 +5,13 @@ import { useNavigate } from "react-router-dom";
 import GlassCard from "../components/ui/GlassCard";
 import GradientButton from "../components/ui/GradientButton";
 import InputField from "../components/ui/InputField";
+import ThemeToggle from "../components/ui/ThemeToggle";
 import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
 import API from "../services/api";
 import type { UserProfile } from "../types/health";
 
 function SettingsPage() {
   const { user, logout, refreshUser } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [profileForm, setProfileForm] = useState({ name: user?.name || "", email: user?.email || "" });
@@ -141,13 +140,7 @@ function SettingsPage() {
               <div className="font-semibold">Theme</div>
               <div className="text-sm text-slate-500 dark:text-slate-400">Toggle light and dark appearance.</div>
             </div>
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="rounded-xl border border-borderLight bg-background px-4 py-2 text-sm shadow-sm transition-all duration-300 hover:scale-[1.02] dark:border-borderDark dark:bg-backgroundDark"
-            >
-              {theme === "dark" ? "🌞 Light" : "🌙 Dark"}
-            </button>
+            <ThemeToggle />
           </div>
           <div className="mt-4 flex flex-col gap-4 rounded-xl border border-borderLight bg-card/90 px-4 py-4 shadow-sm dark:border-borderDark dark:bg-cardDark/90 sm:flex-row sm:items-center sm:justify-between">
             <div>

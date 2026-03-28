@@ -3,10 +3,10 @@ import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Button from "./ui/Button";
+import ThemeToggle from "./ui/ThemeToggle";
 
 interface LayoutProps {
   children: ReactNode;
@@ -18,7 +18,6 @@ function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const isAppSurface = APP_PATHS.some(
     (path) => location.pathname === path || location.pathname.startsWith(`${path}/`)
   );
@@ -55,13 +54,7 @@ function Layout({ children }: LayoutProps) {
                 </div>
 
                 <div className="flex w-full flex-wrap items-center gap-2 sm:gap-3 lg:w-auto lg:justify-end">
-                  <button
-                    type="button"
-                    onClick={toggleTheme}
-                    className="rounded-xl border border-borderLight bg-card/90 px-3 py-2 text-sm text-textPrimary shadow-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-md dark:border-borderDark dark:bg-cardDark/90 dark:text-textDark"
-                  >
-                    {theme === "dark" ? "Light" : "Dark"}
-                  </button>
+                  <ThemeToggle />
 
                   <div className="min-w-0 rounded-xl border border-borderLight bg-card/90 px-4 py-2 text-sm text-slate-600 shadow-sm dark:border-borderDark dark:bg-cardDark/90 dark:text-slate-300">
                     {user?.name || "CarePath member"}

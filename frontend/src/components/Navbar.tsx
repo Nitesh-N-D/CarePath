@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
 import Button from "./ui/Button";
+import ThemeToggle from "./ui/ThemeToggle";
 
 const marketingLinks = [
   { to: "/#features", label: "Features" },
@@ -16,7 +16,6 @@ const marketingLinks = [
 
 function Navbar() {
   const { user } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const dashboardPath = user?.role === "admin" ? "/admin" : user?.role === "doctor" ? "/doctor" : "/dashboard";
 
@@ -46,13 +45,7 @@ function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="rounded-xl border border-borderLight bg-card/80 px-3 py-2 text-sm text-textPrimary transition-all duration-300 hover:scale-[1.02] hover:bg-card dark:border-borderDark dark:bg-cardDark/70 dark:text-textDark"
-          >
-            {theme === "dark" ? "Light" : "Dark"}
-          </button>
+          <ThemeToggle />
           {user ? (
             <Button to={dashboardPath} className="rounded-xl">
               Open Dashboard
@@ -97,16 +90,12 @@ function Navbar() {
                   {item.label}
                 </NavLink>
               ))}
-              <button
-                type="button"
-                onClick={() => {
-                  toggleTheme();
-                  setOpen(false);
-                }}
-                className="rounded-xl px-4 py-3 text-left text-sm text-slate-600 transition-all duration-300 hover:bg-slate-900/5 hover:text-textPrimary dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-textDark"
+              <div
+                onClick={() => setOpen(false)}
+                className="rounded-xl px-1 py-1"
               >
-                {theme === "dark" ? "Light" : "Dark"}
-              </button>
+                <ThemeToggle className="w-full justify-between" />
+              </div>
               {user ? (
                 <NavLink
                   to={dashboardPath}
