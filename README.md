@@ -10,7 +10,7 @@ It combines a premium public landing experience with a role-based authenticated 
 
 ## Live Links
 
-- Live app: https://carepath.app
+- Live app: https://care-path-two.vercel.app
 - Live API: https://carepath-xnsd.onrender.com/api
 
 ## Highlights
