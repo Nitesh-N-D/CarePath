@@ -369,15 +369,6 @@ npm run start
 - Loading skeletons are used instead of blank states
 - Disease library and disease detail pages are part of the public product experience
 
-## GitHub Portfolio Tips
-
-If you are using this project for a portfolio or recruiter review, include:
-
-- screenshots of the landing page, patient dashboard, doctor dashboard, admin dashboard, and disease library
-- a short demo GIF or Loom video
-- deployment links for frontend and backend
-- sample credentials or a seeded test user if appropriate
-
 ## Verification
 
 Verified in this workspace:
@@ -388,4 +379,4 @@ Verified in this workspace:
 
 ## License
 
-This project includes a [LICENSE](./LICENSE) file. Update it if you want a different license for distribution or portfolio use.
+This project includes a [LICENSE](./LICENSE) file. 
