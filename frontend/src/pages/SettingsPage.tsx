@@ -90,7 +90,7 @@ function SettingsPage() {
     <div className="space-y-8">
       <section className="max-w-3xl">
         <p className="section-heading">Settings</p>
-        <h1 className="mt-3 text-4xl font-semibold">Manage your CarePath profile, security, and account preferences.</h1>
+        <h1 className="mt-3 text-3xl font-semibold sm:text-4xl">Manage your CarePath profile, security, and account preferences.</h1>
       </section>
 
       {message ? (
@@ -120,7 +120,7 @@ function SettingsPage() {
 
         <GlassCard className="p-6">
           <h2 className="text-2xl font-semibold">Preferences</h2>
-          <div className="mt-6 flex items-center justify-between rounded-xl border border-borderLight bg-card/90 px-4 py-4 shadow-sm dark:border-borderDark dark:bg-cardDark/90">
+          <div className="mt-6 flex flex-col gap-4 rounded-xl border border-borderLight bg-card/90 px-4 py-4 shadow-sm dark:border-borderDark dark:bg-cardDark/90 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="font-semibold">Theme</div>
               <div className="text-sm text-slate-500 dark:text-slate-400">Toggle light and dark appearance.</div>
@@ -133,7 +133,7 @@ function SettingsPage() {
               {theme === "dark" ? "🌞 Light" : "🌙 Dark"}
             </button>
           </div>
-          <div className="mt-4 flex items-center justify-between rounded-xl border border-borderLight bg-card/90 px-4 py-4 shadow-sm dark:border-borderDark dark:bg-cardDark/90">
+          <div className="mt-4 flex flex-col gap-4 rounded-xl border border-borderLight bg-card/90 px-4 py-4 shadow-sm dark:border-borderDark dark:bg-cardDark/90 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="font-semibold">Notifications</div>
               <div className="text-sm text-slate-500 dark:text-slate-400">Medication reminders and weekly health prompts.</div>

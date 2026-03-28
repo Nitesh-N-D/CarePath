@@ -58,13 +58,13 @@ function Sidebar() {
         </div>
       </aside>
 
-      <div className="mb-6 flex gap-2 overflow-x-auto xl:hidden">
+      <div className="-mx-1 mb-6 flex gap-2 overflow-x-auto px-1 pb-1 xl:hidden">
         {visibleItems.map((item) => (
           <NavLink
             key={`mobile-${item.to}-${item.label}`}
             to={item.to}
             className={({ isActive }) =>
-              `whitespace-nowrap rounded-xl border px-4 py-2.5 text-sm font-medium transition-all duration-300 ${
+              `shrink-0 whitespace-nowrap rounded-xl border px-4 py-2.5 text-sm font-medium transition-all duration-300 ${
                 isActive
                   ? "border-primary/20 bg-primary/10 text-primary dark:border-accent/30 dark:bg-accent/10 dark:text-accent"
                   : "border-borderLight bg-card/90 text-slate-600 hover:scale-[1.02] dark:border-borderDark dark:bg-cardDark/90 dark:text-slate-300"

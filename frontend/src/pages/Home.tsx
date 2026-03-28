@@ -76,22 +76,22 @@ function Home() {
   }, []);
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-24 px-4 pb-8 sm:px-6">
-      <section id="hero" className="relative overflow-hidden pt-8">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-16 px-4 pb-8 sm:gap-20 sm:px-6 lg:gap-24">
+      <section id="hero" className="relative overflow-hidden pt-4 sm:pt-8">
         <motion.div style={{ y: glowY }} className="absolute left-1/2 top-8 h-80 w-80 -translate-x-1/2 rounded-full bg-cyan-400/20 blur-3xl" />
         <motion.div style={{ y: glowY }} className="absolute right-0 top-24 h-72 w-72 rounded-full bg-emerald-500/15 blur-3xl" />
         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.08fr]">
           <motion.div variants={reveal} initial="hidden" animate="visible">
             <div className="eyebrow">Modern healthcare tracking</div>
-            <h1 className="mt-6 text-5xl font-semibold leading-[0.92] text-slate-900 md:text-7xl">
+            <h1 className="mt-6 text-4xl font-semibold leading-[0.96] text-slate-900 sm:text-5xl md:text-6xl xl:text-7xl">
               Your entire health story, <span className="gradient-text">intelligently connected.</span>
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+            <p className="mt-6 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
               CarePath brings health tracking, AI guidance, disease understanding, doctor recommendations, and medication reminders into one calm, premium experience.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <GradientButton to={dashboardPath}>Get Started</GradientButton>
-              <Button to="/#ai-showcase" variant="outline">View Demo</Button>
+              <GradientButton to={dashboardPath} className="w-full sm:w-auto">Get Started</GradientButton>
+              <Button to="/#ai-showcase" variant="outline" className="w-full sm:w-auto">View Demo</Button>
             </div>
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
               {[
@@ -118,7 +118,7 @@ function Home() {
               mouseX.set(0);
               mouseY.set(0);
             }}
-            className="relative [perspective:1200px]"
+            className="relative w-full [perspective:1200px]"
           >
             <div className="absolute inset-10 rounded-full bg-cyan-400/20 blur-3xl" />
             <GlassCard className="relative overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(17,24,39,0.94),rgba(17,24,39,0.84))] p-6 text-white">
@@ -169,7 +169,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="grid gap-6 md:grid-cols-4">
+      <section className="grid gap-4 md:grid-cols-4">
         {[
           ["Built for modern healthcare tracking", "From disease understanding to reminders and doctor follow-up."],
           ["18k+", "health records organized"],
@@ -188,7 +188,7 @@ function Home() {
       <section id="features" className="space-y-8">
         <div className="max-w-3xl">
           <div className="eyebrow">Core features</div>
-          <h2 className="mt-4 text-4xl font-semibold text-slate-900">Everything you need to understand, monitor, and act on your health.</h2>
+          <h2 className="mt-4 text-3xl font-semibold text-slate-900 sm:text-4xl">Everything you need to understand, monitor, and act on your health.</h2>
         </div>
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {featureCards.map((card, index) => (
@@ -214,12 +214,12 @@ function Home() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <div className="eyebrow">Disease library</div>
-            <h2 className="mt-4 text-4xl font-semibold text-slate-900">Explore the encyclopedia directly from the landing page.</h2>
+            <h2 className="mt-4 text-3xl font-semibold text-slate-900 sm:text-4xl">Explore the encyclopedia directly from the landing page.</h2>
             <p className="mt-4 text-sm leading-7 text-slate-600">
               Browse structured condition profiles with symptoms, causes, treatment, and prevention before you even sign in.
             </p>
           </div>
-          <Button to="/diseases" variant="outline">Open Disease Library</Button>
+          <Button to="/diseases" variant="outline" className="w-full sm:w-auto">Open Disease Library</Button>
         </div>
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {diseasePreview.map((disease, index) => (
@@ -247,7 +247,7 @@ function Home() {
       <section id="insights" className="grid items-center gap-10 lg:grid-cols-[0.92fr_1.08fr]">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={reveal}>
           <div className="eyebrow">See your health evolve</div>
-          <h2 className="mt-4 text-4xl font-semibold text-slate-900">Charts that feel as thoughtful as the decisions they support.</h2>
+          <h2 className="mt-4 text-3xl font-semibold text-slate-900 sm:text-4xl">Charts that feel as thoughtful as the decisions they support.</h2>
           <p className="mt-4 text-sm leading-7 text-slate-600">CarePath turns BP, BMI, and risk into a visual story you can actually use, rather than another wall of numbers.</p>
         </motion.div>
         <motion.div initial={{ opacity: 0, scale: 0.96 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, amount: 0.25 }}>
@@ -258,7 +258,7 @@ function Home() {
                 { label: "BMI", values: [55, 57, 59, 58, 60, 61] },
                 { label: "Risk score", values: [34, 37, 33, 29, 28, 25] },
               ].map((chart, groupIndex) => (
-                <div key={chart.label} className="rounded-2xl border border-[var(--color-border)] bg-white/70 p-4">
+                <div key={chart.label} className="min-w-0 rounded-2xl border border-[var(--color-border)] bg-white/70 p-4">
                   <div className="text-sm text-slate-500">{chart.label}</div>
                   <div className="mt-6 flex h-32 items-end gap-2">
                     {chart.values.map((height, index) => (
@@ -282,7 +282,7 @@ function Home() {
       <section id="ai-showcase" className="grid items-center gap-10 lg:grid-cols-[1.02fr_0.98fr]">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={reveal}>
           <div className="eyebrow">AI guidance</div>
-          <h2 className="mt-4 text-4xl font-semibold text-slate-900">A real assistant interface, not a generic chatbot box.</h2>
+          <h2 className="mt-4 text-3xl font-semibold text-slate-900 sm:text-4xl">A real assistant interface, not a generic chatbot box.</h2>
           <p className="mt-4 text-sm leading-7 text-slate-600">CarePath AI can read your trend lines, recent logs, and stored profile context before suggesting next steps, preventive habits, or when to seek medical support.</p>
         </motion.div>
         <GlassCard className="p-6">
@@ -296,7 +296,7 @@ function Home() {
       <section id="doctors" className="space-y-8">
         <div className="max-w-3xl">
           <div className="eyebrow">Doctor recommendations</div>
-          <h2 className="mt-4 text-4xl font-semibold text-slate-900">Relevant specialists, presented like part of the product instead of an afterthought.</h2>
+          <h2 className="mt-4 text-3xl font-semibold text-slate-900 sm:text-4xl">Relevant specialists, presented like part of the product instead of an afterthought.</h2>
         </div>
         <div className="flex gap-5 overflow-x-auto pb-2">
           {doctorCards.map((doctor, index) => (
@@ -306,8 +306,8 @@ function Home() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.45, delay: index * 0.08 }}
-              className="min-w-[320px]"
-            >
+            className="min-w-[280px] sm:min-w-[320px]"
+          >
               <GlassCard className="h-full p-6">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -332,7 +332,7 @@ function Home() {
       <section id="workflow" className="space-y-8">
         <div className="max-w-3xl">
           <div className="eyebrow">Workflow</div>
-          <h2 className="mt-4 text-4xl font-semibold text-slate-900">A clearer flow from data capture to action.</h2>
+          <h2 className="mt-4 text-3xl font-semibold text-slate-900 sm:text-4xl">A clearer flow from data capture to action.</h2>
         </div>
         <div className="grid gap-5 md:grid-cols-4">
           {timeline.map((step, index) => (
@@ -350,14 +350,14 @@ function Home() {
       </section>
 
       <section id="cta">
-        <GlassCard className="overflow-hidden p-10 text-center">
+        <GlassCard className="overflow-hidden p-6 text-center sm:p-8 lg:p-10">
           <div className="mx-auto max-w-3xl">
             <div className="eyebrow">Start here</div>
-            <h2 className="mt-4 text-5xl font-semibold text-slate-900">Start managing your health like a system.</h2>
-            <p className="mt-4 text-lg leading-8 text-slate-600">CarePath helps you move from scattered readings and generic advice to a connected health story with real follow-through.</p>
+            <h2 className="mt-4 text-3xl font-semibold text-slate-900 sm:text-4xl lg:text-5xl">Start managing your health like a system.</h2>
+            <p className="mt-4 text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">CarePath helps you move from scattered readings and generic advice to a connected health story with real follow-through.</p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <GradientButton to={dashboardPath}>Start Free</GradientButton>
-              <Button to="/#features" variant="outline">Explore Features</Button>
+              <GradientButton to={dashboardPath} className="w-full sm:w-auto">Start Free</GradientButton>
+              <Button to="/#features" variant="outline" className="w-full sm:w-auto">Explore Features</Button>
             </div>
           </div>
         </GlassCard>

@@ -28,7 +28,7 @@ function DoctorsPage() {
     <div className="space-y-8">
       <section className="max-w-3xl">
         <p className="section-heading">Doctors</p>
-        <h1 className="mt-3 text-4xl font-semibold text-slate-900">Recommended clinicians and specialists connected to your CarePath record.</h1>
+        <h1 className="mt-3 text-3xl font-semibold text-slate-900 sm:text-4xl">Recommended clinicians and specialists connected to your CarePath record.</h1>
         <p className="mt-3 text-sm leading-7 text-slate-600">Find relevant specialists based on your condition history and location so follow-up feels faster and more intentional.</p>
       </section>
 
@@ -37,7 +37,7 @@ function DoctorsPage() {
           ? Array.from({ length: 6 }).map((_, index) => <LoadingSkeleton key={index} className="h-56" />)
           : doctors.map((doctor) => (
               <GlassCard key={doctor.id} className="p-6">
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <div className="text-xl font-semibold text-slate-900">{doctor.name}</div>
                     <div className="mt-1 text-sm text-slate-500">{doctor.specialization}</div>

@@ -65,23 +65,23 @@ function DiseaseDetail() {
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-      <div className="flex flex-wrap gap-3">
-        <Button to="/diseases" variant="secondary" className="gap-2 rounded-xl px-4 py-2.5 shadow-sm">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <Button to="/diseases" variant="secondary" className="w-full gap-2 rounded-xl px-4 py-2.5 shadow-sm sm:w-auto">
           <span aria-hidden="true">←</span>
           Back to disease library
         </Button>
-        <Button to="/#disease-library" variant="outline" className="gap-2 rounded-xl px-4 py-2.5">
-          <span aria-hidden="true">↗</span>
+        <Button to="/#disease-library" variant="outline" className="w-full gap-2 rounded-xl px-4 py-2.5 sm:w-auto">
+          <span aria-hidden="true">Back</span>
           Back to landing page
         </Button>
       </div>
 
-      <GlassCard className="relative overflow-hidden p-6 sm:p-8">
+      <GlassCard className="relative overflow-hidden p-5 sm:p-8">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
         <p className="text-sm uppercase tracking-[0.24em] text-accent">{disease.body_system}</p>
         <div className="mt-3 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <h1 className="text-4xl font-semibold tracking-tight text-textPrimary dark:text-textDark">{disease.name}</h1>
-          <span className="rounded-full border border-borderLight bg-card px-4 py-2 text-sm text-[var(--color-text-soft)] dark:border-borderDark dark:bg-cardDark dark:text-slate-300">
+          <h1 className="text-3xl font-semibold tracking-tight text-textPrimary dark:text-textDark sm:text-4xl">{disease.name}</h1>
+          <span className="w-fit rounded-full border border-borderLight bg-card px-4 py-2 text-sm text-[var(--color-text-soft)] dark:border-borderDark dark:bg-cardDark dark:text-slate-300">
             {disease.category}
           </span>
         </div>
@@ -108,14 +108,14 @@ function DiseaseDetail() {
           ["Treatment", disease.treatment],
           ["Prevention", disease.prevention],
         ].map(([title, value]) => (
-          <GlassCard key={title} className="p-6">
+          <GlassCard key={title} className="p-5 sm:p-6">
             <h2 className="text-xl font-semibold text-textPrimary dark:text-textDark">{title}</h2>
             <p className="mt-4 leading-7 text-slate-600 dark:text-slate-300">{value}</p>
           </GlassCard>
         ))}
       </section>
 
-      <GlassCard className="p-6">
+      <GlassCard className="p-5 sm:p-6">
         <h2 className="text-xl font-semibold text-textPrimary dark:text-textDark">Emergency signs</h2>
         <div className="mt-4 flex flex-wrap gap-3">
           {emergencySigns.length ? (
@@ -135,7 +135,7 @@ function DiseaseDetail() {
         </div>
       </GlassCard>
 
-      <GlassCard className="p-6">
+      <GlassCard className="p-5 sm:p-6">
         <h2 className="text-xl font-semibold text-textPrimary dark:text-textDark">References</h2>
         <div className="mt-4 flex flex-wrap gap-3">
           {sources.length ? (

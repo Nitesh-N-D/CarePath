@@ -22,14 +22,14 @@ function Navbar() {
 
   return (
     <header className="topbar-shell">
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-3">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
+        <Link to="/" className="flex min-w-0 items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent text-sm font-semibold text-white shadow-soft">
             CP
           </div>
-          <div>
-            <div className="text-base font-semibold text-textPrimary dark:text-textDark">CarePath</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400">A calmer way to manage modern health data</div>
+          <div className="min-w-0">
+            <div className="truncate text-base font-semibold text-textPrimary dark:text-textDark">CarePath</div>
+            <div className="hidden text-xs text-slate-500 dark:text-slate-400 sm:block">A calmer way to manage modern health data</div>
           </div>
         </Link>
 
@@ -51,7 +51,7 @@ function Navbar() {
             onClick={toggleTheme}
             className="rounded-xl border border-borderLight bg-card/80 px-3 py-2 text-sm text-textPrimary transition-all duration-300 hover:scale-[1.02] hover:bg-card dark:border-borderDark dark:bg-cardDark/70 dark:text-textDark"
           >
-            {theme === "dark" ? "🌞 Light" : "🌙 Dark"}
+            {theme === "dark" ? "Light" : "Dark"}
           </button>
           {user ? (
             <Button to={dashboardPath} className="rounded-xl">
@@ -72,7 +72,7 @@ function Navbar() {
         <button
           type="button"
           onClick={() => setOpen((current) => !current)}
-          className="rounded-xl border border-borderLight bg-card/80 px-3 py-2 text-sm text-textPrimary dark:border-borderDark dark:bg-cardDark/70 dark:text-textDark lg:hidden"
+          className="shrink-0 rounded-xl border border-borderLight bg-card/80 px-3 py-2 text-sm text-textPrimary dark:border-borderDark dark:bg-cardDark/70 dark:text-textDark lg:hidden"
         >
           Menu
         </button>
@@ -105,7 +105,7 @@ function Navbar() {
                 }}
                 className="rounded-xl px-4 py-3 text-left text-sm text-slate-600 transition-all duration-300 hover:bg-slate-900/5 hover:text-textPrimary dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-textDark"
               >
-                {theme === "dark" ? "🌞 Light" : "🌙 Dark"}
+                {theme === "dark" ? "Light" : "Dark"}
               </button>
               {user ? (
                 <NavLink

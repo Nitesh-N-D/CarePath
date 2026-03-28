@@ -60,17 +60,17 @@ function DiseaseLibrary() {
   }, [loadDiseases]);
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 pb-8">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 pb-8 sm:gap-8">
       <section className="relative overflow-hidden rounded-[2rem] border border-borderLight bg-card/95 px-6 py-7 shadow-[0_30px_80px_rgba(15,23,42,0.08)] dark:border-borderDark dark:bg-cardDark/95 sm:px-8 sm:py-8">
         <div className="absolute inset-x-12 top-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
         <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-4xl">
-            <Button to="/#disease-library" variant="secondary" className="mb-5 gap-2 rounded-xl px-4 py-2.5 shadow-sm">
+            <Button to="/#disease-library" variant="secondary" className="mb-5 w-full gap-2 rounded-xl px-4 py-2.5 shadow-sm sm:w-auto">
               <span aria-hidden="true">←</span>
               Back to landing page
             </Button>
             <p className="section-heading">Disease Encyclopedia</p>
-            <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-textPrimary dark:text-textDark sm:text-5xl">
+            <h1 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-textPrimary dark:text-textDark sm:text-4xl xl:text-5xl">
               Search structured condition profiles with symptoms, causes, treatment, and prevention.
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-300 sm:text-base">
@@ -99,7 +99,7 @@ function DiseaseLibrary() {
         <GlassCard className="p-6 xl:sticky xl:top-24">
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent">Search and filter</p>
-            <h2 className="text-2xl font-semibold tracking-tight text-textPrimary dark:text-textDark">Find a condition quickly</h2>
+            <h2 className="text-xl font-semibold tracking-tight text-textPrimary dark:text-textDark sm:text-2xl">Find a condition quickly</h2>
             <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
               Search by condition name, symptom, body system, or category to narrow the encyclopedia instantly.
             </p>

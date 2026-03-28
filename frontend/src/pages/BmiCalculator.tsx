@@ -29,7 +29,7 @@ function BmiCalculator() {
     <div className="space-y-8">
       <section className="max-w-3xl">
         <p className="section-heading">BMI Calculator</p>
-        <h1 className="mt-3 text-4xl font-semibold text-slate-900">See your body mass index instantly.</h1>
+        <h1 className="mt-3 text-3xl font-semibold text-slate-900 sm:text-4xl">See your body mass index instantly.</h1>
         <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">Use CarePath&apos;s dedicated calculator to estimate BMI, understand your category, and spot changes before they become a pattern.</p>
       </section>
 
@@ -42,10 +42,10 @@ function BmiCalculator() {
         </GlassCard>
 
         <GlassCard className="p-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm text-[var(--color-text-soft)]">Current BMI</p>
-              <div className="mt-2 text-6xl font-semibold text-slate-900">{bmi || "--"}</div>
+              <div className="mt-2 text-5xl font-semibold text-slate-900 sm:text-6xl">{bmi || "--"}</div>
             </div>
             <div className="rounded-full border border-white/10 bg-slate-900 px-4 py-2 text-sm text-white">{category.label}</div>
           </div>

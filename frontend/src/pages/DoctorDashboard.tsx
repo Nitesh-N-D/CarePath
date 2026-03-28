@@ -121,7 +121,7 @@ function DoctorDashboard() {
           <p className="section-heading">CarePath for clinicians</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Review assigned patients, follow their health signals, and keep notes in one place.</h1>
         </div>
-        <Button type="button" variant="default" onClick={() => setModalOpen(true)} disabled={!selectedPatient} className="rounded-2xl px-5 py-3">Add note</Button>
+        <Button type="button" variant="default" onClick={() => setModalOpen(true)} disabled={!selectedPatient} className="w-full rounded-2xl px-5 py-3 sm:w-auto">Add note</Button>
       </section>
 
       {error ? <ErrorState title="Doctor panel unavailable" message={error} actionLabel="Retry" onAction={() => void fetchData()} /> : null}
@@ -140,7 +140,7 @@ function DoctorDashboard() {
             ) : patients.length ? (
               patients.map((patient) => (
                 <button key={patient.id} type="button" onClick={() => setSelectedPatientId(patient.id)} className={`w-full px-6 py-4 text-left transition duration-300 ${selectedPatient?.id === patient.id ? "bg-cyan-50" : "hover:bg-slate-50"}`}>
-                  <div className="flex items-start justify-between gap-3">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <div className="font-medium text-slate-900">{patient.name}</div>
                       <div className="mt-1 text-sm text-slate-500">{patient.email}</div>
@@ -194,9 +194,9 @@ function DoctorDashboard() {
           </GlassCard>
 
           <GlassCard className="p-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <h2 className="text-xl font-semibold text-slate-900">Clinical notes</h2>
-              <Button type="button" variant="outline" onClick={() => setModalOpen(true)} className="rounded-full px-4 py-2 text-sm">Add note</Button>
+              <Button type="button" variant="outline" onClick={() => setModalOpen(true)} className="w-full rounded-full px-4 py-2 text-sm sm:w-auto">Add note</Button>
             </div>
             <div className="mt-5 space-y-3">
               {patientNotes.length ? patientNotes.map((entry) => (

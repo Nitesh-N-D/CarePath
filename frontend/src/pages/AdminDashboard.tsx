@@ -133,7 +133,7 @@ function AdminDashboard() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="min-w-full text-left text-sm text-slate-600">
+            <table className="min-w-[680px] text-left text-sm text-slate-600">
               <thead className="bg-slate-50 text-xs uppercase tracking-[0.2em] text-slate-500">
                 <tr>
                   <th className="px-6 py-4">Patient</th>
@@ -163,7 +163,7 @@ function AdminDashboard() {
                             void assignDoctor(patient.id, event.target.value);
                           }
                         }}
-                        className="min-w-56 rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 shadow-sm focus:border-cyan-300 focus:outline-none"
+                        className="min-w-[220px] rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 shadow-sm focus:border-cyan-300 focus:outline-none"
                         disabled={saving === patient.id}
                       >
                         <option value="">Select doctor</option>

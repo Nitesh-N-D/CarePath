@@ -113,16 +113,16 @@ function AssistantPage() {
     <div className="space-y-8">
       <section className="max-w-3xl">
         <p className="section-heading">AI Assistant</p>
-        <h1 className="mt-3 text-4xl font-semibold text-slate-900">Ask CarePath about your health patterns and next steps.</h1>
+        <h1 className="mt-3 text-3xl font-semibold text-slate-900 sm:text-4xl">Ask CarePath about your health patterns and next steps.</h1>
         <p className="mt-3 text-sm leading-7 text-slate-600">This assistant now streams responses in real time and reads your CarePath profile, risk score, and recent entries before responding, so the conversation feels specific rather than generic.</p>
       </section>
 
       <GlassCard className="overflow-hidden p-0">
-        <div className="border-b border-[var(--color-border)] px-6 py-5">
+        <div className="border-b border-[var(--color-border)] px-4 py-5 sm:px-6">
           <div className="text-sm text-[var(--color-text-soft)]">Live health guidance</div>
           <div className="mt-2 text-2xl font-semibold text-slate-900">Conversation</div>
         </div>
-        <div className="h-[480px] space-y-4 overflow-y-auto px-6 py-6">
+        <div className="h-[420px] space-y-4 overflow-y-auto px-4 py-5 sm:h-[480px] sm:px-6 sm:py-6">
           {loading ? (
             Array.from({ length: 4 }).map((_, index) => <LoadingSkeleton key={index} className="h-20" />)
           ) : messages.length ? (
@@ -131,7 +131,7 @@ function AssistantPage() {
                 key={`${message.role}-${index}`}
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-6 ${
+                className={`max-w-[92%] rounded-2xl px-4 py-3 text-sm leading-6 sm:max-w-[80%] ${
                   message.role === "assistant" ? "bg-white text-slate-700 shadow-sm" : "ml-auto bg-slate-900 text-white"
                 }`}
               >
@@ -145,7 +145,7 @@ function AssistantPage() {
           )}
         </div>
 
-        <form onSubmit={sendMessage} className="border-t border-[var(--color-border)] px-6 py-5">
+        <form onSubmit={sendMessage} className="border-t border-[var(--color-border)] px-4 py-5 sm:px-6">
           <div className="flex flex-col gap-3 sm:flex-row">
             <input
               value={input}
@@ -153,7 +153,7 @@ function AssistantPage() {
               placeholder="Ask CarePath about a symptom, trend, or recommendation"
               className="field-shell min-w-0 flex-1 rounded-2xl px-4 py-3 outline-none"
             />
-            <GradientButton type="submit" disabled={sending}>Send</GradientButton>
+            <GradientButton type="submit" disabled={sending} className="w-full sm:w-auto">Send</GradientButton>
           </div>
           {error ? <div className="mt-3 text-sm text-rose-600">{error}</div> : null}
         </form>

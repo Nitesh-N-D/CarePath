@@ -44,26 +44,29 @@ function Layout({ children }: LayoutProps) {
           <Sidebar />
           <div className="flex min-w-0 flex-1 flex-col">
             <div className="topbar-shell">
-              <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-                <div>
+              <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
+                <div className="min-w-0">
                   <div className="text-xs font-semibold uppercase tracking-[0.24em] text-primary dark:text-accent">
                     CarePath
                   </div>
-                  <div className="mt-1 text-lg font-semibold text-textPrimary dark:text-textDark">
+                  <div className="mt-1 text-lg font-semibold text-textPrimary dark:text-textDark sm:text-xl">
                     {user?.role === "admin" ? "Admin dashboard" : user?.role === "doctor" ? "Clinician dashboard" : "Health dashboard"}
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
+
+                <div className="flex w-full flex-wrap items-center gap-2 sm:gap-3 lg:w-auto lg:justify-end">
                   <button
                     type="button"
                     onClick={toggleTheme}
                     className="rounded-xl border border-borderLight bg-card/90 px-3 py-2 text-sm text-textPrimary shadow-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-md dark:border-borderDark dark:bg-cardDark/90 dark:text-textDark"
                   >
-                    {theme === "dark" ? "🌞 Light" : "🌙 Dark"}
+                    {theme === "dark" ? "Light" : "Dark"}
                   </button>
-                  <div className="hidden rounded-xl border border-borderLight bg-card/90 px-4 py-2 text-sm text-slate-600 shadow-sm dark:border-borderDark dark:bg-cardDark/90 dark:text-slate-300 sm:block">
+
+                  <div className="min-w-0 rounded-xl border border-borderLight bg-card/90 px-4 py-2 text-sm text-slate-600 shadow-sm dark:border-borderDark dark:bg-cardDark/90 dark:text-slate-300">
                     {user?.name || "CarePath member"}
                   </div>
+
                   <Button
                     type="button"
                     variant="ghost"
@@ -78,13 +81,17 @@ function Layout({ children }: LayoutProps) {
                 </div>
               </div>
             </div>
-            <main className="mx-auto flex w-full max-w-7xl flex-grow flex-col px-4 py-8 sm:px-6">{children}</main>
+
+            <main className="mx-auto flex w-full max-w-7xl flex-grow flex-col px-4 py-6 sm:px-6 sm:py-8">
+              {children}
+            </main>
           </div>
         </div>
+
         <footer className="border-t border-borderLight bg-card/60 dark:border-borderDark dark:bg-cardDark/50">
           <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4 py-6 text-sm text-slate-500 sm:px-6 md:flex-row md:items-center md:justify-between dark:text-slate-400">
             <div>CarePath keeps tracking, AI guidance, and follow-up in one connected workspace.</div>
-            <div className="flex gap-5">
+            <div className="flex flex-wrap gap-4 sm:gap-5">
               <a href="/settings" className="hover:text-textPrimary dark:hover:text-textDark">Settings</a>
               <a href="/assistant" className="hover:text-textPrimary dark:hover:text-textDark">AI Assistant</a>
             </div>
@@ -97,7 +104,7 @@ function Layout({ children }: LayoutProps) {
   return (
     <div className="page-shell flex min-h-screen flex-col">
       <Navbar />
-      <main className="flex w-full flex-grow flex-col py-8">{children}</main>
+      <main className="flex w-full flex-grow flex-col py-6 sm:py-8">{children}</main>
       <footer className="border-t border-borderLight bg-card/60 dark:border-borderDark dark:bg-cardDark/50">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-8 text-sm text-slate-500 sm:px-6 md:flex-row md:items-center md:justify-between dark:text-slate-400">
           <div>
@@ -106,7 +113,7 @@ function Layout({ children }: LayoutProps) {
               A modern healthcare SaaS experience for tracking, understanding, and acting on your health with more clarity.
             </div>
           </div>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap gap-4 sm:gap-6">
             <a href="/#features" className="hover:text-textPrimary dark:hover:text-textDark">Features</a>
             <a href="/#doctors" className="hover:text-textPrimary dark:hover:text-textDark">Doctors</a>
             <a href="/register" className="hover:text-textPrimary dark:hover:text-textDark">Get Started</a>

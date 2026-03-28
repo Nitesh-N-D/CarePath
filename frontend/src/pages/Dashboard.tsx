@@ -283,7 +283,7 @@ function Dashboard() {
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">A more elegant way to follow your health day by day.</h1>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">Record daily readings, read weekly summaries, ask for guidance, manage reminders, and keep your care story together.</p>
         </div>
-        <GradientButton onClick={exportPdf} disabled={!data}>Export Weekly PDF</GradientButton>
+        <GradientButton onClick={exportPdf} disabled={!data} className="w-full sm:w-auto">Export Weekly PDF</GradientButton>
       </section>
       {error ? <ErrorState title="Dashboard data unavailable" message={error} actionLabel="Retry" onAction={() => void loadDashboard()} /> : null}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -291,17 +291,17 @@ function Dashboard() {
       </section>
       <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
         <GlassCard className="p-6">
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="section-heading">Risk center</p>
               <h2 className="mt-2 text-2xl font-semibold text-slate-900">Real-time feedback from your latest health signals</h2>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-right">
+            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left sm:text-right">
               <div className="text-xs uppercase tracking-[0.18em] text-slate-500">Prediction</div>
               <div className="mt-2 text-lg font-semibold text-slate-900">{data?.riskAssessment.prediction.confidence} confidence</div>
             </div>
           </div>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <div className="mt-6 grid gap-4 lg:grid-cols-2">
             <div className="rounded-3xl border border-slate-200 bg-white p-5">
               <div className="text-sm text-slate-500">Weekly report</div>
               <div className="mt-3 text-lg font-semibold text-slate-900">{data?.weeklyReport.overview}</div>
@@ -408,7 +408,7 @@ function Dashboard() {
 
       <section className="grid gap-6 xl:grid-cols-2">
         <GlassCard className="p-6">
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="section-heading">AI assistant</p>
               <h2 className="mt-2 text-2xl font-semibold text-slate-900">Context-aware health guidance</h2>
@@ -423,9 +423,9 @@ function Dashboard() {
             )) : <div className="text-sm text-slate-500">Ask about your BP, BMI, sugar trends, medications, prevention, or likely next steps.</div>}
             {assistantSending ? <div className="max-w-[85%] rounded-2xl bg-white px-4 py-3 text-sm text-slate-500 shadow-sm">CarePath AI is thinking...</div> : null}
           </div>
-          <form onSubmit={sendAssistantMessage} className="mt-4 flex gap-3">
+          <form onSubmit={sendAssistantMessage} className="mt-4 flex flex-col gap-3 sm:flex-row">
             <input value={assistantInput} onChange={(event) => setAssistantInput(event.target.value)} placeholder="Ask a question about your trends, symptoms, prevention, or daily routine" className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-cyan-300" />
-            <GradientButton type="submit" disabled={assistantSending}>Send</GradientButton>
+            <GradientButton type="submit" disabled={assistantSending} className="w-full sm:w-auto">Send</GradientButton>
           </form>
         </GlassCard>
 
@@ -435,7 +435,7 @@ function Dashboard() {
           <div className="mt-6 space-y-4">
             {(data?.doctorRecommendations || []).map((doctor) => (
               <div key={doctor.id} className="rounded-3xl border border-slate-200 bg-white p-5">
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <div className="text-lg font-semibold text-slate-900">{doctor.name}</div>
                     <div className="mt-1 text-sm text-slate-500">{doctor.specialization} · {doctor.location}</div>
@@ -467,7 +467,7 @@ function Dashboard() {
           </form>
           <div className="mt-6 space-y-3">
             {(data?.reminders || []).map((reminder) => (
-              <div key={reminder.id} className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-4">
+              <div key={reminder.id} className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <div className="font-semibold text-slate-900">{reminder.medication_name} · {reminder.dosage}</div>
                   <div className="mt-1 text-sm text-slate-500">{reminder.schedule_time.slice(0, 5)} · {reminder.frequency}</div>
