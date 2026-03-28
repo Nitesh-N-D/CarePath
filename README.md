@@ -81,17 +81,6 @@ It combines a premium public landing experience with a role-based authenticated 
 - BMI calculator
 - Settings
 
-## Screenshots
-
-Add your screenshots in a `screenshots/` folder and update these paths if needed.
-
-```md
-![Landing Page](./screenshots/landing-page.png)
-![Patient Dashboard](./screenshots/patient-dashboard.png)
-![Doctor Dashboard](./screenshots/doctor-dashboard.png)
-![Admin Dashboard](./screenshots/admin-dashboard.png)
-![Disease Library](./screenshots/disease-library.png)
-```
 
 ## Project Structure
 
