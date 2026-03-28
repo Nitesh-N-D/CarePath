@@ -116,34 +116,40 @@ function DoctorDashboard() {
     <div className="space-y-8">
       {toast ? <Toast message={toast} tone={toast.includes("Unable") ? "error" : "success"} /> : null}
 
-      <section className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <p className="section-heading">CarePath for clinicians</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Review assigned patients, follow their health signals, and keep notes in one place.</h1>
+      <section className="rounded-[28px] border border-borderLight/80 bg-gradient-to-br from-white via-white to-sky-50/60 p-6 shadow-soft dark:border-borderDark dark:from-slate-950 dark:via-slate-950 dark:to-sky-950/30">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-sky-200/70 bg-sky-50/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-sky-800 dark:border-sky-900/60 dark:bg-sky-950/40 dark:text-sky-200">
+              Clinical operations
+            </div>
+            <p className="section-heading">CarePath for clinicians</p>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Review assigned patients, follow their health signals, and keep notes in one place.</h1>
+          </div>
+          <Button type="button" variant="default" onClick={() => setModalOpen(true)} disabled={!selectedPatient} className="w-full rounded-2xl px-5 py-3 sm:w-auto">Add note</Button>
         </div>
-        <Button type="button" variant="default" onClick={() => setModalOpen(true)} disabled={!selectedPatient} className="w-full rounded-2xl px-5 py-3 sm:w-auto">Add note</Button>
       </section>
 
       {error ? <ErrorState title="Doctor panel unavailable" message={error} actionLabel="Retry" onAction={() => void fetchData()} /> : null}
 
       <section className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
         <GlassCard className="overflow-hidden p-0">
-          <div className="border-b border-slate-200 px-6 py-5">
-            <h2 className="text-xl font-semibold text-slate-900">Assigned patients</h2>
-            <p className="mt-2 text-sm text-slate-500">Review current assignments with their latest predictive risk snapshot.</p>
+          <div className="border-b border-borderLight/80 px-6 py-5 dark:border-borderDark">
+            <p className="section-heading">Roster</p>
+            <h2 className="mt-2 text-xl font-semibold text-slate-900 dark:text-white">Assigned patients</h2>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Review current assignments with their latest predictive risk snapshot.</p>
           </div>
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {loading ? (
               <div className="space-y-3 px-6 py-6">
                 {Array.from({ length: 5 }).map((_, index) => <LoadingSkeleton key={index} className="h-16" />)}
               </div>
             ) : patients.length ? (
               patients.map((patient) => (
-                <button key={patient.id} type="button" onClick={() => setSelectedPatientId(patient.id)} className={`w-full px-6 py-4 text-left transition duration-300 ${selectedPatient?.id === patient.id ? "bg-cyan-50" : "hover:bg-slate-50"}`}>
+                <button key={patient.id} type="button" onClick={() => setSelectedPatientId(patient.id)} className={`w-full px-6 py-4 text-left transition duration-300 ${selectedPatient?.id === patient.id ? "bg-cyan-50 dark:bg-cyan-950/25" : "hover:bg-slate-50 dark:hover:bg-slate-900/70"}`}>
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                      <div className="font-medium text-slate-900">{patient.name}</div>
-                      <div className="mt-1 text-sm text-slate-500">{patient.email}</div>
+                      <div className="font-medium text-slate-900 dark:text-white">{patient.name}</div>
+                      <div className="mt-1 text-sm text-slate-500 dark:text-slate-400">{patient.email}</div>
                     </div>
                     <div className="rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white">{patient.risk_assessment.riskScore}/100</div>
                   </div>
@@ -170,48 +176,51 @@ function DoctorDashboard() {
             {selectedPatient ? (
               <div className="mt-4 space-y-4">
                 <div>
-                  <h2 className="text-2xl font-semibold text-slate-900">{selectedPatient.name}</h2>
-                  <p className="mt-2 text-sm text-slate-500">Member since {new Date(selectedPatient.created_at).toLocaleDateString()}</p>
+                  <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">{selectedPatient.name}</h2>
+                  <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Member since {new Date(selectedPatient.created_at).toLocaleDateString()}</p>
                 </div>
-                <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-6 text-slate-600">
+                <div className="rounded-2xl border border-borderLight/80 bg-white/90 p-5 text-sm leading-6 text-slate-600 shadow-sm dark:border-borderDark dark:bg-slate-900/80 dark:text-slate-300">
                   {selectedPatient.age ? `Age ${selectedPatient.age}` : "Age not provided"} · {selectedPatient.gender || "Gender not provided"} · {selectedPatient.location || "Location not provided"}
                 </div>
-                <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-6 text-slate-600">
+                <div className="rounded-2xl border border-borderLight/80 bg-white/90 p-5 text-sm leading-6 text-slate-600 shadow-sm dark:border-borderDark dark:bg-slate-900/80 dark:text-slate-300">
                   Goal: {selectedPatient.primary_goal || "No primary goal recorded."}
                 </div>
                 <div className="space-y-3">
                   {(selectedPatient.risk_assessment.alerts.length ? selectedPatient.risk_assessment.alerts : [{ label: "No active alerts", message: "No major alerts are currently active for this patient." }]).map((alert) => (
-                    <div key={alert.label} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-700">
-                      <div className="font-semibold text-slate-900">{alert.label}</div>
+                    <div key={alert.label} className="rounded-2xl border border-borderLight/80 bg-slate-50 p-4 text-sm leading-6 text-slate-700 dark:border-borderDark dark:bg-slate-900/70 dark:text-slate-200">
+                      <div className="font-semibold text-slate-900 dark:text-white">{alert.label}</div>
                       <div className="mt-1">{alert.message}</div>
                     </div>
                   ))}
                 </div>
               </div>
             ) : (
-              <p className="mt-4 text-slate-500">Select a patient to review health details.</p>
+              <p className="mt-4 text-slate-500 dark:text-slate-400">Select a patient to review health details.</p>
             )}
           </GlassCard>
 
           <GlassCard className="p-6">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <h2 className="text-xl font-semibold text-slate-900">Clinical notes</h2>
+              <div>
+                <p className="section-heading">Documentation</p>
+                <h2 className="mt-2 text-xl font-semibold text-slate-900 dark:text-white">Clinical notes</h2>
+              </div>
               <Button type="button" variant="outline" onClick={() => setModalOpen(true)} className="w-full rounded-full px-4 py-2 text-sm sm:w-auto">Add note</Button>
             </div>
             <div className="mt-5 space-y-3">
               {patientNotes.length ? patientNotes.map((entry) => (
-                <div key={entry.id} className="rounded-2xl border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-600">
+                <div key={entry.id} className="rounded-2xl border border-borderLight/80 bg-white/90 p-4 text-sm leading-6 text-slate-600 shadow-sm dark:border-borderDark dark:bg-slate-900/80 dark:text-slate-300">
                   <div>{entry.note}</div>
                   <div className="mt-2 text-xs uppercase tracking-[0.16em] text-slate-400">{new Date(entry.created_at).toLocaleString()}</div>
                 </div>
-              )) : <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-500">No notes yet for this patient.</div>}
+              )) : <div className="rounded-2xl border border-borderLight/80 bg-white/90 p-4 text-sm leading-6 text-slate-500 shadow-sm dark:border-borderDark dark:bg-slate-900/80 dark:text-slate-400">No notes yet for this patient.</div>}
             </div>
           </GlassCard>
         </div>
       </section>
 
       <Modal open={modalOpen} title="Add clinical note" onClose={() => setModalOpen(false)}>
-        <textarea value={noteInput} onChange={(event) => setNoteInput(event.target.value)} rows={5} placeholder="Write a clinical observation, recommendation, or follow-up note..." className="w-full rounded-2xl border border-slate-200 bg-white p-4 text-slate-900 outline-none transition duration-300 focus:border-sky-300" />
+        <textarea value={noteInput} onChange={(event) => setNoteInput(event.target.value)} rows={5} placeholder="Write a clinical observation, recommendation, or follow-up note..." className="w-full rounded-2xl border border-borderLight/80 bg-white p-4 text-slate-900 outline-none transition duration-300 focus:border-sky-300 dark:border-borderDark dark:bg-slate-900 dark:text-white" />
         <div className="mt-4 flex justify-end">
           <Button type="button" variant="default" onClick={() => void saveNote()} className="rounded-2xl px-5 py-3">Save note</Button>
         </div>

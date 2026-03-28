@@ -277,13 +277,24 @@ function Dashboard() {
   return (
     <div className="space-y-8">
       {toast ? <Toast message={toast.message} tone={toast.tone} /> : null}
-      <section className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-        <div>
-          <p className="section-heading">Your CarePath journal</p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">A more elegant way to follow your health day by day.</h1>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">Record daily readings, read weekly summaries, ask for guidance, manage reminders, and keep your care story together.</p>
+      <section className="rounded-[28px] border border-borderLight/80 bg-gradient-to-br from-white via-white to-cyan-50/60 p-6 shadow-soft dark:border-borderDark dark:from-slate-950 dark:via-slate-950 dark:to-cyan-950/30">
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200/70 bg-cyan-50/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-800 dark:border-cyan-900/60 dark:bg-cyan-950/40 dark:text-cyan-200">
+              Precision health workspace
+            </div>
+            <p className="section-heading">Your CarePath journal</p>
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-4xl">A more elegant way to follow your health day by day.</h1>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300 sm:text-base">Record daily readings, read weekly summaries, ask for guidance, manage reminders, and keep your care story together.</p>
+          </div>
+          <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+            <div className="rounded-2xl border border-borderLight/80 bg-white/90 px-4 py-3 text-sm text-slate-600 shadow-sm dark:border-borderDark dark:bg-slate-900/80 dark:text-slate-300">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Latest outlook</div>
+              <div className="mt-1 text-base font-semibold text-slate-900 dark:text-white">{data?.riskAssessment.prediction.title || "Building your report"}</div>
+            </div>
+            <GradientButton onClick={exportPdf} disabled={!data} className="w-full sm:w-auto">Export Weekly PDF</GradientButton>
+          </div>
         </div>
-        <GradientButton onClick={exportPdf} disabled={!data} className="w-full sm:w-auto">Export Weekly PDF</GradientButton>
       </section>
       {error ? <ErrorState title="Dashboard data unavailable" message={error} actionLabel="Retry" onAction={() => void loadDashboard()} /> : null}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -294,25 +305,25 @@ function Dashboard() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="section-heading">Risk center</p>
-              <h2 className="mt-2 text-2xl font-semibold text-slate-900">Real-time feedback from your latest health signals</h2>
+              <h2 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">Real-time feedback from your latest health signals</h2>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left sm:text-right">
-              <div className="text-xs uppercase tracking-[0.18em] text-slate-500">Prediction</div>
-              <div className="mt-2 text-lg font-semibold text-slate-900">{data?.riskAssessment.prediction.confidence} confidence</div>
+            <div className="rounded-2xl border border-borderLight/80 bg-background/80 px-4 py-3 text-left shadow-sm dark:border-borderDark dark:bg-slate-900/80 sm:text-right">
+              <div className="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Prediction</div>
+              <div className="mt-2 text-lg font-semibold text-slate-900 dark:text-white">{data?.riskAssessment.prediction.confidence} confidence</div>
             </div>
           </div>
           <div className="mt-6 grid gap-4 lg:grid-cols-2">
-            <div className="rounded-3xl border border-slate-200 bg-white p-5">
-              <div className="text-sm text-slate-500">Weekly report</div>
-              <div className="mt-3 text-lg font-semibold text-slate-900">{data?.weeklyReport.overview}</div>
-              <div className="mt-4 text-sm leading-6 text-slate-600">{data?.riskAssessment.prediction.summary}</div>
+            <div className="rounded-3xl border border-borderLight/80 bg-gradient-to-br from-white to-teal-50/60 p-5 shadow-sm dark:border-borderDark dark:from-slate-900 dark:to-teal-950/30">
+              <div className="text-sm text-slate-500 dark:text-slate-400">Weekly report</div>
+              <div className="mt-3 text-lg font-semibold text-slate-900 dark:text-white">{data?.weeklyReport.overview}</div>
+              <div className="mt-4 text-sm leading-6 text-slate-600 dark:text-slate-300">{data?.riskAssessment.prediction.summary}</div>
             </div>
-            <div className="rounded-3xl border border-slate-200 bg-white p-5">
-              <div className="text-sm text-slate-500">Trend snapshot</div>
+            <div className="rounded-3xl border border-borderLight/80 bg-gradient-to-br from-white to-sky-50/60 p-5 shadow-sm dark:border-borderDark dark:from-slate-900 dark:to-sky-950/30">
+              <div className="text-sm text-slate-500 dark:text-slate-400">Trend snapshot</div>
               <div className="mt-3 grid gap-3">
-                <div className="rounded-2xl bg-slate-50 p-3 text-sm text-slate-700">Average BP: {data?.riskAssessment.weeklyAverages ? `${data.riskAssessment.weeklyAverages.systolicBp}/${data.riskAssessment.weeklyAverages.diastolicBp}` : "--"}</div>
-                <div className="rounded-2xl bg-slate-50 p-3 text-sm text-slate-700">Average sugar: {data?.riskAssessment.weeklyAverages ? `${data.riskAssessment.weeklyAverages.sugarLevel} mg/dL` : "--"}</div>
-                <div className="rounded-2xl bg-slate-50 p-3 text-sm text-slate-700">Average sleep: {data?.riskAssessment.weeklyAverages ? `${data.riskAssessment.weeklyAverages.sleepHours} hrs` : "--"}</div>
+                <div className="rounded-2xl bg-slate-50 p-3 text-sm text-slate-700 dark:bg-slate-800/80 dark:text-slate-200">Average BP: {data?.riskAssessment.weeklyAverages ? `${data.riskAssessment.weeklyAverages.systolicBp}/${data.riskAssessment.weeklyAverages.diastolicBp}` : "--"}</div>
+                <div className="rounded-2xl bg-slate-50 p-3 text-sm text-slate-700 dark:bg-slate-800/80 dark:text-slate-200">Average sugar: {data?.riskAssessment.weeklyAverages ? `${data.riskAssessment.weeklyAverages.sugarLevel} mg/dL` : "--"}</div>
+                <div className="rounded-2xl bg-slate-50 p-3 text-sm text-slate-700 dark:bg-slate-800/80 dark:text-slate-200">Average sleep: {data?.riskAssessment.weeklyAverages ? `${data.riskAssessment.weeklyAverages.sleepHours} hrs` : "--"}</div>
               </div>
             </div>
           </div>
@@ -327,14 +338,14 @@ function Dashboard() {
         </GlassCard>
         <GlassCard className="p-6">
           <p className="section-heading">Weekly insight engine</p>
-          <h2 className="mt-2 text-2xl font-semibold text-slate-900">Personalized suggestions and preventive tips</h2>
+          <h2 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">Personalized suggestions and preventive tips</h2>
           <div className="mt-6 space-y-4">
-            {data?.weeklyReport.personalizedSuggestions.map((item) => <div key={item} className="rounded-2xl border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-600">{item}</div>)}
+            {data?.weeklyReport.personalizedSuggestions.map((item) => <div key={item} className="rounded-2xl border border-borderLight/80 bg-white/90 p-4 text-sm leading-6 text-slate-600 shadow-sm dark:border-borderDark dark:bg-slate-900/80 dark:text-slate-300">{item}</div>)}
           </div>
-          <div className="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-5">
-            <div className="text-sm font-medium text-slate-500">Prevention</div>
+          <div className="mt-6 rounded-3xl border border-borderLight/80 bg-slate-50 p-5 dark:border-borderDark dark:bg-slate-900/70">
+            <div className="text-sm font-medium text-slate-500 dark:text-slate-400">Prevention</div>
             <div className="mt-3 space-y-3">
-              {data?.weeklyReport.preventiveTips.map((tip) => <div key={tip} className="text-sm leading-6 text-slate-700">{tip}</div>)}
+              {data?.weeklyReport.preventiveTips.map((tip) => <div key={tip} className="text-sm leading-6 text-slate-700 dark:text-slate-200">{tip}</div>)}
             </div>
           </div>
         </GlassCard>
@@ -370,7 +381,7 @@ function Dashboard() {
       <section className="grid gap-6 xl:grid-cols-2">
         <GlassCard className="p-6">
           <p className="section-heading">Daily log capture</p>
-          <h2 className="mt-2 text-2xl font-semibold text-slate-900">Add a new health entry</h2>
+          <h2 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">Add a new health entry</h2>
           <form onSubmit={saveLog} className="mt-6 grid gap-4 sm:grid-cols-2">
             <InputField label="Weight (kg)" type="number" step="0.1" value={healthForm.weight} onChange={(event) => setHealthForm((current) => ({ ...current, weight: event.target.value }))} />
             <InputField label="Height (cm)" type="number" step="0.1" value={healthForm.height_cm} onChange={(event) => setHealthForm((current) => ({ ...current, height_cm: event.target.value }))} />
@@ -379,10 +390,10 @@ function Dashboard() {
             <InputField label="Sugar (mg/dL)" type="number" step="0.1" value={healthForm.sugar_level} onChange={(event) => setHealthForm((current) => ({ ...current, sugar_level: event.target.value }))} />
             <InputField label="Sleep (hours)" type="number" step="0.1" value={healthForm.sleep_hours} onChange={(event) => setHealthForm((current) => ({ ...current, sleep_hours: event.target.value }))} />
             <InputField label="Logged at" type="datetime-local" value={healthForm.created_at} onChange={(event) => setHealthForm((current) => ({ ...current, created_at: event.target.value }))} className="sm:col-span-2" />
-            <div className="rounded-2xl border border-cyan-100 bg-cyan-50 p-4 sm:col-span-2">
+            <div className="rounded-2xl border border-cyan-100 bg-cyan-50 p-4 dark:border-cyan-900/50 dark:bg-cyan-950/30 sm:col-span-2">
               <div className="text-xs uppercase tracking-[0.18em] text-cyan-800">BMI auto-calculation</div>
-              <div className="mt-2 text-2xl font-semibold text-slate-900">{liveBmi ?? "--"}</div>
-              <div className="mt-1 text-sm text-slate-600">{liveBmiCategory}</div>
+              <div className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{liveBmi ?? "--"}</div>
+              <div className="mt-1 text-sm text-slate-600 dark:text-slate-300">{liveBmiCategory}</div>
             </div>
             <GradientButton type="submit" disabled={savingLog} className="w-full sm:col-span-2">{savingLog ? "Saving..." : "Save health log"}</GradientButton>
           </form>
@@ -390,7 +401,7 @@ function Dashboard() {
 
         <GlassCard className="p-6">
           <p className="section-heading">Profile + prediction context</p>
-          <h2 className="mt-2 text-2xl font-semibold text-slate-900">Keep your health profile current</h2>
+          <h2 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">Keep your health profile current</h2>
           <form onSubmit={saveProfile} className="mt-6 grid gap-4 sm:grid-cols-2">
             <InputField label="Age" type="number" value={profileForm.age} onChange={(event) => setProfileForm((current) => ({ ...current, age: event.target.value }))} />
             <InputField label="Gender" value={profileForm.gender} onChange={(event) => setProfileForm((current) => ({ ...current, gender: event.target.value }))} />
@@ -411,40 +422,40 @@ function Dashboard() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="section-heading">AI assistant</p>
-              <h2 className="mt-2 text-2xl font-semibold text-slate-900">Context-aware health guidance</h2>
+              <h2 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">Context-aware health guidance</h2>
             </div>
-            <div className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-500">Ollama / API ready</div>
+            <div className="rounded-full border border-borderLight/80 bg-white/90 px-3 py-1 text-xs font-medium text-slate-500 shadow-sm dark:border-borderDark dark:bg-slate-900/80 dark:text-slate-300">Ollama / API ready</div>
           </div>
-          <div className="mt-6 h-[320px] space-y-3 overflow-y-auto rounded-3xl border border-slate-200 bg-slate-50 p-4">
+          <div className="mt-6 h-[320px] space-y-3 overflow-y-auto rounded-3xl border border-borderLight/80 bg-slate-50 p-4 dark:border-borderDark dark:bg-slate-900/70">
             {messages.length ? messages.map((message, index) => (
-              <div key={`${message.role}-${index}-${message.created_at || ""}`} className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-6 ${message.role === "assistant" ? "bg-white text-slate-700 shadow-sm" : "ml-auto bg-slate-900 text-white"}`}>
+              <div key={`${message.role}-${index}-${message.created_at || ""}`} className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-6 ${message.role === "assistant" ? "bg-white text-slate-700 shadow-sm dark:bg-slate-800 dark:text-slate-100" : "ml-auto bg-slate-900 text-white dark:bg-cyan-600"}`}>
                 {message.content}
               </div>
-            )) : <div className="text-sm text-slate-500">Ask about your BP, BMI, sugar trends, medications, prevention, or likely next steps.</div>}
-            {assistantSending ? <div className="max-w-[85%] rounded-2xl bg-white px-4 py-3 text-sm text-slate-500 shadow-sm">CarePath AI is thinking...</div> : null}
+            )) : <div className="text-sm text-slate-500 dark:text-slate-400">Ask about your BP, BMI, sugar trends, medications, prevention, or likely next steps.</div>}
+            {assistantSending ? <div className="max-w-[85%] rounded-2xl bg-white px-4 py-3 text-sm text-slate-500 shadow-sm dark:bg-slate-800 dark:text-slate-300">CarePath AI is thinking...</div> : null}
           </div>
           <form onSubmit={sendAssistantMessage} className="mt-4 flex flex-col gap-3 sm:flex-row">
-            <input value={assistantInput} onChange={(event) => setAssistantInput(event.target.value)} placeholder="Ask a question about your trends, symptoms, prevention, or daily routine" className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-cyan-300" />
+            <input value={assistantInput} onChange={(event) => setAssistantInput(event.target.value)} placeholder="Ask a question about your trends, symptoms, prevention, or daily routine" className="min-w-0 flex-1 rounded-2xl border border-borderLight/80 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-cyan-300 dark:border-borderDark dark:bg-slate-900 dark:text-white" />
             <GradientButton type="submit" disabled={assistantSending} className="w-full sm:w-auto">Send</GradientButton>
           </form>
         </GlassCard>
 
         <GlassCard className="p-6">
           <p className="section-heading">Doctor recommendations</p>
-          <h2 className="mt-2 text-2xl font-semibold text-slate-900">Suggested specialists based on your profile</h2>
+          <h2 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">Suggested specialists based on your profile</h2>
           <div className="mt-6 space-y-4">
             {(data?.doctorRecommendations || []).map((doctor) => (
-              <div key={doctor.id} className="rounded-3xl border border-slate-200 bg-white p-5">
+              <div key={doctor.id} className="rounded-3xl border border-borderLight/80 bg-white/90 p-5 shadow-sm dark:border-borderDark dark:bg-slate-900/80">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <div className="text-lg font-semibold text-slate-900">{doctor.name}</div>
+                    <div className="text-lg font-semibold text-slate-900 dark:text-white">{doctor.name}</div>
                     <div className="mt-1 text-sm text-slate-500">{doctor.specialization} · {doctor.location}</div>
-                    <div className="mt-2 text-sm text-slate-600">{doctor.hospital}</div>
+                    <div className="mt-2 text-sm text-slate-600 dark:text-slate-300">{doctor.hospital}</div>
                   </div>
                   <div className="rounded-2xl bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700">{doctor.rating}/5</div>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {doctor.conditions.map((condition) => <span key={condition} className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">{condition}</span>)}
+                  {doctor.conditions.map((condition) => <span key={condition} className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600 dark:bg-slate-800 dark:text-slate-200">{condition}</span>)}
                 </div>
                 <div className="mt-4 text-sm text-slate-600">{doctor.experience_years} years experience · {doctor.contact_phone}</div>
               </div>
@@ -456,7 +467,7 @@ function Dashboard() {
       <section className="grid gap-6 xl:grid-cols-2">
         <GlassCard className="p-6">
           <p className="section-heading">Medication reminders</p>
-          <h2 className="mt-2 text-2xl font-semibold text-slate-900">Create reminders and surface notifications</h2>
+          <h2 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">Create reminders and surface notifications</h2>
           <form onSubmit={saveReminder} className="mt-6 grid gap-4 sm:grid-cols-2">
             <InputField label="Medication name" value={reminderForm.medication_name} onChange={(event) => setReminderForm((current) => ({ ...current, medication_name: event.target.value }))} />
             <InputField label="Dosage" value={reminderForm.dosage} onChange={(event) => setReminderForm((current) => ({ ...current, dosage: event.target.value }))} />
@@ -467,7 +478,7 @@ function Dashboard() {
           </form>
           <div className="mt-6 space-y-3">
             {(data?.reminders || []).map((reminder) => (
-              <div key={reminder.id} className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div key={reminder.id} className="flex flex-col gap-3 rounded-2xl border border-borderLight/80 bg-white/90 p-4 shadow-sm dark:border-borderDark dark:bg-slate-900/80 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <div className="font-semibold text-slate-900">{reminder.medication_name} · {reminder.dosage}</div>
                   <div className="mt-1 text-sm text-slate-500">{reminder.schedule_time.slice(0, 5)} · {reminder.frequency}</div>
@@ -482,7 +493,7 @@ function Dashboard() {
 
         <GlassCard className="p-6">
           <p className="section-heading">Notifications</p>
-          <h2 className="mt-2 text-2xl font-semibold text-slate-900">Reminder activity feed</h2>
+          <h2 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">Reminder activity feed</h2>
           <div className="mt-6 space-y-3">
             {(data?.notifications || []).length ? (
               data?.notifications.map((notification) => (
@@ -493,7 +504,7 @@ function Dashboard() {
                 </button>
               ))
             ) : (
-              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-500">Notifications will appear here when the reminder scheduler runs at a matching medication time.</div>
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-400">Notifications will appear here when the reminder scheduler runs at a matching medication time.</div>
             )}
           </div>
         </GlassCard>
