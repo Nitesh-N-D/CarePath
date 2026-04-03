@@ -76,7 +76,12 @@ const items: SidebarItem[] = [
   { to: "/settings", label: "Settings", roles: ["user", "doctor", "admin"], icon: SettingsIcon },
 ];
 
-function Sidebar() {
+interface SidebarProps {
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
+}
+
+function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
   const { user } = useAuth();
   const visibleItems = items.filter((item) => (user ? item.roles.includes(user.role) : false));
 
@@ -106,6 +111,7 @@ function Sidebar() {
               <NavLink
                 key={`${item.to}-${item.label}`}
                 to={item.to}
+                onClick={onMobileClose}
                 className={({ isActive }) => `app-sidebar-link ${isActive ? "app-sidebar-link-active" : ""}`}
               >
                 {({ isActive }) => (
@@ -123,25 +129,60 @@ function Sidebar() {
         </div>
       </aside>
 
-      <div className="-mx-1 mb-6 flex gap-2 overflow-x-auto px-1 pb-1 xl:hidden">
-        {visibleItems.map((item) => (
-          <NavLink
-            key={`mobile-${item.to}-${item.label}`}
-            to={item.to}
-            className={({ isActive }) =>
-              `shrink-0 whitespace-nowrap rounded-xl border px-4 py-2.5 text-sm font-medium transition-all duration-300 ${
-                isActive
-                  ? "border-primary/20 bg-primary/10 text-primary dark:border-accent/30 dark:bg-accent/10 dark:text-accent"
-                  : "border-borderLight bg-card/90 text-slate-600 hover:scale-[1.02] dark:border-borderDark dark:bg-cardDark/90 dark:text-slate-300"
-              }`
-            }
-          >
-            <span className="mr-2 inline-flex align-middle">
-              <item.icon />
-            </span>
-            {item.label}
-          </NavLink>
-        ))}
+      <div className={`fixed inset-0 z-[70] xl:hidden ${mobileOpen ? "pointer-events-auto" : "pointer-events-none"}`}>
+        <button
+          type="button"
+          aria-label="Close navigation menu"
+          onClick={onMobileClose}
+          className={`absolute inset-0 bg-slate-950/40 transition-opacity duration-300 ${mobileOpen ? "opacity-100" : "opacity-0"}`}
+        />
+
+        <aside className={`absolute inset-y-0 left-0 flex w-[88vw] max-w-[340px] flex-col border-r border-borderLight bg-white/95 px-5 py-5 shadow-2xl backdrop-blur-xl transition-transform duration-300 dark:border-borderDark dark:bg-slate-950/96 ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}>
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent text-sm font-semibold text-white shadow-md">
+                CP
+              </div>
+              <div className="min-w-0">
+                <div className="truncate text-base font-semibold text-textPrimary dark:text-textDark">CarePath</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">
+                  {user?.role === "admin" ? "Admin workspace" : user?.role === "doctor" ? "Clinician workspace" : "Patient workspace"}
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={onMobileClose}
+              className="rounded-xl border border-borderLight bg-card/90 px-3 py-2 text-sm font-medium text-slate-600 dark:border-borderDark dark:bg-cardDark/80 dark:text-slate-300"
+            >
+              Close
+            </button>
+          </div>
+
+          <div className="mt-8 text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-400 dark:text-slate-500">
+            Navigation
+          </div>
+          <nav className="mt-4 space-y-2.5 overflow-y-auto pr-1">
+            {visibleItems.map((item) => (
+              <NavLink
+                key={`mobile-${item.to}-${item.label}`}
+                to={item.to}
+                onClick={onMobileClose}
+                className={({ isActive }) => `app-sidebar-link ${isActive ? "app-sidebar-link-active" : ""}`}
+              >
+                {({ isActive }) => (
+                  <>
+                    <span className={`app-sidebar-icon ${isActive ? "app-sidebar-icon-active" : ""}`}>
+                      <item.icon active={isActive} />
+                    </span>
+                    <span className="truncate">{item.label}</span>
+                    <span className={`app-sidebar-indicator ${isActive ? "opacity-100" : "opacity-0"}`} />
+                  </>
+                )}
+              </NavLink>
+            ))}
+          </nav>
+        </aside>
       </div>
     </>
   );

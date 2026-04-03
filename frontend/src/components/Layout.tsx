@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
@@ -18,6 +18,7 @@ function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const isAppSurface = APP_PATHS.some(
     (path) => location.pathname === path || location.pathname.startsWith(`${path}/`)
   );
@@ -40,21 +41,36 @@ function Layout({ children }: LayoutProps) {
     return (
       <div className="app-shell flex min-h-screen flex-col">
         <div className="flex min-h-screen flex-1">
-          <Sidebar />
+          <Sidebar mobileOpen={mobileSidebarOpen} onMobileClose={() => setMobileSidebarOpen(false)} />
           <div className="flex min-w-0 flex-1 flex-col">
             <div className="topbar-shell">
               <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
-                <div className="min-w-0">
-                  <div className="text-xs font-semibold uppercase tracking-[0.24em] text-primary dark:text-accent">
-                    CarePath
-                  </div>
-                  <div className="mt-1 text-lg font-semibold text-textPrimary dark:text-textDark sm:text-xl">
-                    {user?.role === "admin" ? "Admin dashboard" : user?.role === "doctor" ? "Clinician dashboard" : "Health dashboard"}
+                <div className="flex min-w-0 items-start gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setMobileSidebarOpen(true)}
+                    className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-borderLight bg-card/90 text-textPrimary shadow-sm transition-all duration-300 hover:scale-[1.02] dark:border-borderDark dark:bg-cardDark/80 dark:text-textDark xl:hidden"
+                    aria-label="Open navigation menu"
+                  >
+                    <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <path d="M4 6h12M4 10h12M4 14h12" strokeLinecap="round" />
+                    </svg>
+                  </button>
+
+                  <div className="min-w-0">
+                    <div className="text-xs font-semibold uppercase tracking-[0.24em] text-primary dark:text-accent">
+                      CarePath
+                    </div>
+                    <div className="mt-1 text-lg font-semibold text-textPrimary dark:text-textDark sm:text-xl">
+                      {user?.role === "admin" ? "Admin dashboard" : user?.role === "doctor" ? "Clinician dashboard" : "Health dashboard"}
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex w-full flex-wrap items-center gap-2 sm:gap-3 lg:w-auto lg:justify-end">
-                  <ThemeToggle />
+                <div className="flex w-full flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3 lg:w-auto lg:justify-end">
+                  <div className="w-full sm:w-auto">
+                    <ThemeToggle className="w-full justify-between sm:w-auto" />
+                  </div>
 
                   <div className="min-w-0 rounded-xl border border-borderLight bg-card/90 px-4 py-2 text-sm text-slate-600 shadow-sm dark:border-borderDark dark:bg-cardDark/90 dark:text-slate-300">
                     {user?.name || "CarePath member"}
@@ -67,7 +83,7 @@ function Layout({ children }: LayoutProps) {
                       logout();
                       navigate("/");
                     }}
-                    className="rounded-xl"
+                    className="w-full rounded-xl sm:w-auto"
                   >
                     Logout
                   </Button>
@@ -75,7 +91,7 @@ function Layout({ children }: LayoutProps) {
               </div>
             </div>
 
-            <main className="mx-auto flex w-full max-w-7xl flex-grow flex-col px-4 py-6 sm:px-6 sm:py-8">
+            <main className="mx-auto flex w-full max-w-7xl flex-grow flex-col px-3 py-5 sm:px-6 sm:py-8">
               {children}
             </main>
           </div>

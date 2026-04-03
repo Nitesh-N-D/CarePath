@@ -9,14 +9,14 @@ import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ThemeProvider>
-      <AuthProvider>
-        <AppErrorBoundary>
-          <BrowserRouter>
+    <BrowserRouter>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppErrorBoundary>
             <App />
-          </BrowserRouter>
-        </AppErrorBoundary>
-      </AuthProvider>
-    </ThemeProvider>
+          </AppErrorBoundary>
+        </AuthProvider>
+      </ThemeProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );

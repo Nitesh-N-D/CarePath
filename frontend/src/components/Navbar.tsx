@@ -65,9 +65,16 @@ function Navbar() {
         <button
           type="button"
           onClick={() => setOpen((current) => !current)}
-          className="shrink-0 rounded-xl border border-borderLight bg-card/80 px-3 py-2 text-sm text-textPrimary dark:border-borderDark dark:bg-cardDark/70 dark:text-textDark lg:hidden"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-borderLight bg-card/80 text-textPrimary dark:border-borderDark dark:bg-cardDark/70 dark:text-textDark lg:hidden"
+          aria-label={open ? "Close navigation menu" : "Open navigation menu"}
         >
-          Menu
+          <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
+            {open ? (
+              <path d="M5 5l10 10M15 5 5 15" strokeLinecap="round" />
+            ) : (
+              <path d="M4 6h12M4 10h12M4 14h12" strokeLinecap="round" />
+            )}
+          </svg>
         </button>
       </div>
 
