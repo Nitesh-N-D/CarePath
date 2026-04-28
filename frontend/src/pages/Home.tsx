@@ -210,7 +210,7 @@ function Home() {
         </div>
       </section>
 
-      <section id="disease-library" className="space-y-8">
+      <section id="disease-library" className="space-y-6 sm:space-y-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <div className="eyebrow">Disease library</div>
@@ -219,9 +219,9 @@ function Home() {
               Browse structured condition profiles with symptoms, causes, treatment, and prevention before you even sign in.
             </p>
           </div>
-          <Button to="/diseases" variant="outline" className="w-full sm:w-auto">Open Disease Library</Button>
+          <Button to="/diseases" variant="outline" className="w-full sm:w-auto lg:shrink-0">Open Disease Library</Button>
         </div>
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
           {diseasePreview.map((disease, index) => (
             <motion.div
               key={disease.id}
@@ -229,6 +229,7 @@ function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.45, delay: index * 0.06 }}
+              className="min-w-0"
             >
               <DiseaseCard disease={disease} />
             </motion.div>

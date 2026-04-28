@@ -17,27 +17,27 @@ function DiseaseCard({ disease }: DiseaseCardProps) {
         : "from-[rgba(68,80,86,0.16)] to-[rgba(166,124,82,0.16)]";
 
   return (
-    <GlassCard className="flex h-full flex-col p-6 transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.10)]">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-start gap-4">
+    <GlassCard className="flex h-full flex-col p-4 transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.10)] sm:p-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex min-w-0 items-start gap-3 sm:gap-4">
           <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${iconTone}`}>
             <svg viewBox="0 0 24 24" className="h-6 w-6 text-slate-800" fill="none" stroke="currentColor" strokeWidth="1.8">
               <path d="M12 3v18M3 12h18" strokeLinecap="round" />
               <path d="M7.5 7.5h9v9h-9z" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <div>
-            <p className="text-xs font-medium uppercase tracking-[0.18em] text-[var(--color-accent)]">{disease.body_system}</p>
-            <h3 className="mt-2 text-xl font-semibold text-slate-900">{disease.name}</h3>
+          <div className="min-w-0">
+            <p className="break-words text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--color-accent)] sm:text-xs">{disease.body_system}</p>
+            <h3 className="mt-2 break-words text-lg font-semibold text-slate-900 sm:text-xl">{disease.name}</h3>
           </div>
         </div>
-        <Badge tone="muted" className="tracking-[0.14em]">
+        <Badge tone="muted" className="max-w-full self-start whitespace-normal break-words text-[10px] tracking-[0.14em] sm:text-xs">
           {disease.category}
         </Badge>
       </div>
 
       <div className="mt-5 space-y-4">
-        <div className="soft-panel p-4">
+        <div className="soft-panel p-3 sm:p-4">
           <p className="text-xs font-medium uppercase tracking-[0.16em] text-slate-400">Overview</p>
           <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-600">{disease.causes}</p>
         </div>
@@ -46,7 +46,10 @@ function DiseaseCard({ disease }: DiseaseCardProps) {
           <p className="text-xs font-medium uppercase tracking-[0.16em] text-slate-400">Common Symptoms</p>
           <div className="mt-2 flex min-h-12 flex-wrap gap-2">
             {symptomPreview.map((symptom) => (
-              <span key={symptom} className="rounded-full border border-[rgba(49,88,79,0.12)] bg-[rgba(223,238,232,0.72)] px-3 py-1 text-xs text-[var(--color-accent)]">
+              <span
+                key={symptom}
+                className="max-w-full break-words rounded-full border border-[rgba(49,88,79,0.12)] bg-[rgba(223,238,232,0.72)] px-3 py-1 text-xs text-[var(--color-accent)]"
+              >
                 {symptom}
               </span>
             ))}
@@ -58,7 +61,7 @@ function DiseaseCard({ disease }: DiseaseCardProps) {
         <Button
           to={`/diseases/${disease.slug}`}
           variant="outline"
-          className="rounded-2xl px-4 py-2.5 text-slate-900 hover:text-cyan-700"
+          className="w-full rounded-2xl px-4 py-2.5 text-slate-900 hover:text-cyan-700 sm:w-auto"
         >
           View condition profile
           <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
