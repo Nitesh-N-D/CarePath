@@ -1,6 +1,6 @@
 # CarePath
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-carepath.app-0F766E?style=for-the-badge)](https://carepath.app)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-carepath.app-0F766E?style=for-the-badge)](https://care-path-two.vercel.app)
 [![API](https://img.shields.io/badge/API-onrender-0891B2?style=for-the-badge)](https://carepath-xnsd.onrender.com/api)
 [![License](https://img.shields.io/badge/License-MIT-111827?style=for-the-badge)](./LICENSE)
 
