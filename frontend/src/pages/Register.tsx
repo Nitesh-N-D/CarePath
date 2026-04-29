@@ -11,6 +11,8 @@ import ErrorState from "../components/ui/ErrorState";
 import Separator from "../components/ui/Separator";
 import { useAuth, type UserRole } from "../context/AuthContext";
 
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function Register() {
   const { register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
@@ -18,18 +20,68 @@ function Register() {
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
     role: "user" as UserRole,
   });
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<{
+    name?: string;
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+  }>({});
   const [submitting, setSubmitting] = useState(false);
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const trimmedName = form.name.trim();
+    const trimmedEmail = form.email.trim().toLowerCase();
+    const nextFieldErrors: {
+      name?: string;
+      email?: string;
+      password?: string;
+      confirmPassword?: string;
+    } = {};
+
+    if (trimmedName.length < 2) {
+      nextFieldErrors.name = "Enter your full name.";
+    }
+
+    if (!trimmedEmail) {
+      nextFieldErrors.email = "Email is required.";
+    } else if (!emailPattern.test(trimmedEmail)) {
+      nextFieldErrors.email = "Enter a valid email address.";
+    }
+
+    if (!form.password) {
+      nextFieldErrors.password = "Password is required.";
+    } else if (form.password.length < 8) {
+      nextFieldErrors.password = "Password must be at least 8 characters.";
+    }
+
+    if (!form.confirmPassword) {
+      nextFieldErrors.confirmPassword = "Please confirm your password.";
+    } else if (form.password !== form.confirmPassword) {
+      nextFieldErrors.confirmPassword = "Passwords do not match.";
+    }
+
+    if (Object.keys(nextFieldErrors).length) {
+      setFieldErrors(nextFieldErrors);
+      setError("");
+      return;
+    }
+
     setSubmitting(true);
     setError("");
+    setFieldErrors({});
 
     try {
-      const user = await register(form);
+      const user = await register({
+        name: trimmedName,
+        email: trimmedEmail,
+        password: form.password,
+        role: form.role,
+      });
       navigate(user.role === "admin" ? "/admin" : user.role === "doctor" ? "/doctor" : "/dashboard", {
         replace: true,
       });
@@ -80,7 +132,14 @@ function Register() {
           <InputField
             label="Full name"
             value={form.name}
-            onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
+            placeholder="Enter your full name"
+            autoComplete="name"
+            error={fieldErrors.name}
+            onChange={(event) => {
+              setForm((current) => ({ ...current, name: event.target.value }));
+              setError("");
+              setFieldErrors((current) => ({ ...current, name: undefined }));
+            }}
             className="sm:col-span-2"
             required
           />
@@ -88,7 +147,14 @@ function Register() {
             label="Email"
             type="email"
             value={form.email}
-            onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
+            placeholder="name@example.com"
+            autoComplete="email"
+            error={fieldErrors.email}
+            onChange={(event) => {
+              setForm((current) => ({ ...current, email: event.target.value }));
+              setError("");
+              setFieldErrors((current) => ({ ...current, email: undefined }));
+            }}
             className="sm:col-span-2"
             required
           />
@@ -96,7 +162,29 @@ function Register() {
             label="Password"
             type="password"
             value={form.password}
-            onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
+            placeholder="Create a strong password"
+            autoComplete="new-password"
+            error={fieldErrors.password}
+            onChange={(event) => {
+              setForm((current) => ({ ...current, password: event.target.value }));
+              setError("");
+              setFieldErrors((current) => ({ ...current, password: undefined, confirmPassword: undefined }));
+            }}
+            required
+            minLength={8}
+          />
+          <InputField
+            label="Confirm password"
+            type="password"
+            value={form.confirmPassword}
+            placeholder="Re-enter your password"
+            autoComplete="new-password"
+            error={fieldErrors.confirmPassword}
+            onChange={(event) => {
+              setForm((current) => ({ ...current, confirmPassword: event.target.value }));
+              setError("");
+              setFieldErrors((current) => ({ ...current, confirmPassword: undefined }));
+            }}
             required
             minLength={8}
           />

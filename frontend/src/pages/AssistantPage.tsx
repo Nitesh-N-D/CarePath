@@ -1,4 +1,3 @@
-import axios from "axios";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
@@ -8,6 +7,7 @@ import GradientButton from "../components/ui/GradientButton";
 import LoadingSkeleton from "../components/ui/LoadingSkeleton";
 import API from "../services/api";
 import type { AssistantMessage } from "../types/health";
+import { getErrorMessage } from "../utils/errors";
 
 function AssistantPage() {
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
@@ -16,25 +16,27 @@ function AssistantPage() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        const response = await API.get<AssistantMessage[]>("/assistant/history");
-        setMessages(response.data);
-      } catch (requestError) {
-        setError("Unable to load your AI conversation right now.");
-        console.error(requestError);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchHistory = async () => {
+    setLoading(true);
+    try {
+      const response = await API.get<AssistantMessage[]>("/assistant/history");
+      setMessages(response.data);
+      setError("");
+    } catch (requestError) {
+      setError(getErrorMessage(requestError, "Unable to load your AI conversation right now."));
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     void fetchHistory();
   }, []);
 
   const sendMessage = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!input.trim()) return;
+
     const content = input.trim();
     const assistantIndex = messages.length + 1;
     setMessages((current) => [...current, { role: "user", content }, { role: "assistant", content: "" }]);
@@ -98,13 +100,7 @@ function AssistantPage() {
       }
     } catch (requestError) {
       setMessages((current) => current.filter((_, index) => index !== assistantIndex));
-      setError(
-        axios.isAxiosError(requestError)
-          ? requestError.response?.data?.message || "Assistant unavailable."
-          : requestError instanceof Error
-            ? requestError.message
-            : "Assistant unavailable."
-      );
+      setError(getErrorMessage(requestError, "Assistant unavailable."));
     } finally {
       setSending(false);
     }
@@ -119,12 +115,7 @@ function AssistantPage() {
       </section>
 
       {error && !messages.length && !sending ? (
-        <ErrorState
-          title="Assistant unavailable"
-          message={error}
-          actionLabel="Retry"
-          onAction={() => window.location.reload()}
-        />
+        <ErrorState title="Assistant unavailable" message={error} actionLabel="Retry" onAction={() => void fetchHistory()} />
       ) : null}
 
       <GlassCard className="overflow-hidden p-0">

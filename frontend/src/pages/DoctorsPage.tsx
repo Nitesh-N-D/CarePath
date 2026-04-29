@@ -64,7 +64,10 @@ function DoctorsPage() {
                     </span>
                   ))}
                 </div>
-                <div className="mt-4 text-sm text-slate-600">{doctor.experience_years} years experience · {doctor.contact_phone}</div>
+                <div className="mt-4 text-sm text-slate-600">
+                  {doctor.experience_years} years experience
+                  {doctor.contact_phone ? ` - ${doctor.contact_phone}` : ""}
+                </div>
               </GlassCard>
             ))}
       </div>

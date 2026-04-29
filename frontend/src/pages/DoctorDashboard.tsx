@@ -180,7 +180,7 @@ function DoctorDashboard() {
                   <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Member since {new Date(selectedPatient.created_at).toLocaleDateString()}</p>
                 </div>
                 <div className="rounded-2xl border border-borderLight/80 bg-white/90 p-5 text-sm leading-6 text-slate-600 shadow-sm dark:border-borderDark dark:bg-slate-900/80 dark:text-slate-300">
-                  {selectedPatient.age ? `Age ${selectedPatient.age}` : "Age not provided"} · {selectedPatient.gender || "Gender not provided"} · {selectedPatient.location || "Location not provided"}
+                  {selectedPatient.age ? `Age ${selectedPatient.age}` : "Age not provided"} - {selectedPatient.gender || "Gender not provided"} - {selectedPatient.location || "Location not provided"}
                 </div>
                 <div className="rounded-2xl border border-borderLight/80 bg-white/90 p-5 text-sm leading-6 text-slate-600 shadow-sm dark:border-borderDark dark:bg-slate-900/80 dark:text-slate-300">
                   Goal: {selectedPatient.primary_goal || "No primary goal recorded."}

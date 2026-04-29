@@ -4,6 +4,7 @@ const { ensureNumber, ensureRequiredString } = require("../utils/validation");
 const { buildRiskAssessment, calculateBmi, getBmiCategory } = require("../services/riskEngine");
 const { buildWeeklyInsightPack } = require("../services/insightsEngine");
 const { getDoctorRecommendations } = require("../services/doctorRecommendationService");
+const { createHttpError } = require("../utils/httpError");
 
 function toNumberOrNull(value) {
   if (value === null || value === undefined || value === "") {
@@ -353,7 +354,11 @@ const updateReminder = asyncHandler(async (req, res) => {
     [active, reminderId, req.user.id]
   );
 
-  res.status(200).json(result.rows[0] || null);
+  if (!result.rows.length) {
+    throw createHttpError(404, "Reminder not found.");
+  }
+
+  res.status(200).json(result.rows[0]);
 });
 
 const listNotifications = asyncHandler(async (req, res) => {
@@ -372,7 +377,11 @@ const markNotificationRead = asyncHandler(async (req, res) => {
     [req.params.id, req.user.id]
   );
 
-  res.status(200).json(result.rows[0] || null);
+  if (!result.rows.length) {
+    throw createHttpError(404, "Notification not found.");
+  }
+
+  res.status(200).json(result.rows[0]);
 });
 
 const getRecommendations = asyncHandler(async (req, res) => {

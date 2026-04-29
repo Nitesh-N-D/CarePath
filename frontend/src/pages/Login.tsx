@@ -11,6 +11,8 @@ import ErrorState from "../components/ui/ErrorState";
 import Separator from "../components/ui/Separator";
 import { useAuth } from "../context/AuthContext";
 
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function Login() {
   const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
@@ -18,6 +20,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
   const [submitting, setSubmitting] = useState(false);
 
   const nextPath = (location.state as { from?: string } | null)?.from ?? "/dashboard";
@@ -28,11 +31,31 @@ function Login() {
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const trimmedEmail = email.trim().toLowerCase();
+    const nextFieldErrors: { email?: string; password?: string } = {};
+
+    if (!trimmedEmail) {
+      nextFieldErrors.email = "Email is required.";
+    } else if (!emailPattern.test(trimmedEmail)) {
+      nextFieldErrors.email = "Enter a valid email address.";
+    }
+
+    if (!password) {
+      nextFieldErrors.password = "Password is required.";
+    }
+
+    if (Object.keys(nextFieldErrors).length) {
+      setFieldErrors(nextFieldErrors);
+      setError("");
+      return;
+    }
+
     setSubmitting(true);
     setError("");
+    setFieldErrors({});
 
     try {
-      const user = await login(email, password);
+      const user = await login(trimmedEmail, password);
       finishNavigation(user.role);
     } catch (requestError) {
       if (axios.isAxiosError(requestError)) {
@@ -82,14 +105,28 @@ function Login() {
             label="Email"
             type="email"
             value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            placeholder="name@example.com"
+            autoComplete="email"
+            error={fieldErrors.email}
+            onChange={(event) => {
+              setEmail(event.target.value);
+              setError("");
+              setFieldErrors((current) => ({ ...current, email: undefined }));
+            }}
             required
           />
           <InputField
             label="Password"
             type="password"
             value={password}
-            onChange={(event) => setPassword(event.target.value)}
+            placeholder="Enter your password"
+            autoComplete="current-password"
+            error={fieldErrors.password}
+            onChange={(event) => {
+              setPassword(event.target.value);
+              setError("");
+              setFieldErrors((current) => ({ ...current, password: undefined }));
+            }}
             required
           />
           <GradientButton type="submit" disabled={submitting} className="w-full">

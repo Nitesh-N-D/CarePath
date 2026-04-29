@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -43,24 +44,38 @@ function DiseaseDetail() {
       setDisease(response.data);
       setError("");
     } catch (requestError) {
-      console.error(requestError);
-      setError("Unable to load this disease profile.");
+      setError(
+        axios.isAxiosError(requestError)
+          ? requestError.response?.data?.message || "Unable to load this disease profile."
+          : "Unable to load this disease profile."
+      );
     }
   }, [slug]);
 
   useEffect(() => {
+    let active = true;
+
     const loadDisease = async () => {
       try {
         const response = await API.get<Disease>(`/diseases/${slug}`);
+        if (!active) return;
         setDisease(response.data);
         setError("");
       } catch (requestError) {
-        console.error(requestError);
-        setError("Unable to load this disease profile.");
+        if (!active) return;
+        setError(
+          axios.isAxiosError(requestError)
+            ? requestError.response?.data?.message || "Unable to load this disease profile."
+            : "Unable to load this disease profile."
+        );
       }
     };
 
     void loadDisease();
+
+    return () => {
+      active = false;
+    };
   }, [slug]);
 
   const emergencySigns = useMemo(() => toList(disease?.emergency_signs), [disease]);
@@ -79,11 +94,11 @@ function DiseaseDetail() {
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <Button to="/diseases" variant="secondary" className="w-full gap-2 rounded-xl px-4 py-2.5 shadow-sm sm:w-auto">
-          <span aria-hidden="true">←</span>
+          <span aria-hidden="true">&larr;</span>
           Back to disease library
         </Button>
         <Button to="/#disease-library" variant="outline" className="w-full gap-2 rounded-xl px-4 py-2.5 sm:w-auto">
-          <span aria-hidden="true">←</span>
+          <span aria-hidden="true">&larr;</span>
           Back to landing page
         </Button>
       </div>

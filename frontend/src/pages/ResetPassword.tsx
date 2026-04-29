@@ -12,8 +12,10 @@ function ResetPassword() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<{ password?: string; confirmPassword?: string }>({});
   const [submitting, setSubmitting] = useState(false);
 
   const token = useMemo(() => searchParams.get("token") || "", [searchParams]);
@@ -21,9 +23,31 @@ function ResetPassword() {
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const nextFieldErrors: { password?: string; confirmPassword?: string } = {};
+
+    if (!password) {
+      nextFieldErrors.password = "New password is required.";
+    } else if (password.length < 8) {
+      nextFieldErrors.password = "Password must be at least 8 characters.";
+    }
+
+    if (!confirmPassword) {
+      nextFieldErrors.confirmPassword = "Please confirm your new password.";
+    } else if (password !== confirmPassword) {
+      nextFieldErrors.confirmPassword = "Passwords do not match.";
+    }
+
+    if (Object.keys(nextFieldErrors).length) {
+      setFieldErrors(nextFieldErrors);
+      setError("");
+      setMessage("");
+      return;
+    }
+
     setSubmitting(true);
     setError("");
     setMessage("");
+    setFieldErrors({});
 
     try {
       const response = await API.post<{ message: string }>("/auth/reset-password", {
@@ -64,7 +88,38 @@ function ResetPassword() {
         {message ? <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">{message}</div> : null}
         {error ? <div className="mt-6"><ErrorState title="Password reset failed" message={error} /></div> : null}
         <form onSubmit={submit} className="mt-6 space-y-4">
-          <InputField label="New password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required minLength={8} />
+          <InputField
+            label="New password"
+            type="password"
+            value={password}
+            placeholder="Create a new password"
+            autoComplete="new-password"
+            error={fieldErrors.password}
+            onChange={(event) => {
+              setPassword(event.target.value);
+              setError("");
+              setMessage("");
+              setFieldErrors((current) => ({ ...current, password: undefined, confirmPassword: undefined }));
+            }}
+            required
+            minLength={8}
+          />
+          <InputField
+            label="Confirm new password"
+            type="password"
+            value={confirmPassword}
+            placeholder="Re-enter your new password"
+            autoComplete="new-password"
+            error={fieldErrors.confirmPassword}
+            onChange={(event) => {
+              setConfirmPassword(event.target.value);
+              setError("");
+              setMessage("");
+              setFieldErrors((current) => ({ ...current, confirmPassword: undefined }));
+            }}
+            required
+            minLength={8}
+          />
           <GradientButton type="submit" disabled={submitting} className="w-full">
             {submitting ? "Updating..." : "Reset password"}
           </GradientButton>

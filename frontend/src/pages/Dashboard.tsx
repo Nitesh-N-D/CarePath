@@ -12,6 +12,7 @@ import StatCard from "../components/ui/StatCard";
 import Toast from "../components/ui/Toast";
 import API from "../services/api";
 import type { AssistantMessage, DashboardResponse, MedicationReminder, ReminderNotification, UserProfile } from "../types/health";
+import { getErrorMessage } from "../utils/errors";
 
 interface HealthFormState {
   weight: string;
@@ -55,6 +56,10 @@ function profileToForm(profile: UserProfile | null): ProfileFormState {
     allergies: profile?.allergies?.join(", ") || "",
     medications: profile?.medications?.join(", ") || "",
   };
+}
+
+function hasValue(value: string) {
+  return value.trim().length > 0;
 }
 
 function Dashboard() {
@@ -153,6 +158,18 @@ function Dashboard() {
 
   const saveLog = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (
+      !hasValue(healthForm.weight) ||
+      !hasValue(healthForm.height_cm) ||
+      !hasValue(healthForm.systolic_bp) ||
+      !hasValue(healthForm.diastolic_bp) ||
+      !hasValue(healthForm.sugar_level) ||
+      !hasValue(healthForm.sleep_hours)
+    ) {
+      showToast("Complete all health log fields before saving.", "error");
+      return;
+    }
+
     setSavingLog(true);
     try {
       await API.post("/health", { ...healthForm, weight: Number(healthForm.weight), height_cm: Number(healthForm.height_cm), systolic_bp: Number(healthForm.systolic_bp), diastolic_bp: Number(healthForm.diastolic_bp), sugar_level: Number(healthForm.sugar_level), sleep_hours: Number(healthForm.sleep_hours) });
@@ -160,7 +177,7 @@ function Dashboard() {
       showToast("Health log saved successfully.", "success");
       await loadDashboard();
     } catch (requestError) {
-      showToast(axios.isAxiosError(requestError) ? requestError.response?.data?.message || "Unable to save this health log." : "Unable to save this health log.", "error");
+      showToast(getErrorMessage(requestError, "Unable to save this health log."), "error");
     } finally {
       setSavingLog(false);
     }
@@ -184,7 +201,7 @@ function Dashboard() {
       showToast("Profile updated successfully.", "success");
       await loadDashboard();
     } catch (requestError) {
-      showToast(axios.isAxiosError(requestError) ? requestError.response?.data?.message || "Unable to update profile." : "Unable to update profile.", "error");
+      showToast(getErrorMessage(requestError, "Unable to update profile."), "error");
     } finally {
       setSavingProfile(false);
     }
@@ -192,6 +209,16 @@ function Dashboard() {
 
   const saveReminder = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (
+      !hasValue(reminderForm.medication_name) ||
+      !hasValue(reminderForm.dosage) ||
+      !hasValue(reminderForm.schedule_time) ||
+      !hasValue(reminderForm.frequency)
+    ) {
+      showToast("Medication name, dosage, time, and frequency are required.", "error");
+      return;
+    }
+
     setSavingReminder(true);
     try {
       await API.post("/health/reminders", reminderForm);
@@ -199,7 +226,7 @@ function Dashboard() {
       showToast("Medication reminder created.", "success");
       await loadDashboard();
     } catch (requestError) {
-      showToast(axios.isAxiosError(requestError) ? requestError.response?.data?.message || "Unable to save reminder." : "Unable to save reminder.", "error");
+      showToast(getErrorMessage(requestError, "Unable to save reminder."), "error");
     } finally {
       setSavingReminder(false);
     }
@@ -210,7 +237,7 @@ function Dashboard() {
       await API.patch(`/health/reminders/${reminder.id}`, { active: !reminder.active });
       await loadDashboard();
     } catch (requestError) {
-      showToast(axios.isAxiosError(requestError) ? requestError.response?.data?.message || "Unable to update reminder." : "Unable to update reminder.", "error");
+      showToast(getErrorMessage(requestError, "Unable to update reminder."), "error");
     }
   };
 
@@ -220,7 +247,7 @@ function Dashboard() {
       await API.patch(`/health/notifications/${notification.id}/read`);
       await loadDashboard();
     } catch (requestError) {
-      console.error(requestError);
+      showToast(getErrorMessage(requestError, "Unable to update notification status."), "error");
     }
   };
 
@@ -235,7 +262,7 @@ function Dashboard() {
       const response = await API.post<{ reply: string }>("/assistant/chat", { message: content });
       setMessages((current) => [...current, { role: "assistant", content: response.data.reply, created_at: new Date().toISOString() }]);
     } catch (requestError) {
-      showToast(axios.isAxiosError(requestError) ? requestError.response?.data?.message || "Unable to contact the AI assistant right now." : "Unable to contact the AI assistant right now.", "error");
+      showToast(getErrorMessage(requestError, "Unable to contact the AI assistant right now."), "error");
     } finally {
       setAssistantSending(false);
     }
@@ -243,22 +270,26 @@ function Dashboard() {
 
   const exportPdf = async () => {
     if (!data) return;
-    const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([import("jspdf"), import("jspdf-autotable")]);
-    const pdf = new jsPDF();
-    pdf.setFillColor(15, 23, 42);
-    pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), 34, "F");
-    pdf.setTextColor(255, 255, 255);
-    pdf.setFontSize(22);
-    pdf.text("CarePath Weekly Health Report", 14, 20);
-    pdf.setFontSize(10);
-    pdf.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
-    pdf.setTextColor(15, 23, 42);
-    pdf.setFontSize(12);
-    pdf.text(data.weeklyReport.overview, 14, 46, { maxWidth: 180 });
-    autoTable(pdf, { startY: 62, head: [["Metric", "Value"]], body: [["Risk score", `${data.riskAssessment.riskScore}/100`], ["BMI", `${data.riskAssessment.latest?.bmi || data.profile?.bmi || "n/a"} (${data.riskAssessment.latest?.bmiCategory || data.profile?.bmiCategory || "Unavailable"})`], ["Prediction", data.riskAssessment.prediction.summary], ["Suggestion", data.weeklyReport.personalizedSuggestions[0] || "Keep logging consistently."]], headStyles: { fillColor: [14, 165, 233], textColor: 255 }, styles: { fontSize: 10 } });
-    const typedPdf = pdf as typeof pdf & { lastAutoTable?: { finalY?: number } };
-    autoTable(pdf, { startY: typedPdf.lastAutoTable?.finalY ? typedPdf.lastAutoTable.finalY + 12 : 120, head: [["Date", "Weight", "BP", "Sugar", "Sleep"]], body: data.logs.map((log) => [new Date(log.created_at).toLocaleDateString(), `${log.weight} kg`, `${log.systolic_bp}/${log.diastolic_bp}`, `${log.sugar_level} mg/dL`, `${log.sleep_hours} hrs`]), headStyles: { fillColor: [79, 70, 229], textColor: 255 }, styles: { fontSize: 9 } });
-    pdf.save("carepath-weekly-health-report.pdf");
+    try {
+      const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([import("jspdf"), import("jspdf-autotable")]);
+      const pdf = new jsPDF();
+      pdf.setFillColor(15, 23, 42);
+      pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), 34, "F");
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFontSize(22);
+      pdf.text("CarePath Weekly Health Report", 14, 20);
+      pdf.setFontSize(10);
+      pdf.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
+      pdf.setTextColor(15, 23, 42);
+      pdf.setFontSize(12);
+      pdf.text(data.weeklyReport.overview, 14, 46, { maxWidth: 180 });
+      autoTable(pdf, { startY: 62, head: [["Metric", "Value"]], body: [["Risk score", `${data.riskAssessment.riskScore}/100`], ["BMI", `${data.riskAssessment.latest?.bmi || data.profile?.bmi || "n/a"} (${data.riskAssessment.latest?.bmiCategory || data.profile?.bmiCategory || "Unavailable"})`], ["Prediction", data.riskAssessment.prediction.summary], ["Suggestion", data.weeklyReport.personalizedSuggestions[0] || "Keep logging consistently."]], headStyles: { fillColor: [14, 165, 233], textColor: 255 }, styles: { fontSize: 10 } });
+      const typedPdf = pdf as typeof pdf & { lastAutoTable?: { finalY?: number } };
+      autoTable(pdf, { startY: typedPdf.lastAutoTable?.finalY ? typedPdf.lastAutoTable.finalY + 12 : 120, head: [["Date", "Weight", "BP", "Sugar", "Sleep"]], body: data.logs.map((log) => [new Date(log.created_at).toLocaleDateString(), `${log.weight} kg`, `${log.systolic_bp}/${log.diastolic_bp}`, `${log.sugar_level} mg/dL`, `${log.sleep_hours} hrs`]), headStyles: { fillColor: [79, 70, 229], textColor: 255 }, styles: { fontSize: 9 } });
+      pdf.save("carepath-weekly-health-report.pdf");
+    } catch (requestError) {
+      showToast(getErrorMessage(requestError, "Unable to export the weekly PDF right now."), "error");
+    }
   };
 
   if (loading) {
@@ -449,7 +480,7 @@ function Dashboard() {
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <div className="text-lg font-semibold text-slate-900 dark:text-white">{doctor.name}</div>
-                    <div className="mt-1 text-sm text-slate-500">{doctor.specialization} · {doctor.location}</div>
+                    <div className="mt-1 text-sm text-slate-500">{doctor.specialization} - {doctor.location}</div>
                     <div className="mt-2 text-sm text-slate-600 dark:text-slate-300">{doctor.hospital}</div>
                   </div>
                   <div className="rounded-2xl bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700">{doctor.rating}/5</div>
@@ -457,7 +488,10 @@ function Dashboard() {
                 <div className="mt-4 flex flex-wrap gap-2">
                   {doctor.conditions.map((condition) => <span key={condition} className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600 dark:bg-slate-800 dark:text-slate-200">{condition}</span>)}
                 </div>
-                <div className="mt-4 text-sm text-slate-600">{doctor.experience_years} years experience · {doctor.contact_phone}</div>
+                <div className="mt-4 text-sm text-slate-600">
+                  {doctor.experience_years} years experience
+                  {doctor.contact_phone ? ` - ${doctor.contact_phone}` : ""}
+                </div>
               </div>
             ))}
           </div>
@@ -480,8 +514,8 @@ function Dashboard() {
             {(data?.reminders || []).map((reminder) => (
               <div key={reminder.id} className="flex flex-col gap-3 rounded-2xl border border-borderLight/80 bg-white/90 p-4 shadow-sm dark:border-borderDark dark:bg-slate-900/80 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <div className="font-semibold text-slate-900">{reminder.medication_name} · {reminder.dosage}</div>
-                  <div className="mt-1 text-sm text-slate-500">{reminder.schedule_time.slice(0, 5)} · {reminder.frequency}</div>
+                  <div className="font-semibold text-slate-900">{reminder.medication_name} - {reminder.dosage}</div>
+                  <div className="mt-1 text-sm text-slate-500">{reminder.schedule_time.slice(0, 5)} - {reminder.frequency}</div>
                 </div>
                 <button type="button" onClick={() => void toggleReminder(reminder)} className={`rounded-full px-3 py-2 text-xs font-semibold ${reminder.active ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>
                   {reminder.active ? "Active" : "Inactive"}
@@ -500,7 +534,7 @@ function Dashboard() {
                 <button key={notification.id} type="button" onClick={() => void markNotificationRead(notification)} className={`w-full rounded-2xl border p-4 text-left ${notification.status === "read" ? "border-slate-200 bg-slate-50" : "border-cyan-200 bg-cyan-50"}`}>
                   <div className="font-semibold text-slate-900">{notification.title}</div>
                   <div className="mt-1 text-sm leading-6 text-slate-600">{notification.message}</div>
-                  <div className="mt-2 text-xs uppercase tracking-[0.16em] text-slate-400">{notification.status} · {new Date(notification.due_at).toLocaleString()}</div>
+                  <div className="mt-2 text-xs uppercase tracking-[0.16em] text-slate-400">{notification.status} - {new Date(notification.due_at).toLocaleString()}</div>
                 </button>
               ))
             ) : (

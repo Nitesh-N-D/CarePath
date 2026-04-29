@@ -7,20 +7,40 @@ import GradientButton from "../components/ui/GradientButton";
 import InputField from "../components/ui/InputField";
 import API from "../services/api";
 
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [fieldError, setFieldError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const trimmedEmail = email.trim().toLowerCase();
+
+    if (!trimmedEmail) {
+      setFieldError("Email is required.");
+      setError("");
+      setMessage("");
+      return;
+    }
+
+    if (!emailPattern.test(trimmedEmail)) {
+      setFieldError("Enter a valid email address.");
+      setError("");
+      setMessage("");
+      return;
+    }
+
     setSubmitting(true);
     setError("");
     setMessage("");
+    setFieldError("");
 
     try {
-      const response = await API.post<{ message: string }>("/auth/forgot-password", { email });
+      const response = await API.post<{ message: string }>("/auth/forgot-password", { email: trimmedEmail });
       setMessage(response.data.message);
     } catch (requestError) {
       if (axios.isAxiosError(requestError)) {
@@ -42,7 +62,21 @@ function ForgotPassword() {
         {message ? <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">{message}</div> : null}
         {error ? <div className="mt-6"><ErrorState title="Reset email failed" message={error} /></div> : null}
         <form onSubmit={submit} className="mt-6 space-y-4">
-          <InputField label="Email address" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required />
+          <InputField
+            label="Email address"
+            type="email"
+            value={email}
+            placeholder="name@example.com"
+            autoComplete="email"
+            error={fieldError}
+            onChange={(event) => {
+              setEmail(event.target.value);
+              setError("");
+              setMessage("");
+              setFieldError("");
+            }}
+            required
+          />
           <GradientButton type="submit" disabled={submitting} className="w-full">
             {submitting ? "Sending..." : "Send reset link"}
           </GradientButton>
