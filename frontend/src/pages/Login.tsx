@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 import GlassCard from "../components/ui/GlassCard";
 import Badge from "../components/ui/Badge";
@@ -17,13 +17,14 @@ function Login() {
   const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
   const [submitting, setSubmitting] = useState(false);
 
-  const nextPath = (location.state as { from?: string } | null)?.from ?? "/dashboard";
+  const nextPath = searchParams.get("next") || (location.state as { from?: string } | null)?.from || "/dashboard";
 
   const finishNavigation = (role: "user" | "doctor" | "admin") => {
     navigate(role === "admin" ? "/admin" : role === "doctor" ? "/doctor" : nextPath, { replace: true });

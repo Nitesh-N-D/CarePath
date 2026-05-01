@@ -64,57 +64,71 @@ const sendMessage = asyncHandler(async (req, res) => {
 });
 
 const streamMessage = asyncHandler(async (req, res) => {
-  const { message, profile, riskAssessment, weeklyReport, diseaseContext } = await getAssistantContext(req);
+  try {
+    const { message, profile, riskAssessment, weeklyReport, diseaseContext } = await getAssistantContext(req);
 
-  await saveMessage({
-    userId: req.user.id,
-    role: "user",
-    content: message,
-  });
+    await saveMessage({
+      userId: req.user.id,
+      role: "user",
+      content: message,
+    });
 
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache, no-transform");
-  res.setHeader("Connection", "keep-alive");
-  res.flushHeaders?.();
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache, no-transform");
+    res.setHeader("Connection", "keep-alive");
+    res.flushHeaders?.();
 
-  let assistantReply = "";
+    let assistantReply = "";
 
-  const result = await generateAssistantReply({
-    user: req.user,
-    message,
-    profile,
-    riskAssessment,
-    weeklyReport,
-    diseaseContext,
-    onToken(token) {
-      assistantReply += token;
-      res.write(`data: ${JSON.stringify({ type: "token", token })}\n\n`);
-    },
-  });
+    const result = await generateAssistantReply({
+      user: req.user,
+      message,
+      profile,
+      riskAssessment,
+      weeklyReport,
+      diseaseContext,
+      onToken(token) {
+        assistantReply += token;
+        res.write(`data: ${JSON.stringify({ type: "token", token })}\n\n`);
+      },
+    });
 
-  await saveMessage({
-    userId: req.user.id,
-    role: "assistant",
-    content: assistantReply || result.reply,
-    metadata: {
-      source: result.source,
-      fallbackUsed: result.fallbackUsed || false,
-      error: result.error || null,
-      providerErrors: result.providerErrors || [],
-    },
-  });
+    await saveMessage({
+      userId: req.user.id,
+      role: "assistant",
+      content: assistantReply || result.reply,
+      metadata: {
+        source: result.source,
+        fallbackUsed: result.fallbackUsed || false,
+        error: result.error || null,
+        providerErrors: result.providerErrors || [],
+      },
+    });
 
-  res.write(
-    `data: ${JSON.stringify({
-      type: "done",
-      reply: assistantReply || result.reply,
-      source: result.source,
-      fallbackUsed: result.fallbackUsed || false,
-      error: result.error || null,
-      providerErrors: result.providerErrors || [],
-    })}\n\n`
-  );
-  res.end();
+    res.write(
+      `data: ${JSON.stringify({
+        type: "done",
+        reply: assistantReply || result.reply,
+        source: result.source,
+        fallbackUsed: result.fallbackUsed || false,
+        error: result.error || null,
+        providerErrors: result.providerErrors || [],
+      })}\n\n`
+    );
+    res.end();
+  } catch (error) {
+    if (!res.headersSent) {
+      throw error;
+    }
+
+    res.write(
+      `data: ${JSON.stringify({
+        type: "error",
+        message: error?.message || "Streaming assistant unavailable.",
+      })}\n\n`
+    );
+    res.end();
+  }
 });
 
 module.exports = {

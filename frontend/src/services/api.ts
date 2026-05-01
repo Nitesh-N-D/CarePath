@@ -30,6 +30,10 @@ const API = axios.create({
     : fallbackBaseUrl,
 });
 
+function isAuthPage(pathname: string) {
+  return ["/login", "/register", "/forgot-password", "/reset-password"].includes(pathname);
+}
+
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("carepath_token");
   if (token) {
@@ -42,11 +46,11 @@ API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      const currentPath = window.location.pathname;
+      const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
       localStorage.removeItem("carepath_token");
       localStorage.removeItem("carepath_user");
-      if (!["/login", "/register", "/forgot-password", "/reset-password"].includes(currentPath)) {
-        window.location.href = "/login";
+      if (!isAuthPage(window.location.pathname)) {
+        window.location.assign(`/login?next=${encodeURIComponent(currentPath)}`);
       }
     }
     return Promise.reject(error);

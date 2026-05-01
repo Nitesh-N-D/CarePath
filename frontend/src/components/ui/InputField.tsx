@@ -24,6 +24,7 @@ function InputField({ label, className = "", inputClassName = "", placeholder, e
       </label>
       <div className="relative">
         <input
+          {...props}
           id={inputId}
           placeholder={resolvedPlaceholder}
           type={resolvedType}
@@ -32,7 +33,6 @@ function InputField({ label, className = "", inputClassName = "", placeholder, e
           } ${error ? "border-rose-300 focus:border-rose-400 focus:ring-rose-200/70 dark:border-rose-500/40 dark:focus:border-rose-400 dark:focus:ring-rose-500/20" : ""} ${inputClassName}`}
           aria-invalid={error ? "true" : "false"}
           aria-describedby={error ? `${inputId}-error` : undefined}
-          {...props}
         />
         {isPasswordField ? (
           <button
